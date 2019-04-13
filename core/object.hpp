@@ -1,14 +1,10 @@
-//
-// Created by vinic on 4/2/2019.
-//
+#pragma once
 
-#ifndef ENGH_OBJECT_HPP
-#define ENGH_OBJECT_HPP
+#include <data_types.hpp>
 
+namespace ENGH {
 
-class Object {
+    class Object {
+    };
 
-};
-
-
-#endif //ENGH_OBJECT_HPP
+}
