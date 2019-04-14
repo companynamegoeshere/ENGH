@@ -1,5 +1,3 @@
-include_directories(.)
-
 create_project(
   CORE SHARED
         engine.hpp
