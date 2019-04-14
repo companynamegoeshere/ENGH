@@ -6,4 +6,5 @@ create_project(
         object.cpp
         string.hpp
         string.cpp
+		math/vec2.hpp
 )
