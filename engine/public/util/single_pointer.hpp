@@ -5,22 +5,22 @@
 namespace ENGH::Util {
 
 template<typename T>
-class SinglePointer {
+class TSinglePointer {
 private:
     T *value;
 public:
 
-    SinglePointer() : value(nullptr) {}
+    TSinglePointer() : value(nullptr) {}
 
-    explicit SinglePointer(T *value) : value(value) {}
+    explicit TSinglePointer(T *value) : value(value) {}
 
-    SinglePointer(const SinglePointer<T> &other) = delete;
+    TSinglePointer(const TSinglePointer<T> &other) = delete;
 
-    SinglePointer(SinglePointer<T> &&other) noexcept : value(other.value) {
+    TSinglePointer(TSinglePointer<T> &&other) noexcept : value(other.value) {
         other.value = nullptr;
     }
 
-    SinglePointer &operator=(T *value) {
+    TSinglePointer &operator=(T *value) {
         delete this->value;
         this->value = value;
         return *this;
@@ -30,7 +30,7 @@ public:
         return value;
     }
 
-    ~SinglePointer() {
+    ~TSinglePointer() {
         delete this->value;
     }
 };

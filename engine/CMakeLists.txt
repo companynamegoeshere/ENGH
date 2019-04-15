@@ -1,12 +1,18 @@
 create_project(
-  CORE SHARED
+        CORE SHARED
+
         public/core/data_types.hpp
         public/core/engine.hpp
-        public/core/string.hpp
 
-        public/eobject/object.hpp
         public/math/vec2.hpp
 
-        private/core/string.cpp
+        public/eobject/object.hpp
+        public/eobject/actor.hpp
+        public/eobject/component/sub_component.hpp
+
+        public/util/single_pointer.hpp
+
         private/eobject/object.cpp
+        private/eobject/actor.cpp
+        private/eobject/component/sub_component.cpp
 )
