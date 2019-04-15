@@ -13,9 +13,16 @@ MACRO(create_project _name type)
 
     set(src ${ARGN})
 
-	include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    SET(pathList "")
+    IF (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/public")
+        LIST(APPEND pathList "${CMAKE_CURRENT_SOURCE_DIR}/public")
+    ENDIF ()
+    IF (pathList)
+        include_directories(${pathList})
+    ENDIF ()
 
-	set("${name}_PATH" "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
+    set("${name}_PATH" "${pathList}" PARENT_SCOPE)
+    unset(pathList)
 
     if ("${type}" STREQUAL "SHARED")
         add_library("${name}" SHARED ${src})
@@ -32,7 +39,9 @@ ENDMACRO()
 
 MACRO(include_project name other)
     target_link_libraries(${BASE_NAME}_${name} ${BASE_NAME}_${other})
-	include_directories("${${BASE_NAME}_${other}_PATH}")
+    IF (${BASE_NAME}_${other}_PATH)
+        include_directories("${${BASE_NAME}_${other}_PATH}")
+    ENDIF ()
 ENDMACRO()
 
 MACRO(include_raw_project name other)
@@ -40,9 +49,9 @@ MACRO(include_raw_project name other)
 ENDMACRO()
 
 MACRO(subproject name)
-	add_subdirectory(${name})
+    add_subdirectory(${name})
 ENDMACRO()
 
-subproject(core)
+subproject(engine)
 subproject(test)
 

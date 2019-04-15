@@ -1,10 +1,11 @@
 #pragma once
 
-#include <object.hpp>
+#include <core/string.hpp>
+#include <core/data_types.hpp>
 
 namespace ENGH {
 
-    class String : Object {
+    class String {
 
         uint16 len;
         char   *data;
