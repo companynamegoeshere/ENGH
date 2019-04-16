@@ -2,6 +2,7 @@ create_project(
         CORE SHARED
 
         public/core/data_types.hpp
+        public/core/debug.hpp
         public/core/engine.hpp
 
         public/math/vec2.hpp
