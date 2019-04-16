@@ -11,10 +11,13 @@ create_project(
         public/eobject/actor.hpp
         public/eobject/component/sub_component.hpp
 
+        public/util/array.hpp
         public/util/single_pointer.hpp
         public/util/memory.hpp
 
         private/eobject/object.cpp
         private/eobject/actor.cpp
         private/eobject/component/sub_component.cpp
+
+        private/util/array.cpp
 )
