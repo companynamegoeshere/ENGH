@@ -12,6 +12,7 @@ create_project(
         public/eobject/component/sub_component.hpp
 
         public/util/single_pointer.hpp
+        public/util/memory.hpp
 
         private/eobject/object.cpp
         private/eobject/actor.cpp
