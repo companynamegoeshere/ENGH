@@ -15,6 +15,9 @@ create_project(
         public/util/single_pointer.hpp
         public/util/memory.hpp
 
+
+		private/core/debug.cpp
+
         private/eobject/object.cpp
         private/eobject/actor.cpp
         private/eobject/component/sub_component.cpp

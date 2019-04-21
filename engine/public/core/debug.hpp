@@ -1,29 +1,17 @@
 #pragma once
 
+namespace ENGH::Debug {
+
+inline void __BREAK();
+
 #ifdef ENGH_DEBUG
 
-#define __DEBUG_BODY(...) do { __VA_ARGS__ } while(0)
-
-#ifdef WIN32
-
-#include <Windows.h>
-
-#define BREAK() __DEBUG_BODY(\
-    DebugBreak();\
-)
-
-#else // !WIN32
-
-#include <csignal>
-
-#define BREAK() __DEBUG_BODY(\
-    raise(SIGTRAP);\
-)
-
-#endif
+#define BREAK() __BREAK()
 
 #else
 
 #define BREAK() (void)0
 
 #endif
+
+}
