@@ -24,3 +24,4 @@ create_project(
 
         private/util/array.cpp
 )
+include_raw_project(CORE GLFW)

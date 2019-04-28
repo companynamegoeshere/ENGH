@@ -48,6 +48,10 @@ MACRO(include_raw_project name)
     target_link_libraries(${BASE_NAME}_${name} ${ARGN})
 ENDMACRO()
 
+FILE(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/third/*")
+FOREACH(child ${children})
+    add_subdirectory(${child})
+ENDFOREACH()
 
 add_subdirectory(engine)
 add_subdirectory(editor)
