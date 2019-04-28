@@ -44,14 +44,11 @@ MACRO(include_project name other)
     ENDIF ()
 ENDMACRO()
 
-MACRO(include_raw_project name other)
-    target_link_libraries(${name} ${other})
+MACRO(include_raw_project name)
+    target_link_libraries(${BASE_NAME}_${name} ${ARGN})
 ENDMACRO()
 
-MACRO(subproject name)
-    add_subdirectory(${name})
-ENDMACRO()
 
-subproject(engine)
-subproject(test)
-
+add_subdirectory(engine)
+add_subdirectory(editor)
+add_subdirectory(test)
