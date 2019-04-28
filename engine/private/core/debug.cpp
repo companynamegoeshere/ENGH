@@ -10,10 +10,12 @@
 
 #endif
 
-inline void ENGH::Debug::__BREAK() {
-#ifdef WIN32
-	DebugBreak();
-#else
-	raise(SIGTRAP);
+inline void ENGH::Debug::Break() {
+#ifdef ENGH_DEBUG
+  #ifdef WIN32
+  	DebugBreak();
+  #else
+	  raise(SIGTRAP);
+  #endif
 #endif
 }

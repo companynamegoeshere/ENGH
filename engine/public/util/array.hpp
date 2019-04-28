@@ -50,7 +50,7 @@ public:
     constexpr T &operator[](uint16 index) const {
 #ifdef ENGH_DEBUG
         if (index >= len) { // IndexOutOfBound Exception
-            BREAK();
+          ENGH::Debug::Break();
         }
 #endif
         return arr[index];
@@ -69,7 +69,7 @@ public:
             reserve(1);
 #ifdef ENGH_DEBUG
             if (arr == nullptr) { // OutOfMemory Exception
-                BREAK();
+              ENGH::Debug::Break();
             }
 #endif
         }
