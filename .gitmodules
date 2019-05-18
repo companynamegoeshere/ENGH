@@ -1,3 +1,7 @@
-[submodule "third/glfw"]
-	path = third/glfw
+[submodule "glfw"]
+	path = third/glfw/glfw
 	url = ../../glfw/glfw
+[submodule "imgui"]
+	path = third/imgui/imgui
+	url = ../../ocornut/imgui
+	branch = docking
