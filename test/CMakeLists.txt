@@ -1,5 +1,8 @@
-create_project(
-  TEST EXECUTABLE
+project(ENGH_TEST CXX)
+add_executable(
+        engh_test
         main.cpp
 )
-include_project(TEST CORE)
+
+target_link_libraries(engh_test engh_engine)
+

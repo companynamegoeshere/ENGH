@@ -1,5 +1,6 @@
-create_project(
-  EDITOR EXECUTABLE
+project(ENGH_EDITOR CXX)
+add_executable(
+        engh_editor
         main.cpp
 )
-include_project(EDITOR CORE)
+target_link_libraries(engh_editor engh_core)

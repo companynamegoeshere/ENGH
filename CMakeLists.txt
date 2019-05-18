@@ -7,45 +7,17 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 set(BASE_NAME "ENGH")
 project(${BASE_NAME} CXX)
 
-MACRO(create_project _name type)
-    set(name "${BASE_NAME}_${_name}")
-    project("${name}" CXX)
+if (WIN32)
+    set(CMAKE_SHARED_LIBRARY_PREFIX "")
+endif ()
 
-    set(src ${ARGN})
-
-    SET(pathList "")
-    IF (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/public")
-        LIST(APPEND pathList "${CMAKE_CURRENT_SOURCE_DIR}/public")
-    ENDIF ()
-    IF (pathList)
-        include_directories(${pathList})
-    ENDIF ()
-
-    set("${name}_PATH" "${pathList}" PARENT_SCOPE)
-    unset(pathList)
-
-    if ("${type}" STREQUAL "SHARED")
-        add_library("${name}" SHARED ${src})
-    elseif ("${type}" STREQUAL "EXECUTABLE")
-        add_executable("${name}" ${src})
-    else ()
-        message(FATAL_ERROR "create_project supports only LIBRARY and EXECUTABLE")
-    endif ()
-
-    set_target_properties("${name}" PROPERTIES LINKER_LANGUAGE CXX)
-    unset(src)
-    unset(name)
-ENDMACRO()
-
-MACRO(include_project name other)
-    target_link_libraries(${BASE_NAME}_${name} ${BASE_NAME}_${other})
-    IF (${BASE_NAME}_${other}_PATH)
-        include_directories("${${BASE_NAME}_${other}_PATH}")
-    ENDIF ()
-ENDMACRO()
-
-MACRO(include_raw_project name)
-    target_link_libraries(${BASE_NAME}_${name} ${ARGN})
+MACRO(DllSetup PROJECT)
+    if(WIN32)
+        add_custom_command(TARGET ${PROJECT} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${PROJECT_SOURCE_DIR}/dlls"
+                $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+    endif()
 ENDMACRO()
 
 FILE(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/third/*")

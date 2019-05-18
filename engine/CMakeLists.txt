@@ -1,5 +1,6 @@
-create_project(
-        CORE SHARED
+project(ENGH_ENGINE CXX)
+add_library(
+        engh_engine STATIC
 
         public/core/data_types.hpp
         public/core/debug.hpp
@@ -16,7 +17,7 @@ create_project(
         public/util/memory.hpp
 
 
-		private/core/debug.cpp
+        private/core/debug.cpp
 
         private/eobject/object.cpp
         private/eobject/actor.cpp
@@ -24,4 +25,15 @@ create_project(
 
         private/util/array.cpp
 )
-include_raw_project(CORE GLFW)
+
+set_target_properties(engh_engine
+        PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_include_directories(engh_engine PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/public>"
+        "$<INSTALL_INTERFACE:include>")
+
+target_link_libraries(engh_engine)
+target_link_libraries(engh_engine glfw)
+target_link_libraries(engh_engine glad)
+
