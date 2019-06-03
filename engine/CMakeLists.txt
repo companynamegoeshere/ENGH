@@ -5,6 +5,7 @@ add_library(
         public/core/data_types.hpp
         public/core/debug.hpp
         public/core/engine.hpp
+        public/core/log.hpp
 
         public/math/vec2.hpp
 
@@ -23,6 +24,7 @@ add_library(
 
 
         private/core/debug.cpp
+        private/core/log.cpp
 
         private/eobject/object.cpp
         private/eobject/actor.cpp
