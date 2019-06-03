@@ -15,7 +15,7 @@ add_library(
 
         public/platform/window.hpp
         public/platform/render/render_context.hpp
-        public/platform/render/opengl/opengl_render_context.hpp
+        public/platform/opengl/render/opengl_render_context.hpp
         public/platform/winnt/winnt_window.hpp
 
         public/util/array.hpp
@@ -30,7 +30,7 @@ add_library(
         private/eobject/component/sub_component.cpp
 
         private/platform/window.cpp
-        private/platform/render/opengl/opengl_render_context.cpp
+        private/platform/opengl/render/opengl_render_context.cpp
         private/platform/winnt/winnt_window.cpp
 
         private/util/array.cpp

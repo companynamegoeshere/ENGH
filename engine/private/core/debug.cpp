@@ -19,3 +19,5 @@ inline void ENGH::Debug::Break() {
   #endif
 #endif
 }
+
+// TODO Add assert macros

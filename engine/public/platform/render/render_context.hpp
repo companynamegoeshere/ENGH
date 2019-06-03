@@ -1,5 +1,10 @@
 #pragma once
 
+enum class RenderLibrary {
+    NONE,
+    OPENGL
+};
+
 namespace ENGH::Platform::Render {
 
     class RenderContext {

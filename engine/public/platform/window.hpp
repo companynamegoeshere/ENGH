@@ -3,6 +3,7 @@
 #include <platform/render/render_context.hpp>
 
 #include <core/data_types.hpp>
+#include <core/engine.hpp>
 #include <string>
 
 namespace ENGH::Platform {
@@ -10,7 +11,7 @@ namespace ENGH::Platform {
     class Window {
     public:
         struct Config {
-            std::string render_preference;
+            RenderLibrary renderPreference;
         };
     protected:
 
