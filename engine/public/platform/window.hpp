@@ -1,32 +1,31 @@
 #pragma once
 
-#include <platform/render/render_context.hpp>
+#include <string>
 
 #include <core/data_types.hpp>
 #include <core/engine.hpp>
-#include <string>
+#include <platform/render/render_context.hpp>
 
 namespace ENGH::Platform {
 
     class Window {
     public:
         struct Config {
+            std::string   title;
+            uint          width, height;
             RenderLibrary renderPreference;
         };
     protected:
-
-        std::string title;
-        uint        width;
-        uint        height;
+        Config config;
 
     public:
-        Window(std::string title, uint width, uint height, const Config& = {});
+        explicit Window(Config  = {});
 
-        virtual void show() = 0;
+        virtual void Init() = 0;
 
-        virtual void hide() = 0;
+        virtual std::shared_ptr<Render::RenderContext> getContext() const = 0;
 
-        virtual Render::RenderContext *getContext() const = 0;
+        virtual ~Window() = 0;
 
     };
 

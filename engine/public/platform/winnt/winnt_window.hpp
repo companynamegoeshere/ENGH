@@ -1,23 +1,21 @@
 #pragma once
 
+#include <platform/opengl/render/opengl_render_context.hpp>
 #include <platform/window.hpp>
 
 struct GLFWwindow;
 namespace ENGH::Platform::WinNT {
 
     class WinNTWindow : Window {
-        GLFWwindow *nativeWindow;
+        GLFWwindow *nativeWindow{};
+        std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
 
     public:
-        WinNTWindow(const std::string &title, uint width, uint height, const Config &config);
+        void Init() override;
 
-        void show() override;
+        std::shared_ptr<Render::RenderContext> getContext() const override;
 
-        void hide() override;
-
-        Render::RenderContext *getContext() const override;
-
-        virtual ~WinNTWindow();
+        ~WinNTWindow() override;
 
     };
 

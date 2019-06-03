@@ -1,4 +1,4 @@
 #include <platform/window.hpp>
 
-ENGH::Platform::Window::Window(std::string title, uint width, uint height, const Config&) :
-        title(std::move(title)), width(width), height(height) {}
+ENGH::Platform::Window::Window(Config config) :
+        config(std::move(config)) {}

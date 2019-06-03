@@ -1,5 +1,7 @@
 #pragma once
 
+#include <core/engine.hpp>
+
 enum class RenderLibrary {
     NONE,
     OPENGL

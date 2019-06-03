@@ -1,48 +1,40 @@
-#include <platform/winnt/winnt_window.hpp>
-
 #include <exception>
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
+
 #include <stdexcept>
+#include <GLFW/glfw3.h>
+
+#include <platform/winnt/winnt_window.hpp>
 
 namespace ENGH::Platform::WinNT {
 
-
-    WinNTWindow::WinNTWindow(const std::string &title, uint width, uint height, const Config &config)
-            : Window(title, width, height, config) {
-
+    void WinNTWindow::Init() {
         switch (config.renderPreference) {
             case RenderLibrary::NONE:
                 break;
             case RenderLibrary::OPENGL: {
                 if (!glfwInit()) {
-                    ENGH_CORE_ERROR("could not initialize glfw (OpenGL)");
+                    ENGH_CORE_FATAL("could not initialize glfw (OpenGL)");
                     throw std::runtime_error("could not initialize glfw (OpenGL)");
                 }
 
                 glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
                 glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-                nativeWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+                nativeWindow = glfwCreateWindow(config.width, config.height, config.title.c_str(), nullptr, nullptr);
                 if (!nativeWindow) {
                     throw std::runtime_error("could not create glfw window");
                 }
+                context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(this);
+                context->Setup();
             }
                 break;
+            default:
+                ENGH_CORE_FATAL("invalid render configuration");
+                break;
         }
-
     }
 
-
-    void WinNTWindow::show() {
-
-    }
-
-    void WinNTWindow::hide() {
-
-    }
-
-    Render::RenderContext *WinNTWindow::getContext() const {
-        return nullptr;
+    std::shared_ptr<Render::RenderContext> WinNTWindow::getContext() const {
+        return std::dynamic_pointer_cast<Render::RenderContext>(context);
     }
 
 
