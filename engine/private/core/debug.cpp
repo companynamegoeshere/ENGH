@@ -2,7 +2,7 @@
 
 #ifdef WIN32
 
-#include <Windows.h>
+__attribute__((dllimport)) void DebugBreak ();
 
 #else // !WIN32
 

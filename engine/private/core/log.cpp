@@ -20,7 +20,7 @@ Logger& ENGH::Logger::getCoreLogger() {
     static Logger logger = Logger(
 #ifdef ENGH_DEBUG
             Level::FINE,
-#elif
+#else
             Level::INFO,
 #endif
             {std::shared_ptr<std::ostream>(&std::cout, [](std::ostream *) {})},
@@ -33,7 +33,7 @@ Logger& ENGH::Logger::getStdLogger() {
     static Logger logger(
 #ifdef ENGH_DEBUG
             Level::FINE,
-#elif
+#else
             Level::INFO,
 #endif
             {std::shared_ptr<std::ostream>(&std::cout, [](std::ostream *) {})},

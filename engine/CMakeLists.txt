@@ -46,4 +46,4 @@ target_include_directories(engh_engine PUBLIC
 target_link_libraries(engh_engine)
 target_link_libraries(engh_engine glfw)
 target_link_libraries(engh_engine glad)
-
+cotire(engh_engine)
