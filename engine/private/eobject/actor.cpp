@@ -2,7 +2,7 @@
 #include <eobject/component/sub_component.hpp>
 
 ENGH::Actor::Actor() {
-    root = new SubComponent();
+    root = std::make_unique<SubComponent>();
 }
 
 void ENGH::Actor::BeginPlay() {}

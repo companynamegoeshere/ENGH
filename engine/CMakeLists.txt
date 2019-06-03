@@ -19,7 +19,6 @@ add_library(
         public/platform/winnt/winnt_window.hpp
 
         public/util/array.hpp
-        public/util/single_pointer.hpp
         public/util/memory.hpp
 
 

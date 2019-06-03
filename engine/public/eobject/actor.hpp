@@ -1,7 +1,6 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <util/single_pointer.hpp>
 
 namespace ENGH {
 
@@ -12,7 +11,7 @@ public:
 
 protected:
 
-    Util::TSinglePointer<class SubComponent> root;
+    std::unique_ptr<class SubComponent> root;
 
     virtual void BeginPlay();
 
