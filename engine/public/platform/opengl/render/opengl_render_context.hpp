@@ -16,6 +16,8 @@ namespace ENGH::Platform::Render::OpenGL {
 
         void SwapBuffers() override;
 
+        void Clear(float r, float g, float b, float a) override;
+
         std::shared_ptr<IndexRenderBuffer> CreateIndexBuffer() override;
 
         std::shared_ptr<VertexRenderBuffer> CreateVertexBuffer() override;

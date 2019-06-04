@@ -18,6 +18,8 @@ public:
 
     virtual void SwapBuffers() = 0;
 
+    virtual void Clear(float r, float g, float b, float a) = 0;
+
     virtual std::shared_ptr<IndexRenderBuffer> CreateIndexBuffer() = 0;
 
     virtual std::shared_ptr<VertexRenderBuffer> CreateVertexBuffer() = 0;

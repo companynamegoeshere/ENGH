@@ -10,6 +10,8 @@ void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Setup() {
     }
 }
 
+ENGH::Platform::Render::OpenGL::OpenGLRenderContext::~OpenGLRenderContext() {}
+
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::SwapBuffers() {
     glfwSwapBuffers(window);
 }
@@ -22,6 +24,7 @@ std::shared_ptr<ENGH::Platform::Render::VertexRenderBuffer> ENGH::Platform::Rend
     return std::shared_ptr<VertexRenderBuffer>(); // TODO Real implementation
 }
 
-ENGH::Platform::Render::OpenGL::OpenGLRenderContext::~OpenGLRenderContext() {
-
+void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Clear(float r, float g, float b, float a) {
+    glClearColor(r, g, b, a);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
