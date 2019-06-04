@@ -19,7 +19,7 @@ public:
 
     void Unbind() override;
 
-    void SetData(TArray<float> data) override;
+    void SetData(const TArray<float> &data) override;
 };
 
 }

@@ -16,7 +16,7 @@ void ENGH::Platform::Render::OpenGL::OpenGLIndexRenderBuffer::Unbind() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ENGH::Platform::Render::OpenGL::OpenGLIndexRenderBuffer::SetData(TArray<uint32> data) {
+void ENGH::Platform::Render::OpenGL::OpenGLIndexRenderBuffer::SetData(const TArray<uint32>& data) {
     this->Bind();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.length() * sizeof(uint32), data.data(), GL_STATIC_DRAW);
 }

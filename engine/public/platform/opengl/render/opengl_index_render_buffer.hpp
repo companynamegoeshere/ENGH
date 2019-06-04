@@ -19,7 +19,7 @@ public:
 
     void Unbind() override;
 
-    void SetData(TArray<uint32> data) override;
+    void SetData(const TArray<uint32>& data) override;
 };
 
 }

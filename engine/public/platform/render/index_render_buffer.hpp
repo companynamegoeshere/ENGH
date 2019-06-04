@@ -11,7 +11,7 @@ public:
 
     inline uint32 GetCount() { return count; }
 
-    virtual void SetData(TArray<uint32> data) = 0;
+    virtual void SetData(const TArray<uint32>& data) = 0;
 
 };
 

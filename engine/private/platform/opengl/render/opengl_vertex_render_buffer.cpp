@@ -16,7 +16,7 @@ void ENGH::Platform::Render::OpenGL::OpenGLVertexRenderBuffer::Unbind() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ENGH::Platform::Render::OpenGL::OpenGLVertexRenderBuffer::SetData(TArray<float> data) {
+void ENGH::Platform::Render::OpenGL::OpenGLVertexRenderBuffer::SetData(const TArray<float> &data) {
     this->Bind();
     glBufferData(GL_ARRAY_BUFFER, data.length() * sizeof(float), data.data(), GL_STATIC_DRAW);
 }

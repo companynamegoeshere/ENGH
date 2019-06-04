@@ -82,7 +82,11 @@ public:
         return *this;
     }
 
-    constexpr inline const T *data() {
+    constexpr inline const T *data() const {
+        return arr;
+    }
+
+    constexpr inline T *data() {
         return arr;
     }
 
