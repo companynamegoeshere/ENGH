@@ -61,6 +61,7 @@ namespace ENGH {
                 if(prefix.length()) {
                     *stream << prefix;
                 }
+                *stream << "<" << level.name() << "> ";
                 (*stream << ... << ts) << std::endl;
             }
         }
