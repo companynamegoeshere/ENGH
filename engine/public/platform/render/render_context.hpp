@@ -4,12 +4,12 @@
 #include <platform/render/index_render_buffer.hpp>
 #include <platform/render/vertex_render_buffer.hpp>
 
+namespace ENGH::Platform::Render {
+
 enum class RenderLibrary {
     NONE,
     OPENGL
 };
-
-namespace ENGH::Platform::Render {
 
 class RenderContext {
 public:
@@ -18,9 +18,9 @@ public:
 
     virtual void SwapBuffers() = 0;
 
-    virtual std::shared_ptr <IndexRenderBuffer> CreateIndexBuffer() = 0;
+    virtual std::shared_ptr<IndexRenderBuffer> CreateIndexBuffer() = 0;
 
-    virtual std::shared_ptr <VertexRenderBuffer> CreateVertexBuffer() = 0;
+    virtual std::shared_ptr<VertexRenderBuffer> CreateVertexBuffer() = 0;
 
     // virtual std::shared_ptr <RenderShader> CreateShader(std::string_view vertex, std::string_view fragment) = 0;
 

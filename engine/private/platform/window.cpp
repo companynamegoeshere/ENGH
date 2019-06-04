@@ -2,3 +2,5 @@
 
 ENGH::Platform::Window::Window(Config config) :
         config(std::move(config)) {}
+
+ENGH::Platform::Window::~Window() {}
