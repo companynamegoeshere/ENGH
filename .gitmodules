@@ -1,7 +1,6 @@
 [submodule "glfw"]
 	path = third/glfw/glfw
-	url = ../../glfw/glfw
+	url = https://github.com/glfw/glfw.git
 [submodule "imgui"]
 	path = third/imgui/imgui
-	url = ../../ocornut/imgui
-	branch = docking
+	url = https://github.com/ocornut/imgui.git
