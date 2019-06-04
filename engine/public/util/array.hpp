@@ -10,7 +10,7 @@ namespace ENGH::Util {
 template<typename T>
 class TArray {
 
-    T      *arr;
+    T *arr;
     uint16 len;
     uint16 cap;
 
@@ -80,6 +80,10 @@ public:
     constexpr TArray &reserve(uint16 size) {
         arr = reinterpret_cast<T *>(std::realloc(arr, sizeof(T) * (cap += size)));
         return *this;
+    }
+
+    constexpr inline const T *data() {
+        return arr;
     }
 
 };
