@@ -14,8 +14,9 @@ add_library(
         public/eobject/component/sub_component.hpp
 
         public/platform/window.hpp
-        public/platform/opengl/render/opengl_render_context.hpp
         public/platform/opengl/render/opengl_index_render_buffer.hpp
+        public/platform/opengl/render/opengl_render_context.hpp
+        public/platform/opengl/render/opengl_vertex_render_buffer.hpp
         public/platform/render/index_render_buffer.hpp
         public/platform/render/render_buffer.hpp
         public/platform/render/render_context.hpp
@@ -34,8 +35,11 @@ add_library(
         private/eobject/component/sub_component.cpp
 
         private/platform/window.cpp
-        private/platform/opengl/render/opengl_render_context.cpp
         private/platform/opengl/render/opengl_index_render_buffer.cpp
+        private/platform/opengl/render/opengl_render_context.cpp
+        private/platform/opengl/render/opengl_vertex_render_buffer.cpp
+        private/platform/render/render_buffer.cpp
+        private/platform/render/render_context.cpp
         private/platform/winnt/winnt_window.cpp
 
         private/util/array.cpp

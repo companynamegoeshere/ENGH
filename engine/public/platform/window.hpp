@@ -13,7 +13,7 @@ namespace ENGH::Platform {
         struct Config {
             std::string   title;
             uint          width, height;
-            RenderLibrary renderPreference;
+            Render::RenderLibrary renderPreference;
         };
     protected:
         Config config;
@@ -21,11 +21,11 @@ namespace ENGH::Platform {
     public:
         explicit Window(Config  = {});
 
+        virtual ~Window() = 0;
+
         virtual void Init() = 0;
 
-        virtual std::shared_ptr<Render::RenderContext> getContext() const = 0;
-
-        virtual ~Window() = 0;
+        virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
 
     };
 

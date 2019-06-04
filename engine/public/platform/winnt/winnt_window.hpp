@@ -6,17 +6,20 @@
 struct GLFWwindow;
 namespace ENGH::Platform::WinNT {
 
-    class WinNTWindow : Window {
-        GLFWwindow *nativeWindow{};
-        std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
+class WinNTWindow : public Window {
+    GLFWwindow *nativeWindow{};
+    std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
 
-    public:
-        void Init() override;
+public:
 
-        std::shared_ptr<Render::RenderContext> getContext() const override;
+    explicit WinNTWindow(Config config);
 
-        ~WinNTWindow() override;
+    ~WinNTWindow() override;
 
-    };
+    void Init() override;
+
+    std::shared_ptr<Render::RenderContext> GetContext() const override;
+
+};
 
 }

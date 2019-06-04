@@ -4,11 +4,14 @@
 ENGH::Platform::Render::OpenGL::OpenGLRenderContext::OpenGLRenderContext(GLFWwindow *window) : window(window) {}
 
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Setup() {
-
+    glfwMakeContextCurrent(window);
+    if(!gladLoadGL(glfwGetProcAddress)) {
+        ENGH_CORE_FATAL("could not load opengl extensions");
+    }
 }
 
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::SwapBuffers() {
-
+    glfwSwapBuffers(window);
 }
 
 std::shared_ptr<ENGH::Platform::Render::IndexRenderBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateIndexBuffer() {

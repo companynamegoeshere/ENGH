@@ -9,17 +9,17 @@ namespace ENGH::Platform::Render::OpenGL {
 
 class OpenGLIndexRenderBuffer : public IndexRenderBuffer {
     GLuint id;
-    GLenum target;
-    GLenum usage;
 public:
 
     OpenGLIndexRenderBuffer();
+
+    ~OpenGLIndexRenderBuffer() override;
 
     void Bind() override;
 
     void Unbind() override;
 
-    ~OpenGLIndexRenderBuffer();
+    void SetData(TArray<uint32> data) override;
 };
 
 }
