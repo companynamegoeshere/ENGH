@@ -6,69 +6,69 @@
 
 namespace ENGH {
 
-    class Logger {
+class Logger {
+public:
+
+    class Level {
     public:
-
-        class Level {
-        public:
-            static const Level OFF;
-            static const Level FATAL;
-            static const Level ERROR;
-            static const Level WARN;
-            static const Level INFO;
-            static const Level DEBUG;
-            static const Level FINE;
-            static const Level FINER;
-            static const Level FINEST;
-            static const Level ALL;
-        private:
-            std::string_view m_name;
-            int32            m_level;
-
-            constexpr Level(std::string_view name, int32 level) noexcept: m_name(name), m_level(level) {}
-
-        public:
-            inline std::string_view &name() { return m_name; }
-
-            inline bool operator>(const Level &other) const { return m_level > other.m_level; }
-        };
-
+        static const Level OFF;
+        static const Level FATAL;
+        static const Level ERROR;
+        static const Level WARN;
+        static const Level INFO;
+        static const Level DEBUG;
+        static const Level FINE;
+        static const Level FINER;
+        static const Level FINEST;
+        static const Level ALL;
     private:
-        Level level;
-        Level errorThresholder;
+        std::string_view m_name;
+        int32 m_level;
 
-        std::string_view prefix;
+        constexpr Level(std::string_view name, int32 level) noexcept: m_name(name), m_level(level) {}
 
-        std::vector<std::shared_ptr<std::ostream>> output;
-        std::vector<std::shared_ptr<std::ostream>> error;
     public:
+        inline std::string_view &name() { return m_name; }
 
-        static inline Logger& getCoreLogger();
-
-        static inline Logger& getStdLogger();
-
-        explicit Logger(Level level,
-                        std::initializer_list<std::shared_ptr<std::ostream>> outStreams = {},
-                        std::initializer_list<std::shared_ptr<std::ostream>> errStreams = {}
-        ) noexcept;
-
-        template<typename...Ts>
-        inline void log(Level level, Ts... ts) const {
-            if (this->level > level) {
-                return;
-            }
-            for (const auto &stream : level > errorThresholder ? error : output) {
-                if(prefix.length()) {
-                    *stream << prefix;
-                }
-                *stream << "<" << level.name() << "> ";
-                (*stream << ... << ts) << std::endl;
-            }
-        }
-
-        Logger& setPrefix(std::string_view prefix);
-
+        inline bool operator>(const Level &other) const { return m_level > other.m_level; }
     };
+
+private:
+    Level level;
+    Level errorThresholder;
+
+    std::string prefix;
+
+    std::vector<std::shared_ptr<std::ostream>> output;
+    std::vector<std::shared_ptr<std::ostream>> error;
+public:
+
+    static inline Logger &getCoreLogger();
+
+    static inline Logger &getStdLogger();
+
+    explicit Logger(Level level,
+                    std::initializer_list<std::shared_ptr<std::ostream>> outStreams = {},
+                    std::initializer_list<std::shared_ptr<std::ostream>> errStreams = {}
+    ) noexcept;
+
+    template<typename...Ts>
+    inline void log(Level level, Ts... ts) const {
+        if (this->level > level) {
+            return;
+        }
+        for (const auto &stream : level > errorThresholder ? error : output) {
+            if (prefix.length()) {
+                *stream << prefix;
+            }
+            *stream << "<" << level.name() << "> ";
+            (*stream << ... << ts) << std::endl;
+        }
+    }
+
+    Logger &setPrefix(std::string_view prefix);
+
+};
 }
 
 #define ENGH_CORE_FATAL(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FATAL, __VA_ARGS__)
