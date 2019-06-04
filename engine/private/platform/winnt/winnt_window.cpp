@@ -1,7 +1,6 @@
 #include <exception>
 
 #include <stdexcept>
-#include <GLFW/glfw3.h>
 
 #include <platform/winnt/winnt_window.hpp>
 
@@ -23,7 +22,7 @@ namespace ENGH::Platform::WinNT {
                 if (!nativeWindow) {
                     throw std::runtime_error("could not create glfw window");
                 }
-                context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(this);
+                context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
                 context->Setup();
             }
                 break;
@@ -36,7 +35,6 @@ namespace ENGH::Platform::WinNT {
     std::shared_ptr<Render::RenderContext> WinNTWindow::getContext() const {
         return std::dynamic_pointer_cast<Render::RenderContext>(context);
     }
-
 
     WinNTWindow::~WinNTWindow() {
         glfwDestroyWindow(nativeWindow);
