@@ -10,3 +10,5 @@
 
 #include <util/array.hpp>
 #include <util/memory.hpp>
+
+using ENGH::Util::TArray;

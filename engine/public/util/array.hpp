@@ -10,7 +10,7 @@ namespace ENGH::Util {
 template<typename T>
 class TArray {
 
-    T *arr;
+    T      *arr;
     uint16 len;
     uint16 cap;
 
@@ -47,20 +47,20 @@ public:
         delete arr;
     }
 
-    constexpr T &operator[](uint16 index) const {
+    constexpr inline T &operator[](uint16 index) const {
 #ifdef ENGH_DEBUG
         if (index >= len) { // IndexOutOfBound Exception
-          ENGH::Debug::Break();
+            ENGH::Debug::Break();
         }
 #endif
         return arr[index];
     }
 
-    constexpr uint16 length() const {
+    constexpr inline uint16 length() const {
         return len;
     }
 
-    constexpr uint16 capacity() const {
+    constexpr inline uint16 capacity() const {
         return cap;
     }
 
@@ -69,7 +69,7 @@ public:
             reserve(1);
 #ifdef ENGH_DEBUG
             if (arr == nullptr) { // OutOfMemory Exception
-              ENGH::Debug::Break();
+                ENGH::Debug::Break();
             }
 #endif
         }
