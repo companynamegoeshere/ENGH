@@ -1,6 +1,6 @@
-#include <platform/opengl/render/opengl_render_context.hpp>
-#include <platform/opengl/render/opengl_index_render_buffer.hpp>
-#include <platform/opengl/render/opengl_vertex_render_buffer.hpp>
+#include <platform/opengl/render/render_context.hpp>
+#include <platform/opengl/render/index_buffer.hpp>
+#include <platform/opengl/render/vertex_buffer.hpp>
 
 ENGH::Platform::Render::OpenGL::OpenGLRenderContext::OpenGLRenderContext(GLFWwindow *window) : window(window) {}
 
@@ -17,15 +17,15 @@ void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::SwapBuffers() {
     glfwSwapBuffers(window);
 }
 
-std::shared_ptr<ENGH::Platform::Render::IndexRenderBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateIndexBuffer() {
-    return std::make_shared<OpenGLIndexRenderBuffer>();
+std::shared_ptr<ENGH::Platform::Render::IndexBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateIndexBuffer() {
+    return std::make_shared<OpenGLIndexBuffer>();
 }
 
-std::shared_ptr<ENGH::Platform::Render::VertexRenderBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateVertexBuffer() {
-    return std::make_shared<OpenGLVertexRenderBuffer>();
+std::shared_ptr<ENGH::Platform::Render::VertexBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateVertexBuffer() {
+    return std::make_shared<OpenGLVertexBuffer>();
 }
 
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Clear(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

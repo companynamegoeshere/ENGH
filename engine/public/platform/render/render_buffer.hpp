@@ -7,9 +7,9 @@ namespace ENGH::Platform::Render {
 class RenderBuffer {
 public:
 
-    virtual void Bind() = 0;
+    virtual void Bind() const = 0;
 
-    virtual void Unbind() = 0;
+    virtual void Unbind() const = 0;
 
     virtual ~RenderBuffer() = 0;
 };

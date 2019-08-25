@@ -4,14 +4,14 @@
 
 namespace ENGH::Platform::Render {
 
-class IndexRenderBuffer : public RenderBuffer {
+class IndexBuffer : public RenderBuffer {
 protected:
     uint32 count;
 public:
 
     inline uint32 GetCount() { return count; }
 
-    virtual void SetData(const TArray<uint32>& data) = 0;
+    virtual void SetData(const TArray<uint32> &data) = 0;
 
 };
 
