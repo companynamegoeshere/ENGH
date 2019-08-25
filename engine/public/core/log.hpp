@@ -89,7 +89,7 @@ static std::string concat(std::string first, Ts... ts) {
 #define ENGH_CORE_FINER(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FINER, __VA_ARGS__)
 #define ENGH_CORE_FINEST(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FINEST, __VA_ARGS__)
 
-#define ENGH_THROW_FATAL(...) do { ENGH_CORE_FATAL(__VA_ARGS__); throw std::runtime_error(concat(__VA_ARGS__)); } while(0)
+#define ENGH_THROW_FATAL(...) do { ENGH_FATAL(__VA_ARGS__); throw std::runtime_error(concat(__VA_ARGS__)); } while(0)
 #define ENGH_FATAL(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::FATAL, __VA_ARGS__)
 #define ENGH_ERROR(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::ERROR, __VA_ARGS__)
 #define ENGH_WARN(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::WARN, __VA_ARGS__)

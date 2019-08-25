@@ -3,8 +3,13 @@ cmake_minimum_required(VERSION 3.9)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
 include(cotire)
 
+option(DEV "Development code (logs and asserts)" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENGH_DEBUG")
+IF (DEV)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DENGH_DEV")
+ENDIF()
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set(BASE_NAME "ENGH")
