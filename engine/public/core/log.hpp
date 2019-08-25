@@ -43,9 +43,9 @@ private:
     std::vector<std::shared_ptr<std::ostream>> error;
 public:
 
-    static inline Logger &getCoreLogger();
+    static Logger &getCoreLogger();
 
-    static inline Logger &getStdLogger();
+    static Logger &getStdLogger();
 
     explicit Logger(Level level,
                     std::initializer_list<std::shared_ptr<std::ostream>> outStreams = {},
@@ -69,8 +69,17 @@ public:
     Logger &setPrefix(std::string_view prefix);
 
 };
+
+namespace Util::String {
+template<typename...Ts>
+static std::string concat(std::string first, Ts... ts) {
+    return (first + ... + ts);
+}
 }
 
+}
+
+#define ENGH_CORE_THROW_FATAL(...) do { ENGH_CORE_FATAL(__VA_ARGS__); throw std::runtime_error(::ENGH::Util::String::concat(__VA_ARGS__)); } while(0)
 #define ENGH_CORE_FATAL(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FATAL, __VA_ARGS__)
 #define ENGH_CORE_ERROR(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::ERROR, __VA_ARGS__)
 #define ENGH_CORE_WARN(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::WARN, __VA_ARGS__)
@@ -80,6 +89,7 @@ public:
 #define ENGH_CORE_FINER(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FINER, __VA_ARGS__)
 #define ENGH_CORE_FINEST(...) ::ENGH::Logger::getCoreLogger().log(::ENGH::Logger::Level::FINEST, __VA_ARGS__)
 
+#define ENGH_THROW_FATAL(...) do { ENGH_CORE_FATAL(__VA_ARGS__); throw std::runtime_error(concat(__VA_ARGS__)); } while(0)
 #define ENGH_FATAL(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::FATAL, __VA_ARGS__)
 #define ENGH_ERROR(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::ERROR, __VA_ARGS__)
 #define ENGH_WARN(...) ::ENGH::Logger::getStdLogger().log(::ENGH::Logger::Level::WARN, __VA_ARGS__)
