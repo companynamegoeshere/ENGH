@@ -16,6 +16,8 @@ class TArray {
 
 public:
 
+    static constexpr Number<T> dataType = Number<T>();
+
     constexpr TArray() :
             arr(nullptr),
             len(0),
