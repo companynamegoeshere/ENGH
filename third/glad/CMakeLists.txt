@@ -11,3 +11,4 @@ add_library(glad STATIC
 target_include_directories(glad PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/${subFolder}/include>"
         "$<INSTALL_INTERFACE:include>")
+cotire(glad)

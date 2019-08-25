@@ -5,4 +5,5 @@ add_executable(
 )
 
 target_link_libraries(engh_test engh_engine)
+cotire(engh_test)
 

@@ -55,4 +55,5 @@ target_include_directories(engh_engine PUBLIC
 target_link_libraries(engh_engine)
 target_link_libraries(engh_engine glfw)
 target_link_libraries(engh_engine glad)
+set_target_properties(engh_engine PROPERTIES COTIRE_PREFIX_HEADER_IGNORE_PATH "/usr/include/GL/")
 cotire(engh_engine)

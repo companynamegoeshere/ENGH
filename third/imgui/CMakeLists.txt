@@ -12,4 +12,4 @@ target_include_directories(dear_imgui PUBLIC
         "$<INSTALL_INTERFACE:include>")
 
 target_link_libraries(dear_imgui)
-
+cotire(dear_imgui)
