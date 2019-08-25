@@ -9,7 +9,7 @@ namespace ENGH::Platform::Render::OpenGL {
 
 class OpenGLVertexBuffer : public VertexBuffer {
     GLuint            vbo;
-    BufferLayoutEntry layout;
+    BufferLayout layout;
 public:
 
     OpenGLVertexBuffer();
@@ -22,7 +22,9 @@ public:
 
     void SetData(const TArray<float> &data) override;
 
-    void SetLayout(const BufferLayoutEntry &layout) override;
+    void SetLayout(const BufferLayout &layout) override;
+
+    const BufferLayout &GetLayout() override;
 };
 
 }

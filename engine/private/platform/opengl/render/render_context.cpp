@@ -1,12 +1,13 @@
 #include <platform/opengl/render/render_context.hpp>
 #include <platform/opengl/render/index_buffer.hpp>
+#include <platform/opengl/render/vertex_array.hpp>
 #include <platform/opengl/render/vertex_buffer.hpp>
 
 ENGH::Platform::Render::OpenGL::OpenGLRenderContext::OpenGLRenderContext(GLFWwindow *window) : window(window) {}
 
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Setup() {
     glfwMakeContextCurrent(window);
-    if(!gladLoadGL(glfwGetProcAddress)) {
+    if (! gladLoadGL(glfwGetProcAddress)) {
         ENGH_CORE_FATAL("could not load opengl extensions");
     }
 }
@@ -23,6 +24,10 @@ std::shared_ptr<ENGH::Platform::Render::IndexBuffer> ENGH::Platform::Render::Ope
 
 std::shared_ptr<ENGH::Platform::Render::VertexBuffer> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateVertexBuffer() {
     return std::make_shared<OpenGLVertexBuffer>();
+}
+
+std::shared_ptr<ENGH::Platform::Render::VertexArray> ENGH::Platform::Render::OpenGL::OpenGLRenderContext::CreateVertexArray() {
+    return std::make_shared<OpenGLVertexArray>();
 }
 
 void ENGH::Platform::Render::OpenGL::OpenGLRenderContext::Clear(float r, float g, float b, float a) {

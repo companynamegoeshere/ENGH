@@ -14,13 +14,18 @@ add_library(
         public/eobject/component/sub_component.hpp
 
         public/platform/window.hpp
-        public/platform/opengl/render/opengl_index_render_buffer.hpp
-        public/platform/opengl/render/opengl_render_context.hpp
-        public/platform/opengl/render/opengl_vertex_render_buffer.hpp
-        public/platform/render/index_render_buffer.hpp
+
+        public/platform/opengl/render/index_buffer.hpp
+        public/platform/opengl/render/render_context.hpp
+        public/platform/opengl/render/vertex_buffer.hpp
+
+        public/platform/render/buffer_layout.hpp
+        public/platform/render/index_buffer.hpp
         public/platform/render/render_buffer.hpp
         public/platform/render/render_context.hpp
-        public/platform/render/vertex_render_buffer.hpp
+        public/platform/render/vertex_array.hpp
+        public/platform/render/vertex_buffer.hpp
+
         public/platform/winnt/winnt_window.hpp
 
         public/util/array.hpp
@@ -35,11 +40,16 @@ add_library(
         private/eobject/component/sub_component.cpp
 
         private/platform/window.cpp
-        private/platform/opengl/render/opengl_index_render_buffer.cpp
-        private/platform/opengl/render/opengl_render_context.cpp
-        private/platform/opengl/render/opengl_vertex_render_buffer.cpp
+
+        private/platform/opengl/render/index_buffer.cpp
+        private/platform/opengl/render/render_context.cpp
+        private/platform/opengl/render/vertex_array.cpp
+        private/platform/opengl/render/vertex_buffer.cpp
+
+        private/platform/render/buffer_layout.cpp
         private/platform/render/render_buffer.cpp
         private/platform/render/render_context.cpp
+
         private/platform/winnt/winnt_window.cpp
 
         private/util/array.cpp

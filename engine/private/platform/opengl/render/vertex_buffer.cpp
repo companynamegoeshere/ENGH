@@ -1,6 +1,6 @@
 #include <platform/opengl/render/vertex_buffer.hpp>
 
-ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::OpenGLVertexBuffer() {
+ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::OpenGLVertexBuffer() : layout(BufferLayout({})) {
     glCreateBuffers(1, &vbo);
 }
 
@@ -21,6 +21,10 @@ void ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::SetData(const TArray<fl
     glBufferData(GL_ARRAY_BUFFER, data.length() * data.dataType.SIZE, data.data(), GL_STATIC_DRAW);
 }
 
-void ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::SetLayout(const BufferLayoutEntry &layout) {
+void ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::SetLayout(const BufferLayout &layout) {
     this->layout = layout;
+}
+
+const ENGH::Platform::Render::BufferLayout &ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::GetLayout() {
+    return layout;
 }

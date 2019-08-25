@@ -2,6 +2,7 @@
 
 #include <core/engine.hpp>
 #include <platform/render/index_buffer.hpp>
+#include <platform/render/vertex_array.hpp>
 #include <platform/render/vertex_buffer.hpp>
 
 namespace ENGH::Platform::Render {
@@ -23,6 +24,8 @@ public:
     virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer() = 0;
 
     virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer() = 0;
+
+    virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
 
     // virtual std::shared_ptr <RenderShader> CreateShader(std::string_view vertex, std::string_view fragment) = 0;
 

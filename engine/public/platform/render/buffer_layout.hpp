@@ -9,15 +9,18 @@ namespace ENGH::Platform::Render {
 class BufferDataTypes {
     uint32 size;
     uint32 count;
+    ubyte id;
+
+    BufferDataTypes(ubyte id, uint32 size, uint32 count);
 public:
 
     BufferDataTypes();
 
-    BufferDataTypes(uint32 size, uint32 count);
+    inline ubyte GetId() const { return id; };
 
-    uint32 GetSize() const;
+    inline uint32 GetSize() const { return size; };
 
-    uint32 GetCount() const;
+    inline uint32 GetCount() const { return count; };
 
     static const BufferDataTypes BOOL;
     static const BufferDataTypes FLOAT;

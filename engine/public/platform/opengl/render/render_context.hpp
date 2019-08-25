@@ -22,6 +22,8 @@ public:
 
     std::shared_ptr<VertexBuffer> CreateVertexBuffer() override;
 
+    std::shared_ptr<VertexArray> CreateVertexArray() override;
+
     ~OpenGLRenderContext() override;
 
 };
