@@ -15,12 +15,18 @@ add_library(
 
         public/platform/window.hpp
 
+        public/platform/opengl/render/base_shader.hpp
+        public/platform/opengl/render/fragment_shader.hpp
         public/platform/opengl/render/index_buffer.hpp
+        public/platform/opengl/render/program_shader.hpp
         public/platform/opengl/render/render_context.hpp
+        public/platform/opengl/render/vertex_array.hpp
         public/platform/opengl/render/vertex_buffer.hpp
+        public/platform/opengl/render/vertex_shader.hpp
 
         public/platform/render/buffer_layout.hpp
         public/platform/render/index_buffer.hpp
+        public/platform/render/program_shader.hpp
         public/platform/render/render_device.hpp
         public/platform/render/render_context.hpp
         public/platform/render/vertex_array.hpp
@@ -41,10 +47,14 @@ add_library(
 
         private/platform/window.cpp
 
+        private/platform/opengl/render/base_shader.cpp
+        private/platform/opengl/render/fragment_shader.cpp
         private/platform/opengl/render/index_buffer.cpp
+        private/platform/opengl/render/program_shader.cpp
         private/platform/opengl/render/render_context.cpp
         private/platform/opengl/render/vertex_array.cpp
         private/platform/opengl/render/vertex_buffer.cpp
+        private/platform/opengl/render/vertex_shader.cpp
 
         private/platform/render/buffer_layout.cpp
         private/platform/render/render_device.cpp

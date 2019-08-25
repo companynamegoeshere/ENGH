@@ -24,6 +24,8 @@ public:
 
     std::shared_ptr<VertexArray> CreateVertexArray() override;
 
+    std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) override;
+
     ~OpenGLRenderContext() override;
 
 };

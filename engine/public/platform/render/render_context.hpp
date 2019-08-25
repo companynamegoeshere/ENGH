@@ -2,6 +2,7 @@
 
 #include <core/engine.hpp>
 #include <platform/render/index_buffer.hpp>
+#include <platform/render/program_shader.hpp>
 #include <platform/render/vertex_array.hpp>
 #include <platform/render/vertex_buffer.hpp>
 
@@ -27,7 +28,7 @@ public:
 
     virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
 
-    // virtual std::shared_ptr <RenderShader> CreateShader(std::string_view vertex, std::string_view fragment) = 0;
+    virtual std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) = 0;
 
     virtual ~RenderContext() = 0;
 

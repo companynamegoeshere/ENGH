@@ -20,7 +20,7 @@ int main() {
                     });
     vertex->SetLayout(
         {
-            {"a_Position", ENGH::Platform::Render::BufferDataTypes::FLOAT3},
+            {"a_Position", ENGH::Platform::Render::BufferDataTypes::FLOAT2},
 //            {"a_Color", ENGH::Platform::Render::BufferDataTypes::FLOAT3},
         }
     );
@@ -32,79 +32,13 @@ int main() {
     array->AddVertexBuffer(vertex);
     array->SetIndexBuffer(index);
 
-    std::string vertexSrc = R"(
-			#version 440
-            precision mediump float;
+    std::string vertexSrc =
+                    "#version 440\nprecision mediump float;\n\nlayout(location = 0) in vec2 a_Position;\nout vec2 pos;\nvoid main() {\n    pos = a_Position;\n    gl_Position = vec4(a_Position, 0.0, 1.0);\n}\n";
 
-			layout(location = 0) in vec2 a_Position;
-            out vec2 pos;
-			void main() {
-                pos = a_Position;
-                gl_Position = vec4(a_Position, 0.0, 1.0);
-			}
-		)";
+    std::string fragmentSrc =
+                    "#version 440\nprecision mediump float;\n\nlayout(location = 0) out vec4 color;\nin vec2 pos;\nuniform float time;\nvoid main() {\n    color = vec4(pos * sin(time) + 0.5, 0.0, 0.0);\n}";
 
-    std::string fragmentSrc = R"(
-			#version 440
-            precision mediump float;
-
-			layout(location = 0) out vec4 color;
-            in vec2 pos;
-            uniform float time;
-			void main() {
-                color = vec4(pos * sin(time) + 0.5, 0.0, 0.0);
-			}
-		)";
-    GLuint      vertex_shader, fragment_shader, program;
-
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    const GLchar *vSrc = vertexSrc.c_str();
-    glShaderSource(vertex_shader, 1, &vSrc, nullptr);
-    glCompileShader(vertex_shader);
-    GLint result = GL_FALSE;
-    int   logLength;
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &result);
-    if (! result) {
-        ENGH_CORE_ERROR("COULD NOT COMPILE VERTEX SHADER");
-        glGetShaderiv(vertex_shader, GL_INFO_LOG_LENGTH, &logLength);
-        if (logLength > 0) {
-            std::string msg;
-            msg.resize(logLength + 1);
-            glGetShaderInfoLog(vertex_shader, logLength, nullptr, msg.data());
-            std::cout << msg << std::endl;
-        }
-        return 0;
-    }
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    const GLchar *fSrc = fragmentSrc.c_str();
-    glShaderSource(fragment_shader, 1, &fSrc, nullptr);
-    glCompileShader(fragment_shader);
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &result);
-    glGetShaderiv(fragment_shader, GL_INFO_LOG_LENGTH, &logLength);
-    if (! result) {
-        ENGH_CORE_ERROR("COULD NOT COMPILE FRAG SHADER");
-        if (logLength > 0) {
-            std::string msg;
-            msg.reserve(logLength + 1);
-            msg.resize(logLength + 1);
-            glGetShaderInfoLog(fragment_shader, logLength, nullptr, msg.data());
-            std::cout << msg << std::endl;
-        }
-        return 0;
-    }
-    program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
-    glDetachShader(program, vertex_shader);
-    glDetachShader(program, fragment_shader);
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
-
-    GLint location = glGetAttribLocation(program, "a_Position");
-    GLint time     = glGetUniformLocation(program, "time");
-    glEnableVertexAttribArray(location);
-    glVertexAttribPointer(location, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    auto program = context->CreateShader(vertexSrc, fragmentSrc);
 
     int width, height;
     glfwGetFramebufferSize(window.nativeWindow, &width, &height);
@@ -113,9 +47,9 @@ int main() {
 
     window.Loop([&](float delta) {
         context->Clear(0.2f, 0.2f, 0.2f, 1.0f);
-        glUseProgram(program);
+        program->Bind();
+        program->SetUniformFloat("time", delta);
         array->Bind();
-        glUniform1f(time, delta);
 //        glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, index->GetCount(), GL_UNSIGNED_INT, nullptr);
         context->SwapBuffers();
