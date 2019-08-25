@@ -4,14 +4,14 @@
 
 namespace ENGH::Platform::Render {
 
-class RenderBuffer {
+class RenderDevice {
 public:
 
     virtual void Bind() const = 0;
 
     virtual void Unbind() const = 0;
 
-    virtual ~RenderBuffer() = 0;
+    virtual ~RenderDevice() = 0;
 };
 
 }

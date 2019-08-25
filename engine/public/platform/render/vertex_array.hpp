@@ -1,12 +1,12 @@
 #pragma once
 
-#include "render_buffer.hpp"
+#include "render_device.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
 
 namespace ENGH::Platform::Render {
 
-class VertexArray : public RenderBuffer {
+class VertexArray : public RenderDevice {
 public:
 
     virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer) = 0;

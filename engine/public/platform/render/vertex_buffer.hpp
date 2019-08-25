@@ -1,11 +1,11 @@
 #pragma once
 
 #include <platform/render/buffer_layout.hpp>
-#include <platform/render/render_buffer.hpp>
+#include <platform/render/render_device.hpp>
 
 namespace ENGH::Platform::Render {
 
-class VertexBuffer : public RenderBuffer {
+class VertexBuffer : public RenderDevice {
 public:
 
     virtual void SetData(const TArray<float> &data) = 0;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <platform/render/render_buffer.hpp>
+#include <platform/render/render_device.hpp>
 
 namespace ENGH::Platform::Render {
 
-class IndexBuffer : public RenderBuffer {
+class IndexBuffer : public RenderDevice {
 protected:
     uint32 count;
 public:

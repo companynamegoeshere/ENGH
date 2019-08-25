@@ -21,7 +21,7 @@ add_library(
 
         public/platform/render/buffer_layout.hpp
         public/platform/render/index_buffer.hpp
-        public/platform/render/render_buffer.hpp
+        public/platform/render/render_device.hpp
         public/platform/render/render_context.hpp
         public/platform/render/vertex_array.hpp
         public/platform/render/vertex_buffer.hpp
@@ -47,7 +47,7 @@ add_library(
         private/platform/opengl/render/vertex_buffer.cpp
 
         private/platform/render/buffer_layout.cpp
-        private/platform/render/render_buffer.cpp
+        private/platform/render/render_device.cpp
         private/platform/render/render_context.cpp
 
         private/platform/winnt/winnt_window.cpp
