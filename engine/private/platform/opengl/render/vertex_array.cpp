@@ -20,7 +20,7 @@ static GLenum BufferDataTypeToGL(const BufferDataTypes &type) {
 }
 
 ENGH::Platform::Render::OpenGL::OpenGLVertexArray::OpenGLVertexArray() : offset(0) {
-    glCreateVertexArrays(1, &vao);
+    glGenVertexArrays(1, &vao);
 }
 
 ENGH::Platform::Render::OpenGL::OpenGLVertexArray::~OpenGLVertexArray() {

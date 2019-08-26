@@ -1,7 +1,7 @@
 #include <platform/opengl/render/vertex_buffer.hpp>
 
 ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::OpenGLVertexBuffer() : layout(BufferLayout({})) {
-    glCreateBuffers(1, &vbo);
+    glGenBuffers(1, &vbo);
 }
 
 ENGH::Platform::Render::OpenGL::OpenGLVertexBuffer::~OpenGLVertexBuffer() {

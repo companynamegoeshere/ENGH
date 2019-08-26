@@ -2,7 +2,7 @@
 
 ENGH::Platform::Render::OpenGL::OpenGLIndexBuffer::OpenGLIndexBuffer() {
     this->count = 0;
-    glCreateBuffers(1, &ibo);
+    glGenBuffers(1, &ibo);
 }
 
 ENGH::Platform::Render::OpenGL::OpenGLIndexBuffer::~OpenGLIndexBuffer() {

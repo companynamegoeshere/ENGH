@@ -33,10 +33,10 @@ int main() {
     array->SetIndexBuffer(index);
 
     std::string vertexSrc =
-                    "#version 440\nprecision mediump float;\n\nlayout(location = 0) in vec2 a_Position;\nout vec2 pos;\nvoid main() {\n    pos = a_Position;\n    gl_Position = vec4(a_Position, 0.0, 1.0);\n}\n";
+                    "#version 320 es\nprecision mediump float;\n\nlayout(location = 0) in vec2 a_Position;\nout vec2 pos;\nvoid main() {\n    pos = a_Position;\n    gl_Position = vec4(a_Position, 0.0, 1.0);\n}\n";
 
     std::string fragmentSrc =
-                    "#version 440\nprecision mediump float;\n\nlayout(location = 0) out vec4 color;\nin vec2 pos;\nuniform float time;\nvoid main() {\n    color = vec4(pos * sin(time) + 0.5, 0.0, 0.0);\n}";
+                    "#version 320 es\nprecision mediump float;\n\nlayout(location = 0) out vec4 color;\nin vec2 pos;\nuniform float time;\nvoid main() {\n    color = vec4(pos * sin(time) + 0.5, 0.0, 0.0);\n}";
 
     auto program = context->CreateShader(vertexSrc, fragmentSrc);
 
