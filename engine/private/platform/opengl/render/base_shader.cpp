@@ -1,5 +1,3 @@
-#pragma
-
 #include <platform/opengl/render/base_shader.hpp>
 
 using namespace ENGH::Platform::Render::OpenGL::Shader;
