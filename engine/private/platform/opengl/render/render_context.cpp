@@ -16,6 +16,7 @@ void OpenGLRenderContext::Setup() {
     if (! gladLoadGL(glfwGetProcAddress)) {
         ENGH_CORE_FATAL("could not load opengl extensions");
     }
+    renderer = std::make_shared<OpenGLRenderer>();
 }
 
 OpenGLRenderContext::~OpenGLRenderContext() {}
@@ -45,8 +46,6 @@ std::shared_ptr<ProgramShader> OpenGLRenderContext::CreateShader(const std::stri
     return prog;
 }
 
-void OpenGLRenderContext::Clear(float r, float g, float b, float a) {
-    glClearColor(r, g, b, a);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+std::shared_ptr<Renderer> OpenGLRenderContext::GetRenderer() {
+    return this->renderer;
 }
-

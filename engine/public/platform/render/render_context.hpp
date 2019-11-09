@@ -3,6 +3,7 @@
 #include <core/engine.hpp>
 #include <platform/render/index_buffer.hpp>
 #include <platform/render/program_shader.hpp>
+#include <platform/render/renderer.hpp>
 #include <platform/render/vertex_array.hpp>
 #include <platform/render/vertex_buffer.hpp>
 
@@ -18,19 +19,19 @@ public:
 
     virtual void Setup() = 0;
 
-    virtual void SwapBuffers() = 0;
+  virtual void SwapBuffers() = 0;
 
-    virtual void Clear(float r, float g, float b, float a) = 0;
+  virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer() = 0;
 
-    virtual std::shared_ptr<IndexBuffer> CreateIndexBuffer() = 0;
+  virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer() = 0;
 
-    virtual std::shared_ptr<VertexBuffer> CreateVertexBuffer() = 0;
+  virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
 
-    virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
+  virtual std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) = 0;
 
-    virtual std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) = 0;
+  virtual std::shared_ptr<Renderer> GetRenderer() = 0;
 
-    virtual ~RenderContext() = 0;
+  virtual ~RenderContext() = 0;
 
 };
 
