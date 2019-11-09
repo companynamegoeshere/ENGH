@@ -14,21 +14,22 @@ public:
     struct Config {
         std::string           title;
         uint                  width, height;
-        Render::RenderLibrary renderPreference;
     };
 protected:
     Config config;
 
 public:
-    explicit Window(Config  = {});
+  explicit Window(Config  = {});
 
-    virtual ~Window() = 0;
+  virtual ~Window() = 0;
 
-    virtual void Init() = 0;
+  virtual void Init() = 0;
 
-    virtual void Loop(RenderCallback) = 0;
+  virtual void Loop(RenderCallback) = 0;
 
-    virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
+  virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
+
+  static std::shared_ptr<Window> CreateWindow(Window::Config cfg, Render::RenderLibrary library);
 
 };
 
