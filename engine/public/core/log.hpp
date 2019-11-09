@@ -58,15 +58,17 @@ public:
             return;
         }
         for (const auto &stream : level > errorThresholder ? error : output) {
-            if (prefix.length()) {
-                *stream << prefix;
-            }
-            *stream << "<" << level.name() << "> ";
-            (*stream << ... << ts) << std::endl;
+          if (prefix.length()) {
+            *stream << prefix;
+          }
+          *stream << "<" << level.name() << "> ";
+          (*stream << ... << ts) << std::endl;
         }
     }
 
-    Logger &setPrefix(std::string_view prefix);
+  Logger &setPrefix(std::string_view prefix);
+
+  void SetLevel(Level level);
 
 };
 

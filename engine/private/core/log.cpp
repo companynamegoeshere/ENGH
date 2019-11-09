@@ -46,11 +46,15 @@ Logger::Logger(Logger::Level level,
                std::initializer_list<std::shared_ptr<std::ostream>> outStreams,
                std::initializer_list<std::shared_ptr<std::ostream>> errStreams
 ) noexcept : level(level), errorThresholder(Level::INFO) {
-    output.insert(output.end(), outStreams.begin(), outStreams.end());
-    error.insert(error.end(), errStreams.begin(), errStreams.end());
+  output.insert(output.end(), outStreams.begin(), outStreams.end());
+  error.insert(error.end(), errStreams.begin(), errStreams.end());
 }
 
-Logger& Logger::setPrefix(std::string_view prefix) {
-    this->prefix = std::string("[").append(prefix) + "] ";
-    return *this;
+Logger &Logger::setPrefix(std::string_view prefix) {
+  this->prefix = std::string("[").append(prefix) + "] ";
+  return *this;
+}
+
+void ENGH::Logger::SetLevel(Level level) {
+  this->level = level;
 }
