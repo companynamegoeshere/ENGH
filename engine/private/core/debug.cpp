@@ -2,7 +2,7 @@
 
 #ifdef WIN32
 
-__attribute__((dllimport)) void DebugBreak ();
+#include <debugapi.h>
 
 #else // !WIN32
 
@@ -12,11 +12,11 @@ __attribute__((dllimport)) void DebugBreak ();
 
 inline void ENGH::Debug::Break() {
 #ifdef ENGH_DEBUG
-  #ifdef WIN32
-  	DebugBreak();
-  #else
-	  raise(SIGTRAP);
-  #endif
+#ifdef WIN32
+  DebugBreak();
+#else
+  raise(SIGTRAP);
+#endif
 #endif
 }
 
