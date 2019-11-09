@@ -1,0 +1,3 @@
+CMake/cotire.cmake linguist-vendored=true
+third/glad/glad/** linguist-generated=true
+third/glad/glad_debug/** linguist-generated=true
