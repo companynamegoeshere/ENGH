@@ -2,8 +2,6 @@
 
 #ifdef WIN32
 
-#include <debugapi.h>
-
 #else // !WIN32
 
 #include <csignal>
@@ -13,7 +11,7 @@
 inline void ENGH::Debug::Break() {
 #ifdef ENGH_DEBUG
 #ifdef WIN32
-  DebugBreak();
+  __debugbreak();
 #else
   raise(SIGTRAP);
 #endif

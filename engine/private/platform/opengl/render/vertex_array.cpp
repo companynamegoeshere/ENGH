@@ -57,12 +57,12 @@ void ENGH::Platform::Render::OpenGL::OpenGLVertexArray::AddVertexBuffer(const st
             BufferDataTypeToGL(element.type),
             element.normalized ? GL_TRUE : GL_FALSE,
             layout.GetStride(),
-            reinterpret_cast<const void *>(element.offset)
+            reinterpret_cast<const void *>(static_cast<uintptr_t>(element.offset))
         );
     }
 
     this->vertexBuffers.push_back(vertexBuffer);
-    this->offset += entries.size();
+    this->offset += static_cast<uint32>(entries.size());
 }
 
 void ENGH::Platform::Render::OpenGL::OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer) {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <platform/render/renderer.hpp>
-#include <bits/shared_ptr.h>
 
 namespace ENGH::Platform::Render::OpenGL {
 
