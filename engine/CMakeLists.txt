@@ -8,6 +8,7 @@ add_library(
         public/core/log.hpp
 
         public/math/vec2.hpp
+        public/math/vec3.hpp
 
         public/eobject/object.hpp
         public/eobject/actor.hpp
