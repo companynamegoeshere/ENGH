@@ -1,10 +1,9 @@
 #include <eobject/actor.hpp>
-#include <eobject/component/sub_component.hpp>
+#include <eobject/component/component.hpp>
 
-ENGH::Actor::Actor() {
-    root = std::make_unique<SubComponent>();
-}
+ENGH::EObject::Actor::Actor() :
+    root(std::make_unique<Component>()) {}
 
-void ENGH::Actor::BeginPlay() {}
+void ENGH::EObject::Actor::BeginPlay(bool &overrideTicking) {}
 
-void ENGH::Actor::EndPlay() {}
+void ENGH::EObject::Actor::EndPlay() {}

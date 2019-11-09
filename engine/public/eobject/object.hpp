@@ -2,9 +2,9 @@
 
 #include <core/engine.hpp>
 
-namespace ENGH {
+namespace ENGH::EObject {
 
-    class Object {
-    };
+class EObject {
+};
 
 }

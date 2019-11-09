@@ -10,9 +10,11 @@ add_library(
         public/math/vec2.hpp
         public/math/vec3.hpp
 
-        public/eobject/object.hpp
         public/eobject/actor.hpp
-        public/eobject/component/sub_component.hpp
+        public/eobject/object.hpp
+        public/eobject/world.hpp
+        public/eobject/component/component.hpp
+        public/eobject/data/transform.hpp
 
         public/platform/window.hpp
 
@@ -44,9 +46,11 @@ add_library(
         private/core/debug.cpp
         private/core/log.cpp
 
-        private/eobject/object.cpp
         private/eobject/actor.cpp
-        private/eobject/component/sub_component.cpp
+        private/eobject/object.cpp
+        private/eobject/world.cpp
+        private/eobject/component/component.cpp
+        private/eobject/data/transform.cpp
 
         private/platform/window.cpp
 

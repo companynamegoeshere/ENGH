@@ -1,4 +1,4 @@
 #include <eobject/object.hpp>
 
-namespace ENGH {
+namespace ENGH::EObject {
 }

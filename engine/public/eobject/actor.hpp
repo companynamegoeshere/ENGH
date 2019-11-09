@@ -1,21 +1,25 @@
 #pragma once
 
 #include <eobject/object.hpp>
+#include <math/vec3.hpp>
 
-namespace ENGH {
+namespace ENGH::EObject {
 
-class Actor : Object {
-
-public:
-    Actor();
+class Actor : EObject {
 
 protected:
 
-    std::unique_ptr<class SubComponent> root;
+  std::unique_ptr<class Component> root;
 
-    virtual void BeginPlay();
+public:
 
-    virtual void EndPlay();
+  Actor();
+
+  virtual void BeginPlay(bool &overrideTicking);
+
+  virtual void EndPlay();
+
+  virtual void Tick() = 0;
 
 };
 
