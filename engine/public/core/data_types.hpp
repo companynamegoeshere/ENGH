@@ -36,7 +36,6 @@ using Int32 = Number<int32>;
 typedef uint32_t uint32;
 using UInt32 = Number<uint32>;
 
-
 typedef int64_t int64;
 using Int64 = Number<int64>;
 
@@ -44,6 +43,9 @@ typedef uint64_t uint64;
 using UInt64 = Number<uint64>;
 
 using Int = Number<int>;
+
+using Float = Number<float>;
+using Double = Number<double>;
 
 typedef unsigned int uint;
 using UInt = Number<uint>;
