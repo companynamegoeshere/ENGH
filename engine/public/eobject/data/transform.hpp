@@ -2,18 +2,21 @@
 
 #include <core/math.hpp>
 
+using ENGH::Math::Matrix4;
+using ENGH::Math::Quat;
 using ENGH::Math::Vec3;
 
 namespace ENGH::EObject::Data {
 
 class Transform {
-  Vec3 lastPosition;
-  Vec3 lastRotation;
-  Vec3 lastScale;
 public:
   Vec3 position;
-  Vec3 rotation; // TODO Update to quaternion
+  Quat rotation;
   Vec3 scale;
+
+  Matrix4 ToMatrix() {
+    return position * rotation * scale * Matrix4().setIdentity();
+  }
 
 };
 
