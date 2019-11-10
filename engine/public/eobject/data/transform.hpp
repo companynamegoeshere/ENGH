@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math/vec3.hpp>
+#include <core/math.hpp>
 
 using ENGH::Math::Vec3;
 

@@ -6,9 +6,7 @@ add_library(
         public/core/debug.hpp
         public/core/engine.hpp
         public/core/log.hpp
-
-        public/math/vec2.hpp
-        public/math/vec3.hpp
+        public/core/math.hpp
 
         public/eobject/actor.hpp
         public/eobject/object.hpp
@@ -84,5 +82,6 @@ target_include_directories(engh_engine PUBLIC
 target_link_libraries(engh_engine)
 target_link_libraries(engh_engine glfw)
 target_link_libraries(engh_engine glad)
+target_link_libraries(engh_engine Eigen3)
 set_target_properties(engh_engine PROPERTIES COTIRE_PREFIX_HEADER_IGNORE_PATH "/usr/include/GL/")
 cotire(engh_engine)

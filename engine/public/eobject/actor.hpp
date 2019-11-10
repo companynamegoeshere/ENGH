@@ -1,7 +1,6 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <math/vec3.hpp>
 
 namespace ENGH::EObject {
 

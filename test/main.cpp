@@ -1,7 +1,9 @@
 #include <iostream>
 #include <platform/window.hpp>
+#include <core/math.hpp>
 
 using ENGH::Logger;
+using ENGH::Math::MatrixX;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::RenderLibrary;
 using ENGH::Platform::Window;
