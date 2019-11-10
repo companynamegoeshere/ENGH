@@ -3,6 +3,6 @@
 
 namespace ENGH::Debug {
 
-inline void Break();
+void Break();
 
 }

@@ -1,6 +1,6 @@
 #include <core/debug.hpp>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_MSC_VER)
 
 #else // !WIN32
 
@@ -8,13 +8,20 @@
 
 #endif
 
-inline void ENGH::Debug::Break() {
+void ENGH::Debug::Break() {
 #ifdef ENGH_DEBUG
-#ifdef WIN32
+#if defined(WIN32) || defined(_MSC_VER)
+
+#ifdef _MSC_VER
   __debugbreak();
+#else
+  __builtin_trap();
+#endif
+
 #else
   raise(SIGTRAP);
 #endif
+
 #endif
 }
 
