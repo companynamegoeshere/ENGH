@@ -4,10 +4,32 @@
 #include <core/debug.hpp>
 #include <util/memory.hpp>
 #include <algorithm>
+#include <vector>
 
 namespace ENGH::Util {
 
 template<typename T>
+class TArray : public std::vector<T> {
+public:
+
+  TArray() : std::vector<T>() {
+  }
+
+  TArray(std::initializer_list<T> elements) : std::vector<T>(elements) {
+  }
+
+  uint16 length() const {
+    return this->size();
+  }
+  constexpr void operator+=(T value) {
+    this->push_back(value);
+  }
+  constexpr void Clear() {
+    this->clear();
+  }
+};
+
+/*template<typename T>
 class TArray {
 
   T *arr;
@@ -21,7 +43,7 @@ public:
       len(0),
       cap(0) {}
 
-  constexpr TArray(std::initializer_list<T> elements) :
+  TArray(std::initializer_list<T> elements) :
       arr(new T[elements.size()]),
       len(elements.size()),
       cap(elements.size()) {
@@ -90,7 +112,7 @@ public:
     this->insert(value);
   }
 
-  constexpr TArray &reserve(uint16 size) {
+  TArray &reserve(uint16 size) {
     arr = reinterpret_cast<T *>(std::realloc(arr, sizeof(T) * (cap += size)));
     return *this;
   }
@@ -101,6 +123,10 @@ public:
 
   constexpr inline T *data() {
     return arr;
+  }
+
+  constexpr inline void Clear() {
+    this->len = 0;
   }
 
 private:
@@ -141,6 +167,6 @@ public:
     return Iterator(this->len, this);
   }
 
-};
+};*/
 
 }
