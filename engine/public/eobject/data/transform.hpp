@@ -15,7 +15,7 @@ public:
   Vec3 scale;
 
   Matrix4 ToMatrix() {
-    return position * rotation * scale * Matrix4().setIdentity();
+//    return position * rotation * scale * Matrix4().setIdentity();
   }
 
 };

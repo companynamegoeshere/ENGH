@@ -1,6 +1,7 @@
 #pragma once
 
 #include <eobject/object.hpp>
+#include <eobject/world.hpp>
 
 namespace ENGH::EObject {
 
@@ -12,13 +13,21 @@ protected:
 
 public:
 
+  World *world;
+
+  bool tickingEnabled;
+
   Actor();
 
-  virtual void BeginPlay(bool &overrideTicking);
+  inline Component *GetRoot() {
+    return &*root;
+  };
+
+  virtual void BeginPlay();
 
   virtual void EndPlay();
 
-  virtual void Tick() = 0;
+  virtual void Tick();
 
 };
 

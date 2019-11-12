@@ -37,6 +37,10 @@ add_library(
         public/platform/render/vertex_array.hpp
         public/platform/render/vertex_buffer.hpp
 
+        public/render/render_dispatcher.hpp
+        public/render/render_dispatcher_impl.hpp
+        public/render/world_renderer.hpp
+
         public/util/array.hpp
         public/util/memory.hpp
 
@@ -68,6 +72,10 @@ add_library(
         private/platform/render/renderer.cpp
         private/platform/render/render_device.cpp
         private/platform/render/render_context.cpp
+
+        private/render/render_dispatcher.cpp
+        private/render/render_dispatcher_impl.cpp
+        private/render/world_renderer.cpp
 
         private/util/array.cpp
 )

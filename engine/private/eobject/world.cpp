@@ -2,11 +2,7 @@
 
 void ENGH::EObject::World::BeginPlay() {
   for (Actor *actor : actorList) {
-    bool ticking = true;
-    actor->BeginPlay(ticking);
-    if (ticking) {
-      tickingActorList += actor;
-    }
+    actor->BeginPlay();
   }
 }
 
@@ -16,8 +12,18 @@ void ENGH::EObject::World::EndPlay() {
   }
 }
 
-void ENGH::EObject::World::Tick() {
+void ENGH::EObject::World::Tick(float delta) {
+  this->delta = delta;
   for (Actor *actor : tickingActorList) {
     actor->Tick();
   }
+}
+
+ENGH::EObject::Actor *ENGH::EObject::World::SpawnExistingActor(Actor *actor) {
+  actor->world = this;
+  actorList += actor;
+  if (actor->tickingEnabled) {
+    tickingActorList += actor;
+  }
+  return actor;
 }

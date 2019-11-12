@@ -1,5 +1,7 @@
 #pragma once
+
 #include <platform/render/vertex_array.hpp>
+#include <render/render_dispatcher.hpp>
 
 namespace ENGH::Platform::Render {
 

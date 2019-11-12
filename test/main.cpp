@@ -1,12 +1,18 @@
 #include <iostream>
 #include <platform/window.hpp>
+#include <eobject/world.hpp>
+#include <render/world_renderer.hpp>
 #include <core/math.hpp>
 
 using ENGH::Logger;
 using ENGH::Math::MatrixX;
+using ENGH::EObject::Actor;
+using ENGH::EObject::Component;
+using ENGH::EObject::World;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::RenderLibrary;
 using ENGH::Platform::Window;
+using ENGH::Render::WorldRenderer;
 
 int main() {
   Logger::getCoreLogger().SetLevel(Logger::Level::ALL);
@@ -19,7 +25,25 @@ int main() {
       RenderLibrary::OPENGL
   );
   window->Init();
+
   auto context = window->GetContext();
+  auto renderer = context->GetRenderer();
+
+  auto world = new World();
+
+  auto worldRenderer = new WorldRenderer(world, context);
+
+  world->SpawnActor<Actor>();
+
+  window->Loop([&](float delta) {
+    renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
+    world->Tick(delta);
+    worldRenderer->SetupRender();
+    worldRenderer->Render();
+    context->SwapBuffers();
+  });
+
+  /*auto context = window->GetContext();
   auto renderer = context->GetRenderer();
 
   auto vertex = context->CreateVertexBuffer();
@@ -56,5 +80,5 @@ int main() {
     program->SetUniformFloat("time", delta);
     renderer->DrawVertexArray(array);
     context->SwapBuffers();
-  });
+  });*/
 }
