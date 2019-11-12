@@ -4,7 +4,7 @@
 #include <eobject/data/transform.hpp>
 #include <render/render_dispatcher.hpp>
 
-namespace ENGH::EObject {
+namespace ENGH::EObject::Component {
 
 class Component : EObject {
 
