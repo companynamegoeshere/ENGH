@@ -6,21 +6,21 @@
 namespace ENGH::EObject::Render {
 
 class RenderableObject : EObject {
-  RenderableObject();
-
-  static TArray<RenderableObject *> list;
 
 protected:
   template<typename T>
   static T *Instantiate() {
     T *t = new T();
-    list += t;
+    GetList() += t;
     return t;
   }
 
+  RenderableObject();
+
 public:
 
-  inline static TArray<RenderableObject *> GetList() {
+  static TArray<RenderableObject *> &GetList() {
+    static TArray<RenderableObject *> list;
     return list;
   }
 

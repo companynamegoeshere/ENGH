@@ -1,4 +1,5 @@
 #include <eobject/world.hpp>
+#include <eobject/actor.hpp>
 
 void ENGH::EObject::World::BeginPlay() {
   for (Actor *actor : actorList) {
@@ -12,7 +13,7 @@ void ENGH::EObject::World::EndPlay() {
   }
 }
 
-void ENGH::EObject::World::Tick(float delta) {
+void ENGH::EObject::World::Tick(double delta) {
   this->delta = delta;
   for (Actor *actor : tickingActorList) {
     actor->Tick();

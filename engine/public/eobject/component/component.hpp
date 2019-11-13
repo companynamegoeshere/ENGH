@@ -4,7 +4,7 @@
 #include <eobject/data/transform.hpp>
 #include <render/render_dispatcher.hpp>
 
-namespace ENGH::EObject::Component {
+namespace ENGH::EObject::Comps {
 
 class Component : EObject {
 
@@ -13,7 +13,7 @@ public:
 
   TArray<Component *> children;
 
-  virtual void Render(const Render::RenderDispatcher &dispatcher) const;
+  virtual void Render(ENGH::Render::RenderDispatcher &dispatcher) const;
 
 };
 

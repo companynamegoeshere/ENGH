@@ -6,12 +6,13 @@
 namespace ENGH::Render {
 
 struct RenderCommand {
-  std::shared_ptr<Platform::Render::VertexArray> data;
-  std::shared_ptr<Platform::Render::ProgramShader> shader;
+  Platform::Render::VertexArray *data;
+  Platform::Render::ProgramShader *shader;
   // TODO Uniforms
 };
 
 class RenderDispatcher {
+public:
   virtual void Dispatch(RenderCommand command) = 0;
 };
 

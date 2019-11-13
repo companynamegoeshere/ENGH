@@ -9,7 +9,7 @@ class WorldRenderer {
   EObject::World *world;
   RenderDispatcherImpl renderDispatcher;
 
-  void RenderComponent(EObject::Component *);
+  void RenderComponent(EObject::Comps::Component *);
 
 public:
   WorldRenderer(EObject::World *world, std::shared_ptr<Platform::Render::RenderContext> context);

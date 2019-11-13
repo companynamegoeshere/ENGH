@@ -2,7 +2,7 @@
 #include <eobject/component/component.hpp>
 
 ENGH::EObject::Actor::Actor() :
-    root(std::make_unique<Component>()) {}
+    root(std::make_unique<Comps::Component>()) {}
 
 void ENGH::EObject::Actor::BeginPlay() {}
 
