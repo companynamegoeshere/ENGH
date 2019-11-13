@@ -1,7 +1,7 @@
 #pragma once
 
 #include <core/data_types.hpp>
-#include <Eigen/Dense>
+#include <Eigen3.hpp>
 
 namespace ENGH::Math {
 

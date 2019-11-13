@@ -1,15 +1,8 @@
 project(Eigen3 CXX)
-add_library(
-        Eigen3 STATIC
-        eigen/Eigen/Eigen
-)
+add_library(Eigen3 INTERFACE)
 
-set_target_properties(Eigen3 PROPERTIES LINKER_LANGUAGE CXX)
-set_target_properties(Eigen3
-        PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-target_include_directories(Eigen3 PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/Eigen"
+target_include_directories(Eigen3 INTERFACE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
         "$<INSTALL_INTERFACE:include>")
 
 target_link_libraries(Eigen3)
