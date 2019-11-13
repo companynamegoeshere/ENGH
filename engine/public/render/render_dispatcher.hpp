@@ -13,7 +13,7 @@ struct RenderCommand {
 
 class RenderDispatcher {
 public:
-  virtual void Dispatch(RenderCommand command) = 0;
+  virtual void Dispatch(RenderCommand *command) = 0;
 };
 
 }
