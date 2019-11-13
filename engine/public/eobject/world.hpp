@@ -1,5 +1,5 @@
 #pragma once
-#include <eobject/actor.hpp>
+
 #include <eobject/object.hpp>
 
 namespace ENGH::Render {
@@ -7,6 +7,8 @@ class WorldRenderer;
 }
 
 namespace ENGH::EObject {
+
+class Actor;
 
 class World : public EObject {
 
@@ -18,7 +20,7 @@ protected:
   TArray<Actor *> tickingActorList;
   TArray<Actor *> actorList;
 
-  float delta;
+  double delta;
 
 public:
 
@@ -31,9 +33,9 @@ public:
 
   void EndPlay();
 
-  void Tick(float D);
+  void Tick(double delta);
 
-  inline float GetDelta() { return delta; }
+  inline double GetDelta() { return delta; }
 
 };
 

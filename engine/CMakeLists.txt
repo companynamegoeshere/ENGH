@@ -7,12 +7,20 @@ add_library(
         public/core/engine.hpp
         public/core/log.hpp
         public/core/math.hpp
+        public/core/static_block.hpp
 
         public/eobject/actor.hpp
         public/eobject/object.hpp
         public/eobject/world.hpp
+
+        public/eobject/component/box_component.hpp
         public/eobject/component/component.hpp
+
         public/eobject/data/transform.hpp
+
+        public/eobject/render/box.hpp
+        public/eobject/render/renderable_object.hpp
+        public/eobject/render/standard_shaders.hpp
 
         public/platform/window.hpp
 
@@ -51,8 +59,15 @@ add_library(
         private/eobject/actor.cpp
         private/eobject/object.cpp
         private/eobject/world.cpp
+
+        private/eobject/component/box_component.cpp
         private/eobject/component/component.cpp
+
         private/eobject/data/transform.cpp
+
+        private/eobject/render/box.cpp
+        private/eobject/render/renderable_object.cpp
+        private/eobject/render/standard_shaders.cpp
 
         private/platform/window.cpp
 

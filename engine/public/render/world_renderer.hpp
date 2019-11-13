@@ -2,6 +2,7 @@
 
 #include <eobject/world.hpp>
 #include <render/render_dispatcher_impl.hpp>
+#include <eobject/component/component.hpp>
 
 namespace ENGH::Render {
 

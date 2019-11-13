@@ -1,13 +1,16 @@
 #include <iostream>
 #include <platform/window.hpp>
+#include <eobject/actor.hpp>
 #include <eobject/world.hpp>
+#include <eobject/component/box_component.hpp>
 #include <render/world_renderer.hpp>
 #include <core/math.hpp>
 
 using ENGH::Logger;
 using ENGH::Math::MatrixX;
 using ENGH::EObject::Actor;
-using ENGH::EObject::Component;
+using ENGH::EObject::Comps::BoxComponent;
+using ENGH::EObject::Comps::Component;
 using ENGH::EObject::World;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::RenderLibrary;
@@ -16,6 +19,7 @@ using ENGH::Render::WorldRenderer;
 
 int main() {
   Logger::getCoreLogger().SetLevel(Logger::Level::ALL);
+  ENGH_INFO("Test application");
 
   auto window = Window::CreateWindow(
       {
@@ -33,9 +37,11 @@ int main() {
 
   auto worldRenderer = new WorldRenderer(world, context);
 
-  world->SpawnActor<Actor>();
+  auto *actor = world->SpawnActor<Actor>();
+  actor->GetRoot()->children += new BoxComponent();
 
-  window->Loop([&](float delta) {
+  world->BeginPlay();
+  window->Loop([&](double delta) {
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     world->Tick(delta);
     worldRenderer->SetupRender();

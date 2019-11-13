@@ -5,11 +5,15 @@
 
 namespace ENGH::EObject {
 
+namespace Comps {
+class Component;
+}
+
 class Actor : EObject {
 
 protected:
 
-  std::unique_ptr<class Component> root;
+  std::unique_ptr<Comps::Component> root;
 
 public:
 
@@ -19,8 +23,8 @@ public:
 
   Actor();
 
-  inline Component *GetRoot() {
-    return &*root;
+  inline Comps::Component *GetRoot() {
+    return root.get();
   };
 
   virtual void BeginPlay();

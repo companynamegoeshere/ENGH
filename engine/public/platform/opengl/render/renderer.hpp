@@ -9,7 +9,7 @@ public:
 
   void Clear(float r, float g, float b, float a) override;
 
-  void DrawVertexArray(const std::shared_ptr<VertexArray> &array) override;
+  void DrawVertexArray(VertexArray *array) override;
 
   ~OpenGLRenderer() override;
 };
