@@ -1,6 +1,7 @@
 #pragma once
 
 #include <platform/render/render_context.hpp>
+#include <render/render_command.hpp>
 
 namespace ENGH::Render {
 

@@ -44,6 +44,7 @@ add_library(
         public/platform/render/vertex_array.hpp
         public/platform/render/vertex_buffer.hpp
 
+        public/render/render_command.hpp
         public/render/render_dispatcher.hpp
         public/render/render_dispatcher_impl.hpp
         public/render/world_renderer.hpp
@@ -87,6 +88,7 @@ add_library(
         private/platform/render/render_device.cpp
         private/platform/render/render_context.cpp
 
+        private/render/render_command.cpp
         private/render/render_dispatcher.cpp
         private/render/render_dispatcher_impl.cpp
         private/render/world_renderer.cpp
