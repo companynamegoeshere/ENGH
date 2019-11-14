@@ -7,7 +7,6 @@
 #include <core/math.hpp>
 
 using ENGH::Logger;
-using ENGH::Math::MatrixX;
 using ENGH::EObject::Actor;
 using ENGH::EObject::Comps::BoxComponent;
 using ENGH::EObject::Comps::Component;

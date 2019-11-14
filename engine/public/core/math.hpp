@@ -1,16 +1,22 @@
 #pragma once
 
 #include <core/data_types.hpp>
-#include <Eigen3.hpp>
+#include <mathfu/glsl_mappings.h>
 
 namespace ENGH::Math {
 
-using Vec3 = Eigen::Vector3<float>;
-using Vec3i = Eigen::Vector3<int32>;
+using Vec3 = mathfu::vec3;
+using Vec3i = mathfu::vec3i;
 
-using Quat = Eigen::Quaternionf;
+using Quat = mathfu::quat;
 
-using Matrix4 = Eigen::Matrix4<float>;
-using MatrixX = Eigen::MatrixXf;
+using Mat4 = mathfu::mat4;
+
+constexpr double PI = 3.14159265358979323846;
+constexpr double PI2 = PI * 2;
+constexpr double HALF_PI = PI / 2;
+
+constexpr double DEGtoRAD = PI / 180;
+constexpr double RADtoDEG = 180 / PI;
 
 }

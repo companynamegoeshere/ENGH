@@ -4,9 +4,6 @@
 [submodule "imgui"]
 	path = third/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "eigen"]
-	path = third/eigen/eigen
-	url = https://github.com/eigenteam/eigen-git-mirror.git
-[submodule "eigen"]
-	path = third/eigen/eigen
-	url = https://github.com/eigenteam/eigen-git-mirror.git
+[submodule "mathfu"]
+	path = third/mathfu/mathfu
+	url = https://github.com/google/mathfu.git
