@@ -53,8 +53,12 @@ void GLFWWindow::Init() {
 }
 
 void GLFWWindow::Loop(RenderCallback callback) {
+  double last = glfwGetTime();
     while (!glfwWindowShouldClose(nativeWindow)) {
-        callback(glfwGetTime());
+      double now = glfwGetTime();
+      double delta = now - last;
+      last = now;
+      callback(delta, now);
         glfwPollEvents();
     }
 }

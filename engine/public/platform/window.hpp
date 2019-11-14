@@ -10,7 +10,7 @@ namespace ENGH::Platform {
 
 class Window {
 public:
-    using RenderCallback = std::function<void(double time)>;
+  using RenderCallback = std::function<void(double delta, double time)>;
     struct Config {
         std::string           title;
         uint                  width, height;

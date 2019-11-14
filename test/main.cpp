@@ -40,7 +40,7 @@ int main() {
   actor->GetRoot()->children += new BoxComponent();
 
   world->BeginPlay();
-  window->Loop([&](double delta) {
+  window->Loop([&](double delta, double total) {
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     world->Tick(delta);
     worldRenderer->SetupRender();
