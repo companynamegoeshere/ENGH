@@ -17,6 +17,7 @@ void OpenGLRenderContext::Setup() {
         ENGH_CORE_FATAL("could not load opengl extensions");
     }
     renderer = std::make_shared<OpenGLRenderer>();
+  glEnable(GL_DEPTH_TEST);
 }
 
 OpenGLRenderContext::~OpenGLRenderContext() {}
