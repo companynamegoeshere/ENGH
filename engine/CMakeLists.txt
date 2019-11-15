@@ -49,6 +49,9 @@ add_library(
         public/render/render_dispatcher_impl.hpp
         public/render/world_renderer.hpp
 
+        public/render/camera/camera.hpp
+        public/render/camera/perspective_camera.hpp
+
         public/util/array.hpp
         public/util/memory.hpp
 
@@ -92,6 +95,9 @@ add_library(
         private/render/render_dispatcher.cpp
         private/render/render_dispatcher_impl.cpp
         private/render/world_renderer.cpp
+
+        private/render/camera/camera.cpp
+        private/render/camera/perspective_camera.cpp
 
         private/util/array.cpp
 )
