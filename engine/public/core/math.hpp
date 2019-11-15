@@ -12,6 +12,9 @@ using Quat = mathfu::quat;
 
 using Mat4 = mathfu::mat4;
 
+const Vec3 VEC3_ZERO = Vec3(0, 0, 0);
+const Vec3 VEC3_UP = Vec3(0, 1, 0);
+
 constexpr double PI = 3.14159265358979323846;
 constexpr double PI2 = PI * 2;
 constexpr double HALF_PI = PI / 2;

@@ -42,17 +42,17 @@ void OpenGLProgramShader::Attach(const OpenGLVertexShader &vertShader,
   vertShader.Detach(program);
 }
 
-void OpenGLProgramShader::SetUniformFloat(const std::string &name, float value) {
+void OpenGLProgramShader::SetUniformFloat(const std::string &name, const float value) {
   GLint loc = glGetUniformLocation(program, name.c_str());
   glUniform1f(loc, value);
 }
 
-void OpenGLProgramShader::SetUniformVec3(const std::string &name, float v0, float v1, float v2) {
+void OpenGLProgramShader::SetUniformVec3(const std::string &name, const float v0, const float v1, const float v2) {
   GLint loc = glGetUniformLocation(program, name.c_str());
   glUniform3f(loc, v0, v1, v2);
 }
 
-void OpenGLProgramShader::SetUniformMat4(const std::string &name, float *values, bool transpose) {
+void OpenGLProgramShader::SetUniformMat4(const std::string &name, const float *values, bool transpose) {
   GLint loc = glGetUniformLocation(program, name.c_str());
   glUniformMatrix4fv(loc, 1, transpose ? GL_TRUE : GL_FALSE, values);
 }

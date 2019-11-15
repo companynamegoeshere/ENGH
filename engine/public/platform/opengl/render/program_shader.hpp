@@ -20,11 +20,11 @@ public:
   void Unbind() const override;
 
 private:
-  void SetUniformFloat(const std::string &name, float value) override;
+  void SetUniformFloat(const std::string &name, const float value) override;
 
-  void SetUniformVec3(const std::string &name, float v0, float v1, float v2) override;
+  void SetUniformVec3(const std::string &name, const float v0, const float v1, const float v2) override;
 
-  void SetUniformMat4(const std::string &name, float *values, bool transpose) override;
+  void SetUniformMat4(const std::string &name, const float *values, bool transpose) override;
 
 };
 
