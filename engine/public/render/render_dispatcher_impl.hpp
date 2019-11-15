@@ -18,6 +18,10 @@ public:
 
   void Render();
 
+  inline void SetView(Math::Mat4 view) { this->view = view; }
+
+  inline void SetProjection(Math::Mat4 projection) { this->projection = projection; }
+
 };
 
 }

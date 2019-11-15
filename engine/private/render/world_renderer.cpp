@@ -21,8 +21,3 @@ void ENGH::Render::WorldRenderer::SetupRender() {
     this->RenderComponent(actor->GetRoot());
   }
 }
-
-void ENGH::Render::WorldRenderer::Render() {
-  this->renderDispatcher.Render();
-}
-

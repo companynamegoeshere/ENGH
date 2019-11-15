@@ -17,7 +17,7 @@ public:
 
   void SetupRender();
 
-  void Render();
+  inline RenderDispatcherImpl &GetDispatcher() { return renderDispatcher; }
 };
 
 }
