@@ -2,12 +2,9 @@
 
 #include <eobject/object.hpp>
 #include <eobject/world.hpp>
+#include <eobject/component/component.hpp>
 
 namespace ENGH::EObject {
-
-namespace Comps {
-class Component;
-}
 
 class Actor : EObject {
 
@@ -26,6 +23,22 @@ public:
   inline Comps::Component *GetRoot() {
     return root.get();
   };
+
+  inline Data::Transform &GetTransform() {
+    return root->transform;
+  }
+
+  inline Math::Vec3 &GetPosition() {
+    return GetTransform().position;
+  }
+
+  inline Math::Quat &GetRotation() {
+    return GetTransform().rotation;
+  }
+
+  inline Math::Vec3 &GetScale() {
+    return GetTransform().scale;
+  }
 
   virtual void BeginPlay();
 
