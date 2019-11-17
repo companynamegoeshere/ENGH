@@ -4,6 +4,7 @@
 
 #include <core/data_types.hpp>
 #include <core/engine.hpp>
+#include <input/input_provider.hpp>
 #include <platform/render/render_context.hpp>
 
 namespace ENGH::Platform {
@@ -32,6 +33,8 @@ public:
   virtual void Loop(RenderCallback) = 0;
 
   virtual void SetResizeCallback(ResizeCallback);
+
+  virtual const Input::InputProvider *GetInputProvider() const = 0;
 
   virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
 

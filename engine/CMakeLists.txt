@@ -21,8 +21,14 @@ add_library(
         public/eobject/render/renderable_object.hpp
         public/eobject/render/standard_shaders.hpp
 
+        public/input/input_events.hpp
+        public/input/input_handler.hpp
+        public/input/input_provider.hpp
+        public/input/input_registrar.hpp
+
         public/platform/window.hpp
 
+        public/platform/opengl/glfw_input_provider.hpp
         public/platform/opengl/glfw_window.hpp
 
         public/platform/opengl/render/base_shader.hpp
@@ -72,8 +78,14 @@ add_library(
         private/eobject/render/renderable_object.cpp
         private/eobject/render/standard_shaders.cpp
 
+        private/input/input_events.cpp
+        private/input/input_handler.cpp
+        private/input/input_provider.cpp
+        private/input/input_registrar.cpp
+
         private/platform/window.cpp
 
+        private/platform/opengl/glfw_input_provider.cpp
         private/platform/opengl/glfw_window.cpp
 
         private/platform/opengl/render/base_shader.cpp

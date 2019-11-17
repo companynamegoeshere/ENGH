@@ -1,5 +1,6 @@
 #pragma once
 
+#include <platform/opengl/glfw_input_provider.hpp>
 #include <platform/opengl/render/render_context.hpp>
 #include <platform/window.hpp>
 
@@ -11,6 +12,7 @@ public:
 
   GLFWwindow *nativeWindow{};
 
+  GLFWInputProvider inputProvider;
   std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
 
 public:
@@ -22,6 +24,8 @@ public:
   void Init() override;
 
   void Loop(RenderCallback) override;
+
+  const Input::InputProvider *GetInputProvider() const override;
 
   std::shared_ptr<Render::RenderContext> GetContext() const override;
 

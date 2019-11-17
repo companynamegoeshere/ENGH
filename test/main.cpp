@@ -1,11 +1,12 @@
 #include <iostream>
-#include <platform/window.hpp>
+#include <core/math.hpp>
 #include <eobject/actor.hpp>
 #include <eobject/world.hpp>
 #include <eobject/component/box_component.hpp>
+#include <input/input_handler.hpp>
 #include <render/camera/perspective_camera.hpp>
 #include <render/world_renderer.hpp>
-#include <core/math.hpp>
+#include <platform/window.hpp>
 #include <platform/opengl/glfw_window.hpp>
 #include <GLFW/glfw3.h>
 
@@ -14,6 +15,7 @@ using ENGH::EObject::Actor;
 using ENGH::EObject::Comps::BoxComponent;
 using ENGH::EObject::Comps::Component;
 using ENGH::EObject::World;
+using ENGH::Input::InputKey;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::RenderLibrary;
 using ENGH::Platform::Window;
@@ -48,6 +50,8 @@ int main() {
   });
   window->Init();
 
+  auto input = ENGH::Input::InputHandler(window->GetInputProvider());
+
   auto context = window->GetContext();
   auto renderer = context->GetRenderer();
 
@@ -63,25 +67,52 @@ int main() {
 
   comp->transform.scale = Vec3(0.4);
 
-  GLFWwindow *w = dynamic_cast<ENGH::Platform::OpenGL::GLFWWindow *>(window.get())->nativeWindow;
+//  GLFWwindow *w = dynamic_cast<ENGH::Platform::OpenGL::GLFWWindow *>(window.get())->nativeWindow;
+
+  input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_A, "xAxis", +1.0);
+
+  input.RegisterAxis(InputKey::KEY_E, "yAxis", +1.0);
+  input.RegisterAxis(InputKey::KEY_Q, "yAxis", -1.0);
+
+  input.RegisterAxis(InputKey::KEY_W, "zAxis", +1.0);
+  input.RegisterAxis(InputKey::KEY_S, "zAxis", -1.0);
+
+  input.RegisterAxis(InputKey::KEY_RIGHT, "yawAxis", 1.0);
+  input.RegisterAxis(InputKey::KEY_LEFT, "yawAxis", -1.0);
+
+  input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
+
+  Quat yawRot = Quat::FromAngleAxis(0, VEC3_UP);
+  Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
+
+  auto &registrar = input.GetRegistrar();
+  registrar.BindAxis("xAxis", [&](double value, double delta) {
+    cam.position += (yawRot * -VEC3_RIGHT) * float(value * delta);
+  });
+  registrar.BindAxis("yAxis", [&](double value, double delta) {
+    cam.position.y += value * delta;
+  });
+  registrar.BindAxis("zAxis", [&](double value, double delta) {
+    cam.position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
+  });
+  registrar.BindAxis("yawAxis", [&](double value, double delta) {
+    yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
+  });
+  registrar.BindAxis("pitchAxis", [&](double value, double delta) {
+    pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
+  });
 
   float yaw = 0, pitch = 0;
   world->BeginPlay();
   window->Loop([&](double delta, double total) {
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
+    input.UpdateInputs();
     world->Tick(delta);
-    float xAxis = -((glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_A) == GLFW_PRESS));
-    float yAxis = (glfwGetKey(w, GLFW_KEY_Q) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS);
-    float zAxis = (glfwGetKey(w, GLFW_KEY_W) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_S) == GLFW_PRESS);
+    input.Tick(delta);
 
-    pitch -= ((glfwGetKey(w, GLFW_KEY_UP) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_DOWN) == GLFW_PRESS)) * delta;
-    yaw += ((glfwGetKey(w, GLFW_KEY_RIGHT) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_LEFT) == GLFW_PRESS)) * delta;
-    Quat yawRot = Quat::FromAngleAxis(yaw, VEC3_UP);
-    Quat pitchRot = Quat::FromAngleAxis(pitch, VEC3_RIGHT);
-    Quat finalRot = pitchRot * yawRot;
-    cam.position += (yawRot * -VEC3_RIGHT) * float(xAxis * delta) + yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(zAxis * delta))
-        + Vec3(0, yAxis * delta, 0);
-    cam.rotation = finalRot;
+    cam.rotation = pitchRot * yawRot;
 
     comp->transform.position.x = sin(total) * 0.2;
     comp->transform.position.y = cos(total) * 0.2;

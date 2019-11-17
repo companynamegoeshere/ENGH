@@ -7,7 +7,10 @@ GLFWWindow::~GLFWWindow() {
   glfwDestroyWindow(nativeWindow);
 }
 
-GLFWWindow::GLFWWindow(Window::Config config) : Window(config), initialized(false) {}
+GLFWWindow::GLFWWindow(Window::Config config) :
+    Window(config),
+    initialized(false),
+    inputProvider() {}
 
 void GLFWWindow::Init() {
   if (initialized) {
@@ -33,6 +36,7 @@ void GLFWWindow::Init() {
     ENGH_CORE_THROW_FATAL("could not create glfw window: ", desc);
   }
   glfwSetWindowUserPointer(nativeWindow, this);
+  inputProvider = GLFWInputProvider(nativeWindow);
   context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
   context->Setup();
 
@@ -68,6 +72,10 @@ void GLFWWindow::Loop(RenderCallback callback) {
 
 std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() const {
   return std::dynamic_pointer_cast<Render::RenderContext>(context);
+}
+
+const Input::InputProvider *GLFWWindow::GetInputProvider() const {
+  return &inputProvider;
 }
 
 }
