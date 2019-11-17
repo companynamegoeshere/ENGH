@@ -11,12 +11,16 @@ namespace ENGH::Platform {
 class Window {
 public:
   using RenderCallback = std::function<void(double delta, double time)>;
-    struct Config {
-        std::string           title;
-        uint                  width, height;
-    };
+  using ResizeCallback = std::function<void(double width, double height)>;
+
+  struct Config {
+    std::string title;
+    uint width, height;
+  };
 protected:
-    Config config;
+  Config config;
+
+  ResizeCallback resizeCallback;
 
 public:
   explicit Window(Config  = {});
@@ -26,6 +30,8 @@ public:
   virtual void Init() = 0;
 
   virtual void Loop(RenderCallback) = 0;
+
+  virtual void SetResizeCallback(ResizeCallback);
 
   virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
 
