@@ -63,22 +63,22 @@ int main() {
   window->Loop([&](double delta, double total) {
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     world->Tick(delta);
-    float xAxis = (glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_A) == GLFW_PRESS);
-    float yAxis = (glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_Q) == GLFW_PRESS);
+    float xAxis = -((glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_A) == GLFW_PRESS));
+    float yAxis = (glfwGetKey(w, GLFW_KEY_Q) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_E) == GLFW_PRESS);
     float zAxis = (glfwGetKey(w, GLFW_KEY_W) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_S) == GLFW_PRESS);
 
-    pitch += ((glfwGetKey(w, GLFW_KEY_UP) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_DOWN) == GLFW_PRESS)) * delta;
+    pitch -= ((glfwGetKey(w, GLFW_KEY_UP) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_DOWN) == GLFW_PRESS)) * delta;
     yaw += ((glfwGetKey(w, GLFW_KEY_RIGHT) == GLFW_PRESS) - (glfwGetKey(w, GLFW_KEY_LEFT) == GLFW_PRESS)) * delta;
-    cam.position.x += xAxis * delta;
-    cam.position.y += yAxis * delta;
-    cam.position.z += zAxis * delta;
-    cam.rotation = Quat::FromAngleAxis(pitch, VEC3_RIGHT) * Quat::FromAngleAxis(yaw, VEC3_UP);
-//    cam.position.z = sin(total * 0.7) * 1.5;
-//    cam.position.x = cos(total * 0.7) * -1.5;
-    // cam.rotation = Quat::FromMatrix(Mat4::LookAt(VEC3_ZERO, cam.position, VEC3_UP)); //Quat::FromEulerAngles(0, total * 0.7 * HALF_PI / 2, 0);
-//    comp->transform.position.x = sin(total) * 0.2;
-//    comp->transform.position.y = cos(total) * 0.2;
-//    comp->transform.rotation = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
+    Quat yawRot = Quat::FromAngleAxis(yaw, VEC3_UP);
+    Quat pitchRot = Quat::FromAngleAxis(pitch, VEC3_RIGHT);
+    Quat finalRot = pitchRot * yawRot;
+    cam.position += (yawRot * -VEC3_RIGHT) * float(xAxis * delta) + yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(zAxis * delta))
+        + Vec3(0, yAxis * delta, 0);
+    cam.rotation = finalRot;
+
+    comp->transform.position.x = sin(total) * 0.2;
+    comp->transform.position.y = cos(total) * 0.2;
+    comp->transform.rotation = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
     worldRenderer->SetupRender();
     auto &dispatcher = worldRenderer->GetDispatcher();
     dispatcher.SetView(cam.GetView());

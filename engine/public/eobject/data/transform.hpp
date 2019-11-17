@@ -8,11 +8,21 @@ class Transform {
 public:
   Transform();
 
-  ENGH::Math::Vec3 position;
-  ENGH::Math::Quat rotation;
-  ENGH::Math::Vec3 scale;
+  Math::Vec3 position;
+  Math::Quat rotation;
+  Math::Vec3 scale;
 
-  ENGH::Math::Mat4 ToMatrix() const;
+  inline Math::Mat4 ToMatrix() const {
+    return Math::Mat4::Transform(position, rotation.ToMatrix(), scale);
+  }
+
+  inline Math::Vec3 GetRightVector() const {
+    return rotation * Math::VEC3_RIGHT;
+  }
+
+  inline Math::Vec3 GetForwardVector() const {
+    return rotation * Math::VEC3_FORWARD;
+  }
 
 };
 
