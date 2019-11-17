@@ -13,7 +13,10 @@ using Quat = mathfu::quat;
 using Mat4 = mathfu::mat4;
 
 const Vec3 VEC3_ZERO = Vec3(0, 0, 0);
+const Vec3 VEC3_ONE = Vec3(1, 1, 1);
+const Vec3 VEC3_RIGHT = Vec3(1, 0, 0);
 const Vec3 VEC3_UP = Vec3(0, 1, 0);
+const Vec3 VEC3_FORWARD = Vec3(0, 0, 1);
 
 constexpr double PI = 3.14159265358979323846;
 constexpr double PI2 = PI * 2;

@@ -14,8 +14,9 @@ void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &
       {
           Box::INSTANCE->array.get(),
           StandardShaders::INSTANCE->flatColor.get(),
-          [transform](ProgramShader *shader) {
-            shader->SetUniformMat4("location", &transform.ToMatrix()[0], true);
+          [transform, &dispatcher](ProgramShader *shader) {
+            auto out = dispatcher.GetProjection() * dispatcher.GetView() * transform.ToMatrix();
+            shader->SetUniformMat4("transform", &out[0], true);
           }
       }
   );

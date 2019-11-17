@@ -1,4 +1,5 @@
 #include <render/world_renderer.hpp>
+#include <eobject/actor.hpp>
 #include <eobject/render/renderable_object.hpp>
 
 ENGH::Render::WorldRenderer::WorldRenderer(EObject::World *world, std::shared_ptr<Platform::Render::RenderContext> context)

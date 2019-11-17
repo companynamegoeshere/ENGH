@@ -8,5 +8,5 @@ ENGH::EObject::Data::Transform::Transform() :
     scale(1.0f, 1.0f, 1.0f) {}
 
 Mat4 ENGH::EObject::Data::Transform::ToMatrix() const {
-  return Mat4::FromTranslationVector(position) * rotation.ToMatrix4() * Mat4::FromScaleVector(scale);
+  return Mat4::Transform(position, rotation.ToMatrix(), scale);
 }

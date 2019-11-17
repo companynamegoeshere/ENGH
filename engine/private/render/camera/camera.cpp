@@ -9,7 +9,9 @@ Camera::Camera() :
     rotation(Quat::identity) {}
 
 Mat4 Camera::GetView() {
-  return rotation.Inverse().ToMatrix4() * Mat4::FromTranslationVector(-position);
+  Vec3 pos = position;
+  pos.x = -pos.x;
+  return Mat4::FromRotationMatrix(rotation.ToMatrix()) * Mat4::FromTranslationVector(pos);
 }
 
 Camera::~Camera() {}
