@@ -12,8 +12,6 @@ public:
   float znear;
   float zfar;
 
-  void UpdateProjectionMatrix();
-
   Math::Mat4 GetProjection() override;
 
 };

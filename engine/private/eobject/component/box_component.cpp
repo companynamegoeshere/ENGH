@@ -10,13 +10,14 @@ using ENGH::Platform::Render::ProgramShader;
 void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) const {
   Component::Render(dispatcher);
   auto transform = GetTransformMatrix();
+  auto filter = dispatcher.GetMatrixTransformer();
+  auto final = filter(transform);
   dispatcher.Dispatch(
       {
           Box::INSTANCE->array.get(),
           StandardShaders::INSTANCE->flatColor.get(),
-          [transform, &dispatcher](ProgramShader *shader) {
-            auto out = dispatcher.GetProjection() * dispatcher.GetView() * transform;
-            shader->SetUniformMat4("transform", &out[0], true);
+          [final](ProgramShader *shader) {
+            shader->SetUniformMat4("transform", &final[0], true);
           }
       }
   );

@@ -1,6 +1,11 @@
 #include <render/render_dispatcher_impl.hpp>
 
-ENGH::Render::RenderDispatcherImpl::RenderDispatcherImpl(std::shared_ptr<Platform::Render::RenderContext> context) : context(context) {}
+ENGH::Render::RenderDispatcherImpl::RenderDispatcherImpl(
+    std::shared_ptr<Platform::Render::RenderContext> context,
+    std::function<Math::Mat4(Math::Mat4)> transformer) :
+    context(context) {
+  this->transformer = transformer;
+}
 
 void ENGH::Render::RenderDispatcherImpl::Dispatch(RenderCommand command) {
   queue += command;

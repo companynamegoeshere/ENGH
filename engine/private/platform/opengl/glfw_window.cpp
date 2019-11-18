@@ -54,7 +54,7 @@ void GLFWWindow::Init() {
 
   int width, height;
   glfwGetFramebufferSize(nativeWindow, &width, &height);
-  doResize(nativeWindow, width, height);
+  glViewport(0, 0, width, height);
 
   glfwSwapInterval(1);
 }
@@ -68,6 +68,12 @@ void GLFWWindow::Loop(RenderCallback callback) {
     callback(delta, now);
     glfwPollEvents();
   }
+}
+
+std::pair<double, double> GLFWWindow::GetSize() {
+  int w, h;
+  glfwGetFramebufferSize(nativeWindow, &w, &h);
+  return std::make_pair(static_cast<double>(w), static_cast<double>(h));
 }
 
 std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() const {

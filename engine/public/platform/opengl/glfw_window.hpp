@@ -25,6 +25,8 @@ public:
 
   void Loop(RenderCallback) override;
 
+  std::pair<double, double> GetSize() override;
+
   const Input::InputProvider *GetInputProvider() const override;
 
   std::shared_ptr<Render::RenderContext> GetContext() const override;

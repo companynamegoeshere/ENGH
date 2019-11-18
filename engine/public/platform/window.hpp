@@ -32,11 +32,13 @@ public:
 
   virtual void Loop(RenderCallback) = 0;
 
-  virtual void SetResizeCallback(ResizeCallback);
+  virtual std::pair<double, double> GetSize() = 0;
 
   virtual const Input::InputProvider *GetInputProvider() const = 0;
 
   virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
+
+  virtual void SetResizeCallback(ResizeCallback);
 
   static std::shared_ptr<Window> CreateWindow(Window::Config cfg, Render::RenderLibrary library);
 

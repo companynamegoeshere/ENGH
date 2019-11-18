@@ -24,15 +24,26 @@ using ENGH::Render::WorldRenderer;
 
 using namespace ENGH::Math;
 
+/*bool logInit = false;
+void *operator new(size_t size) {
+  void* ptr = malloc(size);
+  if(logInit) {
+    ENGH_CORE_FINEST("Allocating ", size, " bytes at ", static_cast<long>((std::uintptr_t)ptr));
+  }
+  return ptr;
+}
+
+void operator delete(void *ptr, size_t size) {
+  if(logInit) {
+    ENGH_CORE_FINEST("Freeing at ", size, "bytes at ", static_cast<long>((std::uintptr_t)ptr));
+  }
+  return free(ptr);
+}*/
+
 int main() {
   Logger::getCoreLogger().SetLevel(Logger::Level::ALL);
+//  logInit = true;
   ENGH_INFO("Test application");
-
-  WorldRenderer *worldRenderer = nullptr;
-  PerspectiveCamera cam;
-  cam.fov = 80 * DEGtoRAD;
-  cam.znear = 0.1;
-  cam.zfar = 1000;
 
   auto window = Window::CreateWindow(
       {
@@ -41,14 +52,15 @@ int main() {
       },
       RenderLibrary::OPENGL
   );
-  window->SetResizeCallback([&](double width, double height) {
-    cam.aspect = width / height;
-    cam.UpdateProjectionMatrix();
-    if (worldRenderer != nullptr) {
-      worldRenderer->GetDispatcher().SetProjection(cam.GetProjection());
-    }
-  });
   window->Init();
+
+  PerspectiveCamera *cam = new PerspectiveCamera();
+  cam->fov = 80 * DEGtoRAD;
+  cam->znear = 0.1;
+  cam->zfar = 1000;
+  window->SetResizeCallback([&cam](double width, double height) {
+    cam->aspect = width / height;
+  });
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
@@ -56,14 +68,12 @@ int main() {
   auto renderer = context->GetRenderer();
 
   auto world = new World();
-  worldRenderer = new WorldRenderer(world, context);
+  auto worldRenderer = new WorldRenderer(world, cam, context);
   auto &dispatcher = worldRenderer->GetDispatcher();
-  dispatcher.SetProjection(cam.GetProjection());
 
   auto *actor = world->SpawnActor<Actor>();
 
-  BoxComponent *comp = new BoxComponent();
-  actor->GetRoot()->children += comp;
+  BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
 
   comp->transform.scale = Vec3(0.4);
 
@@ -89,13 +99,16 @@ int main() {
 
   auto &registrar = input.GetRegistrar();
   registrar.BindAxis("xAxis", [&](double value, double delta) {
-    cam.position += (yawRot * -VEC3_RIGHT) * float(value * delta);
+    actor->GetPosition().x += value * delta;
+//    cam.position += (yawRot * -VEC3_RIGHT) * float(value * delta);
   });
   registrar.BindAxis("yAxis", [&](double value, double delta) {
-    cam.position.y += value * delta;
+    actor->GetPosition().y += value * delta;
+//    cam.position.y += value * delta;
   });
   registrar.BindAxis("zAxis", [&](double value, double delta) {
-    cam.position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
+    actor->GetPosition().z += value * delta;
+//    cam.position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
   });
   registrar.BindAxis("yawAxis", [&](double value, double delta) {
     yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
@@ -112,13 +125,12 @@ int main() {
     world->Tick(delta);
     input.Tick(delta);
 
-    cam.rotation = pitchRot * yawRot;
+    cam->rotation = pitchRot * yawRot;
 
     comp->transform.position.x = sin(total) * 0.2;
     comp->transform.position.y = cos(total) * 0.2;
     comp->transform.rotation = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
     worldRenderer->SetupRender();
-    dispatcher.SetView(cam.GetView());
     dispatcher.Render();
     context->SwapBuffers();
   });

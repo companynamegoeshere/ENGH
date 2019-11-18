@@ -9,6 +9,8 @@ ENGH::Platform::Window::~Window() {}
 
 void ENGH::Platform::Window::SetResizeCallback(ResizeCallback resizeCallback) {
   this->resizeCallback = resizeCallback;
+  auto[width, height] = GetSize();
+  resizeCallback(width, height);
 }
 
 std::shared_ptr<ENGH::Platform::Window> ENGH::Platform::Window::CreateWindow(ENGH::Platform::Window::Config cfg,

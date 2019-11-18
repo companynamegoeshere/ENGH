@@ -12,15 +12,12 @@ class RenderDispatcherImpl : public RenderDispatcher {
 
 public:
 
-  RenderDispatcherImpl(std::shared_ptr<Platform::Render::RenderContext> renderer);
+  RenderDispatcherImpl(std::shared_ptr<Platform::Render::RenderContext> renderer, std::function<Math::Mat4(Math::Mat4)> transformer);
 
   void Dispatch(RenderCommand command);
 
   void Render();
 
-  inline void SetView(Math::Mat4 view) { this->view = view; }
-
-  inline void SetProjection(Math::Mat4 projection) { this->projection = projection; }
 
 };
 

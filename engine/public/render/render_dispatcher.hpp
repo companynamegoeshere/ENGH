@@ -9,14 +9,12 @@ namespace ENGH::Render {
 
 class RenderDispatcher {
 protected:
-  Math::Mat4 view;
-  Math::Mat4 projection;
+  std::function<Math::Mat4(Math::Mat4)> transformer;
 public:
   virtual void Dispatch(RenderCommand command) = 0;
 
-  inline const Math::Mat4 &GetView() const { return view; }
+  inline const std::function<Math::Mat4(Math::Mat4)> &GetMatrixTransformer() const { return transformer; }
 
-  inline const Math::Mat4 &GetProjection() const { return projection; }
 };
 
 }
