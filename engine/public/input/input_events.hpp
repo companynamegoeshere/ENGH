@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 namespace ENGH::Input {
 
 using ActionCallback = std::function<void(bool pressed, double delta)>;

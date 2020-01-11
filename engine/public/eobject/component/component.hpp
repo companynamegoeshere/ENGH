@@ -4,6 +4,10 @@
 #include <eobject/data/transform.hpp>
 #include <render/render_dispatcher.hpp>
 
+namespace ENGH::Render {
+  class WorldRenderer;
+}
+
 namespace ENGH::EObject::Comps {
 
 class Component : EObject {
