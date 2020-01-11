@@ -1,6 +1,11 @@
 #include <platform/opengl/glfw_window.hpp>
 #include <stdexcept>
 
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
 namespace ENGH::Platform::OpenGL {
 
 GLFWWindow::~GLFWWindow() {
@@ -59,15 +64,86 @@ void GLFWWindow::Init() {
   glfwSwapInterval(1);
 }
 
-void GLFWWindow::Loop(RenderCallback callback) {
-  double last = glfwGetTime();
-  while (!glfwWindowShouldClose(nativeWindow)) {
-    double now = glfwGetTime();
-    double delta = now - last;
-    last = now;
-    callback(delta, now);
-    glfwPollEvents();
+void GLFWWindow::StartLoop() {
+
+  if(!renderCallback) {
+    ENGH_CORE_ERROR("Could not start Loop, Render callback is not set");
+    return;
   }
+
+  if(!setupRenderCallback) {
+    ENGH_CORE_ERROR("Could not start Loop, Setup Render callback is not set");
+    return;
+  }
+
+  if(!updateCallback) {
+    ENGH_CORE_ERROR("Could not start Loop, Update callback is not set");
+    return;
+  }
+
+  std::mutex mutex;
+  std::condition_variable cvLock;
+  bool mustRender = false;
+
+  const double desiredTickCount = 1.0 / 240;
+
+  bool run = true;
+
+  auto updateThread = std::thread([&]() {
+    std::chrono::time_point lastTime = std::chrono::steady_clock::now();
+    int lastSec = 5, tickCount = 0;
+    double delay = 0, total = 0;
+
+    while (run) {
+
+      auto now = std::chrono::steady_clock::now();
+      double delta = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTime).count() * 1e-9;
+      total += delta;
+      lastTime = now;
+
+      delay += desiredTickCount - delta;
+      if(delay > 0)
+        std::this_thread::sleep_for(std::chrono::duration<double>(delay));
+
+      tickCount++;
+      if(total > lastSec) {
+        lastSec += 5;
+        ENGH_CORE_FINEST("World tick count: ", tickCount / 5, " delay: ", delay);
+        tickCount = 0;
+      }
+
+      this->updateCallback(delta, total);
+
+      if(mustRender) {
+        setupRenderCallback();
+        std::unique_lock<std::mutex> _(mutex);
+        mustRender = false;
+        cvLock.notify_one();
+      }
+    }
+  });
+
+  int last = glfwGetTime() + 1;
+  int frameRate = 0;
+
+  std::unique_lock<std::mutex> lock(mutex);
+  while (IsOpen()) {
+    while (mustRender) {
+      cvLock.wait(lock);
+    }
+    double now = glfwGetTime();
+    if (now > last) {
+      last = now;
+      frameRate = 0;
+    }
+    frameRate = 1;
+    this->renderCallback();
+    glfwPollEvents();
+    mustRender = true;
+  }
+  run = false;
+  mutex.unlock();
+  updateThread.join();
 }
 
 std::pair<double, double> GLFWWindow::GetSize() {
@@ -82,6 +158,9 @@ std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() const {
 
 const Input::InputProvider *GLFWWindow::GetInputProvider() const {
   return &inputProvider;
+}
+bool GLFWWindow::IsOpen() {
+  return glfwWindowShouldClose(nativeWindow) == 0;
 }
 
 }

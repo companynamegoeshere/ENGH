@@ -23,7 +23,9 @@ public:
 
   void Init() override;
 
-  void Loop(RenderCallback) override;
+  void StartLoop() override;
+
+  bool IsOpen() override;
 
   std::pair<double, double> GetSize() override;
 

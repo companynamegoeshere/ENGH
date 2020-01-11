@@ -119,8 +119,8 @@ int main() {
 
   float yaw = 0, pitch = 0;
   world->BeginPlay();
-  window->Loop([&](double delta, double total) {
-    renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
+
+  window->SetUpdateCallback([&](double delta, double total) {
     input.UpdateInputs();
     world->Tick(delta);
     input.Tick(delta);
@@ -130,8 +130,18 @@ int main() {
     comp->transform.position.x = sin(total) * 0.2;
     comp->transform.position.y = cos(total) * 0.2;
     comp->transform.rotation = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
+  });
+
+  window->SetSetupRenderCallback([&]() {
     worldRenderer->SetupRender();
+  });
+
+  window->SetRenderCallback([&]() {
+    renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     dispatcher.Render();
     context->SwapBuffers();
   });
+
+  window->StartLoop();
+
 }

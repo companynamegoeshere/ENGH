@@ -7,8 +7,20 @@ ENGH::Platform::Window::Window(Config config) :
 
 ENGH::Platform::Window::~Window() {}
 
-void ENGH::Platform::Window::SetResizeCallback(ResizeCallback resizeCallback) {
-  this->resizeCallback = resizeCallback;
+void ENGH::Platform::Window::SetUpdateCallback(UpdateCallback callback) {
+  this->updateCallback = callback;
+}
+
+void ENGH::Platform::Window::SetRenderCallback(RenderCallback callback) {
+  this->renderCallback = callback;
+}
+
+void ENGH::Platform::Window::SetSetupRenderCallback(RenderCallback callback) {
+  this->setupRenderCallback = callback;
+}
+
+void ENGH::Platform::Window::SetResizeCallback(ResizeCallback callback) {
+  this->resizeCallback = callback;
   auto[width, height] = GetSize();
   resizeCallback(width, height);
 }
