@@ -5,8 +5,11 @@
 namespace ENGH::EObject::Render {
 
 class StandardShaders : public RenderableObject {
+  static StandardShaders *instance;
 public:
-  static StandardShaders *INSTANCE;
+  static inline StandardShaders &Get() {
+    return *instance;
+  }
 
   std::shared_ptr<Platform::Render::ProgramShader> flatColor;
 

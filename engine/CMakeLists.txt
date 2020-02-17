@@ -20,6 +20,7 @@ add_library(
         public/eobject/render/box.hpp
         public/eobject/render/renderable_object.hpp
         public/eobject/render/standard_shaders.hpp
+        public/eobject/render/standard_render.hpp
 
         public/input/input_events.hpp
         public/input/input_handler.hpp
@@ -77,6 +78,7 @@ add_library(
         private/eobject/render/box.cpp
         private/eobject/render/renderable_object.cpp
         private/eobject/render/standard_shaders.cpp
+        private/eobject/render/standard_render.cpp
 
         private/input/input_events.cpp
         private/input/input_handler.cpp

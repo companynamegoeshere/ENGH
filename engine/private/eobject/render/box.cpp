@@ -2,7 +2,7 @@
 
 namespace ENGH::EObject::Render {
 
-Box *Box::INSTANCE = RenderableObject::Instantiate<Box>();
+Box *Box::instance = RenderableObject::Instantiate<Box>();
 
 void Box::SetupRender(Platform::Render::RenderContext &context) {
   auto vertex = context.CreateVertexBuffer();

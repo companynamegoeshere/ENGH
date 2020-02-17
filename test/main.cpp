@@ -55,27 +55,33 @@ int main() {
   window->Init();
 
   PerspectiveCamera *cam = new PerspectiveCamera();
-  cam->fov = 80 * DEGtoRAD;
+  cam->fov   = 80 * DEGtoRAD;
   cam->znear = 0.1;
-  cam->zfar = 1000;
+  cam->zfar  = 1000;
   window->SetResizeCallback([&cam](double width, double height) {
     cam->aspect = width / height;
   });
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
-  auto context = window->GetContext();
+  auto context  = window->GetContext();
   auto renderer = context->GetRenderer();
 
-  auto world = new World();
+  auto world         = new World();
   auto worldRenderer = new WorldRenderer(world, cam, context);
-  auto &dispatcher = worldRenderer->GetDispatcher();
+  auto &dispatcher   = worldRenderer->GetDispatcher();
 
   auto *actor = world->SpawnActor<Actor>();
 
-  BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
-
-  comp->transform.scale = Vec3(0.4);
+  {
+    BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
+    comp->transform.scale = Vec3(0.4);
+    {
+      auto *head = comp->AttachComponent<BoxComponent>();
+      head->transform.position = {0.0f, 1.6f, 0.0f};
+      head->transform.scale = Vec3(0.6);
+    }
+  }
 
 //  GLFWwindow *w = dynamic_cast<ENGH::Platform::OpenGL::GLFWWindow *>(window.get())->nativeWindow;
 
@@ -94,21 +100,21 @@ int main() {
   input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
   input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
 
-  Quat yawRot = Quat::FromAngleAxis(0, VEC3_UP);
+  Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
   Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
 
   auto &registrar = input.GetRegistrar();
   registrar.BindAxis("xAxis", [&](double value, double delta) {
-    actor->GetPosition().x += value * delta;
-//    cam.position += (yawRot * -VEC3_RIGHT) * float(value * delta);
+//    actor->GetPosition().x += value * delta;
+    cam->position += (yawRot * -VEC3_RIGHT) * float(value * delta);
   });
   registrar.BindAxis("yAxis", [&](double value, double delta) {
-    actor->GetPosition().y += value * delta;
-//    cam.position.y += value * delta;
+//    actor->GetPosition().y += value * delta;
+    cam->position.y += value * delta;
   });
   registrar.BindAxis("zAxis", [&](double value, double delta) {
-    actor->GetPosition().z += value * delta;
-//    cam.position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
+//    actor->GetPosition().z += value * delta;
+    cam->position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
   });
   registrar.BindAxis("yawAxis", [&](double value, double delta) {
     yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
@@ -127,9 +133,10 @@ int main() {
 
     cam->rotation = pitchRot * yawRot;
 
-    comp->transform.position.x = sin(total) * 0.2;
-    comp->transform.position.y = cos(total) * 0.2;
-    comp->transform.rotation = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
+    auto &transform = actor->GetTransform();
+    transform.position.x = sin(total) * 0.2;
+    transform.position.y = cos(total) * 0.2;
+    transform.rotation   = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
   });
 
   window->SetSetupRenderCallback([&]() {

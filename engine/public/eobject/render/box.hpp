@@ -5,8 +5,11 @@
 namespace ENGH::EObject::Render {
 
 class Box : public RenderableObject {
+  static Box *instance;
 public:
-  static Box *INSTANCE;
+  static inline Box &Get() {
+    return *instance;
+  }
 
   std::shared_ptr<Platform::Render::VertexArray> array;
 
