@@ -65,16 +65,6 @@ void ENGH::Platform::Render::OpenGL::OpenGLVertexArray::AddVertexBuffer(const st
     this->offset += static_cast<uint32>(entries.size());
 }
 
-void ENGH::Platform::Render::OpenGL::OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer) {
-    this->Bind();
-    indexBuffer->Bind();
-    this->indexBuffer = indexBuffer;
-}
-
 const std::vector<std::shared_ptr<ENGH::Platform::Render::VertexBuffer>> &ENGH::Platform::Render::OpenGL::OpenGLVertexArray::GetVertexBuffers() const {
     return vertexBuffers;
-}
-
-const std::shared_ptr<ENGH::Platform::Render::IndexBuffer> &ENGH::Platform::Render::OpenGL::OpenGLVertexArray::GetIndexBuffer() const {
-    return indexBuffer;
 }

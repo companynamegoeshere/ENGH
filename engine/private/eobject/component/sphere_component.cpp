@@ -12,9 +12,10 @@ using ENGH::Render::RenderCommand;
 void ENGH::EObject::Comps::SphereComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) const {
   Component::Render(dispatcher);
   StandardRender::Get().RenderStaticMesh(
-      *this,
+      this,
       dispatcher,
       Sphere::Get().array.get(),
+      Sphere::Get().indexBuffer.get(),
       StandardShaders::Get().flatColor.get()
   );
 }

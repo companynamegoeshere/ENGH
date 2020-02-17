@@ -12,9 +12,10 @@ using ENGH::Render::RenderCommand;
 void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) const {
   Component::Render(dispatcher);
   StandardRender::Get().RenderStaticMesh(
-      *this,
+      this,
       dispatcher,
       Box::Get().array.get(),
+      Box::Get().indexBuffer.get(),
       StandardShaders::Get().flatColor.get()
   );
 }

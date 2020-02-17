@@ -13,6 +13,8 @@ public:
 
   std::shared_ptr<Platform::Render::VertexArray> array;
 
+  std::shared_ptr<Platform::Render::IndexBuffer> indexBuffer;
+
   void SetupRender(ENGH::Platform::Render::RenderContext &context) override;
 
   void ShutdownRender(ENGH::Platform::Render::RenderContext &context) override;

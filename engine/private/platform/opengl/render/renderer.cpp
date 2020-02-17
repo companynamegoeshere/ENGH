@@ -7,9 +7,10 @@ void OpenGLRenderer::Clear(float r, float g, float b, float a) {
   glClearColor(r, g, b, a);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void OpenGLRenderer::DrawVertexArray(VertexArray *array) {
+void OpenGLRenderer::DrawVertexArray(VertexArray *array, IndexBuffer *indexBuffer) {
   array->Bind();
-  glDrawElements(GL_TRIANGLES, array->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+  indexBuffer->Bind();
+  glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 }
 OpenGLRenderer::~OpenGLRenderer() {}
 

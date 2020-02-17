@@ -24,9 +24,11 @@ void Box::SetupRender(Platform::Render::RenderContext &context) {
           {"a_Position", Platform::Render::BufferDataTypes::FLOAT3}
       }
   );
+  this->array = context.CreateVertexArray();
+  this->array->AddVertexBuffer(vertex);
 
-  auto index = context.CreateIndexBuffer();
-  index->SetData(
+  indexBuffer = context.CreateIndexBuffer();
+  indexBuffer->SetData(
       {
           0, 1, 3, // bottom
           0, 3, 2,
@@ -47,10 +49,6 @@ void Box::SetupRender(Platform::Render::RenderContext &context) {
           4, 7, 6
       }
   );
-
-  this->array = context.CreateVertexArray();
-  this->array->AddVertexBuffer(vertex);
-  this->array->SetIndexBuffer(index);
 }
 
 void Box::ShutdownRender(ENGH::Platform::Render::RenderContext &context) {

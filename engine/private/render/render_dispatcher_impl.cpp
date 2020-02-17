@@ -17,7 +17,7 @@ void ENGH::Render::RenderDispatcherImpl::Render() {
   for (const auto &cmd : queue) {
     cmd.shader->Bind();
     cmd.setupUniforms(cmd.shader);
-    renderer.DrawVertexArray(cmd.data);
+    renderer.DrawVertexArray(cmd.data, cmd.index);
   }
   queue.Clear();
 }

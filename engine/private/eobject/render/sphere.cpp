@@ -57,12 +57,11 @@ void Sphere::SetupRender(Platform::Render::RenderContext &context) {
       }
   );
 
-  auto index = context.CreateIndexBuffer();
-  index->SetData(indexList);
+  array = context.CreateVertexArray();
+  array->AddVertexBuffer(vertex);
 
-  this->array = context.CreateVertexArray();
-  this->array->AddVertexBuffer(vertex);
-  this->array->SetIndexBuffer(index);
+  indexBuffer = context.CreateIndexBuffer();
+  indexBuffer->SetData(indexList);
 }
 
 void Sphere::ShutdownRender(ENGH::Platform::Render::RenderContext &context) {

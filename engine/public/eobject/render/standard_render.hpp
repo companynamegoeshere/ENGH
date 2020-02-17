@@ -2,6 +2,7 @@
 
 #include <eobject/object.hpp>
 #include <eobject/component/component.hpp>
+#include <platform/render/index_buffer.hpp>
 #include <platform/render/vertex_array.hpp>
 
 namespace ENGH::EObject::Render {
@@ -15,9 +16,10 @@ public:
   }
 
   void RenderStaticMesh(
-      const Comps::Component &comp,
+      const Comps::Component *comp,
       ENGH::Render::RenderDispatcher &dispatcher,
       Platform::Render::VertexArray *vert,
+      Platform::Render::IndexBuffer *index,
       Platform::Render::ProgramShader *shader);
 };
 

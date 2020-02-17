@@ -10,7 +10,7 @@ public:
 
   virtual void Clear(float r, float g, float b, float a) = 0;
 
-  virtual void DrawVertexArray(VertexArray *array) = 0;
+  virtual void DrawVertexArray(VertexArray *array, IndexBuffer *indexBuffer) = 0;
 
   virtual ~Renderer() = 0;
 };
