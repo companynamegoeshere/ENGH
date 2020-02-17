@@ -14,11 +14,13 @@ add_library(
 
         public/eobject/component/box_component.hpp
         public/eobject/component/component.hpp
+        public/eobject/component/sphere_component.hpp
 
         public/eobject/data/transform.hpp
 
         public/eobject/render/box.hpp
         public/eobject/render/renderable_object.hpp
+        public/eobject/render/sphere.hpp
         public/eobject/render/standard_shaders.hpp
         public/eobject/render/standard_render.hpp
 
@@ -72,11 +74,13 @@ add_library(
 
         private/eobject/component/box_component.cpp
         private/eobject/component/component.cpp
+        private/eobject/component/sphere_component.cpp
 
         private/eobject/data/transform.cpp
 
         private/eobject/render/box.cpp
         private/eobject/render/renderable_object.cpp
+        private/eobject/render/sphere.cpp
         private/eobject/render/standard_shaders.cpp
         private/eobject/render/standard_render.cpp
 

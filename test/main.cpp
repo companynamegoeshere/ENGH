@@ -3,6 +3,7 @@
 #include <eobject/actor.hpp>
 #include <eobject/world.hpp>
 #include <eobject/component/box_component.hpp>
+#include <eobject/component/sphere_component.hpp>
 #include <input/input_handler.hpp>
 #include <render/camera/perspective_camera.hpp>
 #include <render/world_renderer.hpp>
@@ -13,6 +14,7 @@
 using ENGH::Logger;
 using ENGH::EObject::Actor;
 using ENGH::EObject::Comps::BoxComponent;
+using ENGH::EObject::Comps::SphereComponent;
 using ENGH::EObject::Comps::Component;
 using ENGH::EObject::World;
 using ENGH::Input::InputKey;
@@ -77,7 +79,7 @@ int main() {
     BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
-      auto *head = comp->AttachComponent<BoxComponent>();
+      auto *head = comp->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
       head->transform.scale = Vec3(0.6);
     }
@@ -123,7 +125,6 @@ int main() {
     pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
   });
 
-  float yaw = 0, pitch = 0;
   world->BeginPlay();
 
   window->SetUpdateCallback([&](double delta, double total) {
@@ -133,10 +134,10 @@ int main() {
 
     cam->rotation = pitchRot * yawRot;
 
-    auto &transform = actor->GetTransform();
-    transform.position.x = sin(total) * 0.2;
-    transform.position.y = cos(total) * 0.2;
-    transform.rotation   = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
+//    auto &transform = actor->GetTransform();
+//    transform.position.x = sin(total) * 0.2;
+//    transform.position.y = cos(total) * 0.2;
+//    transform.rotation   = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
   });
 
   window->SetSetupRenderCallback([&]() {
