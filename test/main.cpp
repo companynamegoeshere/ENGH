@@ -74,9 +74,8 @@ int main() {
   auto &dispatcher   = worldRenderer->GetDispatcher();
 
   auto *actor = world->SpawnActor<Actor>();
-
   {
-    BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
+    BoxComponent *comp = actor->SetRoot<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
       auto *head = comp->AttachComponent<SphereComponent>();
@@ -84,8 +83,6 @@ int main() {
       head->transform.scale = Vec3(0.6);
     }
   }
-
-//  GLFWwindow *w = dynamic_cast<ENGH::Platform::OpenGL::GLFWWindow *>(window.get())->nativeWindow;
 
   input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
   input.RegisterAxis(InputKey::KEY_A, "xAxis", +1.0);
@@ -134,7 +131,8 @@ int main() {
 
     cam->rotation = pitchRot * yawRot;
 
-//    auto &transform = actor->GetTransform();
+    auto &transform = actor->GetTransform();
+    transform.rotation = Quat::FromEulerAngles(0, total * 20 * DEGtoRAD, 0);
 //    transform.position.x = sin(total) * 0.2;
 //    transform.position.y = cos(total) * 0.2;
 //    transform.rotation   = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);

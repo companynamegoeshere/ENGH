@@ -24,6 +24,12 @@ public:
     return root.get();
   };
 
+  template<typename T, typename ...Args>
+  inline T *SetRoot(Args && ...args) {
+    root.reset(new T(std::forward<Args>(args)...));
+    return reinterpret_cast<T *>(GetRoot());
+  }
+
   inline Data::Transform &GetTransform() {
     return root->transform;
   }

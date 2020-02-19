@@ -20,9 +20,9 @@ public:
 
   virtual void Render(ENGH::Render::RenderDispatcher &dispatcher) const;
 
-  template<typename T>
-  T *AttachComponent() {
-    T *t = new T();
+  template<typename T, typename ...Args>
+  T *AttachComponent(Args && ...args) {
+    T *t = new T(std::forward<Args>(args)...);
     t->parent = this;
     children += t;
     return t;
