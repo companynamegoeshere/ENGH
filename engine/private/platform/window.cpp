@@ -25,8 +25,8 @@ void ENGH::Platform::Window::SetResizeCallback(ResizeCallback callback) {
   resizeCallback(width, height);
 }
 
-std::shared_ptr<ENGH::Platform::Window> ENGH::Platform::Window::CreateWindow(ENGH::Platform::Window::Config cfg,
-                                                                             ENGH::Platform::Render::RenderLibrary library) {
+std::shared_ptr<ENGH::Platform::Window> ENGH::Platform::Window::CreateNewWindow(ENGH::Platform::Window::Config cfg,
+                                                                                ENGH::Platform::Render::RenderLibrary library) {
   switch (library) {
   case Render::RenderLibrary::NONE:break; // TODO Create headless window
   case Render::RenderLibrary::OPENGL:return std::make_shared<OpenGL::GLFWWindow>(cfg);

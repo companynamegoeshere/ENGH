@@ -53,7 +53,7 @@ public:
 
   virtual void SetResizeCallback(ResizeCallback);
 
-  static std::shared_ptr<Window> CreateWindow(Window::Config cfg, Render::RenderLibrary library);
+  static std::shared_ptr<Window> CreateNewWindow(Window::Config cfg, Render::RenderLibrary library);
 
 };
 
