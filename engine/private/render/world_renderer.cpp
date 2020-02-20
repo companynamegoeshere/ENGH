@@ -4,6 +4,8 @@
 
 namespace ENGH::Render {
 
+using EObject::Render::RenderableObject;
+
 WorldRenderer::WorldRenderer(EObject::World *world,
                              Camera::Camera *camera,
                              std::shared_ptr<Platform::Render::RenderContext> context)
@@ -12,10 +14,13 @@ WorldRenderer::WorldRenderer(EObject::World *world,
       renderDispatcher(
           context, [this](auto o) { return this->Transformer(o); }
       ) {
-  Platform::Render::RenderContext &contextRef = *context.get();
-  for (auto &data : EObject::Render::RenderableObject::GetList()) {
+  Platform::Render::RenderContext &contextRef = *(RenderableObject::currentContext = context.get());
+
+  TArray<RenderableObject *> &renderableList = RenderableObject::GetList();
+  for (auto &data : renderableList) {
     data->SetupRender(contextRef);
   }
+  renderableList.clear();
 }
 
 void WorldRenderer::RenderComponent(EObject::Comps::Component *comp) {
@@ -31,7 +36,7 @@ Math::Mat4 WorldRenderer::Transformer(Math::Mat4 original) {
 
 void WorldRenderer::SetupRender() {
   cameraProjectionCache = camera->GetProjection();
-  cameraViewCache = camera->GetView();
+  cameraViewCache       = camera->GetView();
   for (const auto &actor : this->world->actorList) {
     this->RenderComponent(actor->GetRoot());
   }

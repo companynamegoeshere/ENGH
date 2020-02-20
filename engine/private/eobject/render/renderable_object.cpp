@@ -2,6 +2,8 @@
 
 namespace ENGH::EObject::Render {
 
+Platform::Render::RenderContext *RenderableObject::currentContext = nullptr;
+
 RenderableObject::RenderableObject() {}
 
 }

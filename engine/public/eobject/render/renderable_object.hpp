@@ -8,16 +8,22 @@ namespace ENGH::EObject::Render {
 class RenderableObject : EObject {
 
 protected:
-  template<typename T>
-  static T *Instantiate() {
-    T *t = new T();
-    GetList() += t;
+  template<typename T, typename ...Args>
+  static T *Instantiate(Args &&...args) {
+    T *t = new T(std::forward<Args>(args)...);
+    if(currentContext != nullptr) {
+      t->SetupRender(*currentContext);
+    } else {
+      GetList() += t;
+    }
     return t;
   }
 
   RenderableObject();
 
 public:
+
+  static ENGH::Platform::Render::RenderContext *currentContext;
 
   static TArray<RenderableObject *> &GetList() {
     static TArray<RenderableObject *> list;
