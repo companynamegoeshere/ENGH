@@ -7,6 +7,7 @@
 namespace ENGH::Platform::OpenGL {
 
 class GLFWWindow : public Window {
+  double frameTime;
 public:
   bool initialized;
 
@@ -28,6 +29,8 @@ public:
   bool IsOpen() override;
 
   std::pair<double, double> GetSize() override;
+
+  double GetFrameTime() override;
 
   const Input::InputProvider *GetInputProvider() const override;
 

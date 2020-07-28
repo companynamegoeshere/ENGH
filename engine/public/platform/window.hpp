@@ -41,6 +41,8 @@ public:
 
   virtual std::pair<double, double> GetSize() = 0;
 
+  virtual double GetFrameTime() = 0;
+
   virtual const Input::InputProvider *GetInputProvider() const = 0;
 
   virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;

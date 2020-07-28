@@ -13,6 +13,7 @@ GLFWWindow::~GLFWWindow() {
 
 GLFWWindow::GLFWWindow(Window::Config config) :
     Window(config),
+    frameTime(0.0),
     initialized(false),
     inputProvider() {}
 
@@ -122,8 +123,7 @@ void GLFWWindow::StartLoop() {
     }
   });
 
-  int last = glfwGetTime() + 1;
-  int frameRate = 0;
+  double last = glfwGetTime();
 
   std::unique_lock<std::mutex> lock(mutex);
   while (IsOpen()) {
@@ -131,11 +131,9 @@ void GLFWWindow::StartLoop() {
       cvLock.wait(lock);
     }
     double now = glfwGetTime();
-    if (now > last) {
-      last = now;
-      frameRate = 0;
-    }
-    frameRate = 1;
+    frameTime = now - last;
+    last = now;
+
     this->renderCallback();
     glfwPollEvents();
     mustRender = true;
@@ -149,6 +147,10 @@ std::pair<double, double> GLFWWindow::GetSize() {
   int w, h;
   glfwGetFramebufferSize(nativeWindow, &w, &h);
   return std::make_pair(static_cast<double>(w), static_cast<double>(h));
+}
+
+double GLFWWindow::GetFrameTime() {
+  return frameTime;
 }
 
 std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() const {
