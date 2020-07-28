@@ -32,4 +32,5 @@ std::shared_ptr<ENGH::Platform::Window> ENGH::Platform::Window::CreateNewWindow(
   case Render::RenderLibrary::OPENGL:return std::make_shared<OpenGL::GLFWWindow>(cfg);
   }
   ENGH_CORE_THROW_FATAL("Invalid render library");
+  return nullptr;
 }

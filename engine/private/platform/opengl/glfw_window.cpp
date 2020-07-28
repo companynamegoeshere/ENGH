@@ -1,5 +1,4 @@
 #include <platform/opengl/glfw_window.hpp>
-#include <stdexcept>
 
 #include <chrono>
 #include <thread>
