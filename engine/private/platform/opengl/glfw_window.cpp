@@ -34,6 +34,8 @@ void GLFWWindow::Init() {
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 
+  glfwWindowHint(GLFW_SAMPLES, 4);
+
   nativeWindow = glfwCreateWindow(config.width, config.height, config.title.c_str(), nullptr, nullptr);
   if (!nativeWindow) {
     const char *desc;
@@ -45,10 +47,24 @@ void GLFWWindow::Init() {
   context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
   context->Setup();
 
+  glEnable(GL_MULTISAMPLE);
+
+  glEnable(GL_DEBUG_OUTPUT);
+  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
   glDebugMessageCallback(
       [](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg,
          const void *data) {
-        ENGH_CORE_FINER(msg);
+        switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH:ENGH_CORE_ERROR(msg);
+          break;
+        case GL_DEBUG_SEVERITY_MEDIUM:ENGH_CORE_WARN(msg);
+          break;
+        case GL_DEBUG_SEVERITY_LOW:ENGH_CORE_FINER(msg);
+          break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:ENGH_CORE_FINEST(msg);
+          break;
+        }
       }, nullptr);
 
   auto doResize = [](GLFWwindow *window, int width, int height) {
