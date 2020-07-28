@@ -2,7 +2,7 @@
 
 #include <chrono>
 #include <thread>
-#include <mutex>
+#include <atomic>
 #include <condition_variable>
 
 namespace ENGH::Platform::OpenGL {
@@ -77,29 +77,28 @@ void GLFWWindow::Init() {
   glfwGetFramebufferSize(nativeWindow, &width, &height);
   glViewport(0, 0, width, height);
 
-  glfwSwapInterval(1);
+  glfwSwapInterval(0);
 }
 
 void GLFWWindow::StartLoop() {
 
-  if(!renderCallback) {
+  if (!renderCallback) {
     ENGH_CORE_ERROR("Could not start Loop, Render callback is not set");
     return;
   }
 
-  if(!setupRenderCallback) {
+  if (!setupRenderCallback) {
     ENGH_CORE_ERROR("Could not start Loop, Setup Render callback is not set");
     return;
   }
 
-  if(!updateCallback) {
+  if (!updateCallback) {
     ENGH_CORE_ERROR("Could not start Loop, Update callback is not set");
     return;
   }
 
-  std::mutex mutex;
-  std::condition_variable cvLock;
-  bool mustRender = false;
+  std::atomic<bool> renderLock = false;
+  auto wait = [&renderLock]() { while (renderLock); };
 
   const double desiredTickCount = 1.0 / 240;
 
@@ -111,51 +110,45 @@ void GLFWWindow::StartLoop() {
     double delay = 0, total = 0;
 
     while (run) {
-
       auto now = std::chrono::steady_clock::now();
       double delta = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTime).count() * 1e-9;
       total += delta;
       lastTime = now;
 
       delay += desiredTickCount - delta;
-      if(delay > 0)
+      if (delay > 0)
         std::this_thread::sleep_for(std::chrono::duration<double>(delay));
 
       tickCount++;
-      if(total > lastSec) {
+      if (total > lastSec) {
         lastSec += 5;
-        ENGH_CORE_FINEST("World tick count: ", tickCount / 5, " delay: ", delay);
+        ENGH_CORE_FINER("World tick count: ", tickCount / 5, " delay: ", delay);
         tickCount = 0;
       }
 
-      this->updateCallback(delta, total);
-
-      if(mustRender) {
-        setupRenderCallback();
-        std::unique_lock<std::mutex> _(mutex);
-        mustRender = false;
-        cvLock.notify_one();
+      if (!renderLock) {
+        renderLock = true;
+        this->updateCallback(delta, total);
+        renderLock = false;
       }
     }
   });
 
   double last = glfwGetTime();
 
-  std::unique_lock<std::mutex> lock(mutex);
   while (IsOpen()) {
-    while (mustRender) {
-      cvLock.wait(lock);
-    }
     double now = glfwGetTime();
     frameTime = now - last;
     last = now;
 
     this->renderCallback();
     glfwPollEvents();
-    mustRender = true;
+    wait();
+    renderLock = true;
+    setupRenderCallback();
+    renderLock = false;
   }
   run = false;
-  mutex.unlock();
   updateThread.join();
 }
 
