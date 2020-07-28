@@ -10,7 +10,11 @@
 #include <platform/window.hpp>
 
 #include <platform/opengl/glfw_window.hpp>
-#include <GLFW/glfw3.h>
+
+#include <array>
+
+#include <imgui/imgui.h>
+#include "imgui_adapter.hpp"
 
 using ENGH::Logger;
 using ENGH::EObject::Actor;
@@ -22,6 +26,7 @@ using ENGH::Input::InputKey;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::RenderLibrary;
 using ENGH::Platform::Window;
+using ENGH::Platform::OpenGL::GLFWWindow;
 using ENGH::Render::Camera::PerspectiveCamera;
 using ENGH::Render::WorldRenderer;
 
@@ -56,6 +61,8 @@ int main() {
       RenderLibrary::OPENGL
   );
   window->Init();
+  ImGuiAdapter imGuiAdapter(static_cast<GLFWWindow *>(window.get())->nativeWindow);
+  imGuiAdapter.Setup();
 
   PerspectiveCamera *cam = new PerspectiveCamera();
   cam->fov = 80 * DEGtoRAD;
@@ -140,10 +147,29 @@ int main() {
 
   world->BeginPlay();
 
+  std::array<float, 60> fps{0};
+  std::array<float, 60> frameTime{0};
+  double nextSec = 0;
+
+  constexpr auto last = [](auto &v) constexpr -> auto & { return v[v.size() - 1]; };
+
   window->SetUpdateCallback([&](double delta, double total) {
     input.UpdateInputs();
     world->Tick(delta);
     input.Tick(delta);
+
+    if (total >= nextSec) {
+      nextSec = total += 1;
+      for (int i = 1; i < fps.size(); i++) {
+        fps[i - 1] = fps[i];
+      }
+      for (int i = 1; i < frameTime.size(); i++) {
+        frameTime[i - 1] = frameTime[i];
+      }
+      double time = window->GetFrameTime();
+      last(frameTime) = time * 1000;
+      last(fps) = time < 0.0001 ? 0.0 : 1 / time;
+    }
 
     cam->rotation = pitchRot * yawRot;
 
@@ -161,9 +187,30 @@ int main() {
   window->SetRenderCallback([&]() {
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     dispatcher.Render();
+    imGuiAdapter.Begin();
+    {
+
+      ImGui::Begin("Stats");
+      auto labelPlot = [&last](auto text, auto arr, auto t2) {
+        ImGui::Text("%s: %02f", text, last(arr));
+        ImGui::PlotLines(t2, arr.data(), arr.size());
+      };
+      labelPlot("FPS", fps, "");
+      labelPlot("FrameTime", frameTime, "ms");
+      ImGui::End();
+
+      ImGui::Begin("Ball");
+
+      ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
+      ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
+
+      ImGui::End();
+    }
+    imGuiAdapter.End();
     context->SwapBuffers();
   });
 
   window->StartLoop();
+  imGuiAdapter.Shutdown();
 
 }
