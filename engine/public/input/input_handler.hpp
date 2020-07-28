@@ -1,16 +1,16 @@
 #pragma once
 
+#include <core/engine.hpp>
 #include <input/input_registrar.hpp>
 #include <input/input_events.hpp>
 #include <input/input_provider.hpp>
-#include <util/array.hpp>
 #include <string>
 #include <map>
 
 namespace ENGH::Input {
-  class InputRegistrar;
+class InputRegistrar;
 
-  using AxisValue = double;
+using AxisValue = double;
 
 class InputHandler {
   friend InputRegistrar;
