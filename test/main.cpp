@@ -8,6 +8,7 @@
 #include <render/camera/perspective_camera.hpp>
 #include <render/world_renderer.hpp>
 #include <platform/window.hpp>
+
 #include <platform/opengl/glfw_window.hpp>
 #include <GLFW/glfw3.h>
 
@@ -30,24 +31,24 @@ using namespace ENGH::Math;
 void *operator new(size_t size) {
   void* ptr = malloc(size);
   if(logInit) {
-    ENGH_CORE_FINEST("Allocating ", size, " bytes at ", static_cast<long>((std::uintptr_t)ptr));
+    ENGH_CORE_FINE("Allocating ", size, " bytes at ", static_cast<long>((std::uintptr_t)ptr));
   }
   return ptr;
 }
 
 void operator delete(void *ptr, size_t size) {
   if(logInit) {
-    ENGH_CORE_FINEST("Freeing at ", size, "bytes at ", static_cast<long>((std::uintptr_t)ptr));
+    ENGH_CORE_FINE("Freeing at ", size, "bytes at ", static_cast<long>((std::uintptr_t)ptr));
   }
   return free(ptr);
 }*/
 
 int main() {
-  Logger::getCoreLogger().SetLevel(Logger::Level::ALL);
+  Logger::getCoreLogger().SetLevel(Logger::Level::FINER);
 //  logInit = true;
   ENGH_INFO("Test application");
 
-  auto window = Window::CreateWindow(
+  auto window = Window::CreateNewWindow(
       {
           "ASD",
           800, 600
@@ -57,28 +58,29 @@ int main() {
   window->Init();
 
   PerspectiveCamera *cam = new PerspectiveCamera();
-  cam->fov   = 80 * DEGtoRAD;
+  cam->fov = 80 * DEGtoRAD;
   cam->znear = 0.1;
-  cam->zfar  = 1000;
+  cam->zfar = 1000;
   window->SetResizeCallback([&cam](double width, double height) {
     cam->aspect = width / height;
   });
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
-  auto context  = window->GetContext();
+  auto context = window->GetContext();
   auto renderer = context->GetRenderer();
 
-  auto world         = new World();
+  auto world = new World();
   auto worldRenderer = new WorldRenderer(world, cam, context);
-  auto &dispatcher   = worldRenderer->GetDispatcher();
+  auto &dispatcher = worldRenderer->GetDispatcher();
 
+  SphereComponent *head;
   auto *actor = world->SpawnActor<Actor>();
   {
     BoxComponent *comp = actor->SetRoot<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
-      auto *head = comp->AttachComponent<SphereComponent>();
+      head = comp->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
       head->transform.scale = Vec3(0.6);
     }
@@ -99,7 +101,9 @@ int main() {
   input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
   input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
 
-  Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
+  input.RegisterAction(InputKey::KEY_SPACE, "add");
+
+  Quat yawRot = Quat::FromAngleAxis(0, VEC3_UP);
   Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
 
   auto &registrar = input.GetRegistrar();
@@ -120,6 +124,18 @@ int main() {
   });
   registrar.BindAxis("pitchAxis", [&](double value, double delta) {
     pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
+  });
+  registrar.BindAction("add", [&](bool pressed, double delta) {
+    static bool last = false;
+    if (pressed && !last) {
+      head = head->AttachComponent<SphereComponent>();
+      head->transform.position = {0.0f, 1.6f, 0.0f};
+      head->transform.scale = Vec3(0.6f);
+      auto &transform = actor->GetTransform();
+      transform.position[1] -= transform.scale.y * 1.45f;
+      transform.scale *= 1.3f;
+    }
+    last = pressed;
   });
 
   world->BeginPlay();
