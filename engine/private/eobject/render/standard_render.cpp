@@ -6,10 +6,6 @@ using ENGH::Platform::Render::VertexArray;
 
 namespace ENGH::EObject::Render {
 
-StandardRender StandardRender::instance;
-
-StandardRender::StandardRender() {}
-
 void StandardRender::RenderStaticMesh(const Comps::Component *comp,
                                       ENGH::Render::RenderDispatcher &dispatcher,
                                       VertexArray *vert,

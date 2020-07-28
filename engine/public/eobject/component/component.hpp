@@ -18,8 +18,6 @@ protected:
 public:
   Data::Transform transform;
 
-  virtual void Render(ENGH::Render::RenderDispatcher &dispatcher) const;
-
   template<typename T, typename ...Args>
   T *AttachComponent(Args && ...args) {
     T *t = new T(std::forward<Args>(args)...);
@@ -27,6 +25,8 @@ public:
     children += t;
     return t;
   }
+
+  virtual void Render(ENGH::Render::RenderDispatcher &dispatcher);
 
   inline Math::Mat4 GetTransformMatrix() const {
     Math::Mat4 base = parent != nullptr ? parent->GetTransformMatrix() : Math::Mat4::Identity();

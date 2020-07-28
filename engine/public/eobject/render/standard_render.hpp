@@ -8,14 +8,9 @@
 namespace ENGH::EObject::Render {
 
 class StandardRender : EObject {
-  static StandardRender instance;
-  StandardRender();
 public:
-  static inline StandardRender &Get() {
-    return instance;
-  }
 
-  void RenderStaticMesh(
+  static void RenderStaticMesh(
       const Comps::Component *comp,
       ENGH::Render::RenderDispatcher &dispatcher,
       Platform::Render::VertexArray *vert,

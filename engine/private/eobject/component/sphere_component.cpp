@@ -8,14 +8,30 @@ using ENGH::EObject::Render::StandardRender;
 using ENGH::EObject::Render::StandardShaders;
 using ENGH::Platform::Render::ProgramShader;
 using ENGH::Render::RenderCommand;
+using ENGH::Render::RenderDispatcher;
 
-void ENGH::EObject::Comps::SphereComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) const {
+namespace ENGH::EObject::Comps {
+
+SphereComponent::SphereComponent(uint32 latCount, uint32 longCount) : latCount(latCount), longCount(longCount) {}
+
+void SphereComponent::Render(RenderDispatcher &dispatcher) {
   Component::Render(dispatcher);
-  StandardRender::Get().RenderStaticMesh(
-      this,
-      dispatcher,
-      Sphere::Get().array.get(),
-      Sphere::Get().indexBuffer.get(),
-      StandardShaders::Get().flatColor.get()
-  );
+  if (lastLat != latCount || lastLong != longCount) {
+    lastLat  = latCount;
+    lastLong = longCount;
+    dispatcher.Enqueue([&]() {
+      this->sphere = Sphere::Get(latCount, longCount);
+    });
+  }
+  if(sphere) {
+    StandardRender::RenderStaticMesh(
+        this,
+        dispatcher,
+        sphere.get()->array.get(),
+        sphere.get()->indexBuffer.get(),
+        StandardShaders::Get().flatColor.get()
+    );
+  }
+}
+
 }

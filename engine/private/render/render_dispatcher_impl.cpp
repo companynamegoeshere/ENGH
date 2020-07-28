@@ -11,6 +11,10 @@ void ENGH::Render::RenderDispatcherImpl::Dispatch(RenderCommand command) {
   queue += command;
 }
 
+void ENGH::Render::RenderDispatcherImpl::Enqueue(std::function<void()> target) {
+  toCall += target;
+}
+
 void ENGH::Render::RenderDispatcherImpl::Render() {
   auto &context = *this->context;
   auto &renderer = *context.GetRenderer();
@@ -20,4 +24,8 @@ void ENGH::Render::RenderDispatcherImpl::Render() {
     renderer.DrawVertexArray(cmd.data, cmd.index);
   }
   queue.Clear();
+  for(const auto& target : toCall) {
+    target();
+  }
+  toCall.clear();
 }

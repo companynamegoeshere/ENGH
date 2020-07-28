@@ -13,6 +13,8 @@ protected:
 public:
   virtual void Dispatch(RenderCommand command) = 0;
 
+  virtual void Enqueue(std::function<void()> target) = 0;
+
   inline const std::function<Math::Mat4(Math::Mat4)> &GetMatrixTransformer() const { return transformer; }
 
 };

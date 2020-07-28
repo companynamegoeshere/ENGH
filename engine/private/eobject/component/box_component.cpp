@@ -9,9 +9,9 @@ using ENGH::EObject::Render::StandardShaders;
 using ENGH::Platform::Render::ProgramShader;
 using ENGH::Render::RenderCommand;
 
-void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) const {
+void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) {
   Component::Render(dispatcher);
-  StandardRender::Get().RenderStaticMesh(
+  StandardRender::RenderStaticMesh(
       this,
       dispatcher,
       Box::Get().array.get(),
