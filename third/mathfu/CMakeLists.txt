@@ -9,4 +9,3 @@ target_include_directories(mathfu INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/mathfu/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/mathfu/dependencies/vectorial/include>"
         "$<INSTALL_INTERFACE:include>")
-cotire(mathfu)
