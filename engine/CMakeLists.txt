@@ -36,6 +36,7 @@ add_library(
 
         public/platform/opengl/render/base_shader.hpp
         public/platform/opengl/render/fragment_shader.hpp
+        public/platform/opengl/render/frame_buffer.hpp
         public/platform/opengl/render/index_buffer.hpp
         public/platform/opengl/render/program_shader.hpp
         public/platform/opengl/render/renderer.hpp
@@ -45,6 +46,7 @@ add_library(
         public/platform/opengl/render/vertex_shader.hpp
 
         public/platform/render/buffer_layout.hpp
+        public/platform/render/frame_buffer.hpp
         public/platform/render/index_buffer.hpp
         public/platform/render/program_shader.hpp
         public/platform/render/renderer.hpp
@@ -96,6 +98,7 @@ add_library(
 
         private/platform/opengl/render/base_shader.cpp
         private/platform/opengl/render/fragment_shader.cpp
+        private/platform/opengl/render/frame_buffer.cpp
         private/platform/opengl/render/index_buffer.cpp
         private/platform/opengl/render/program_shader.cpp
         private/platform/opengl/render/renderer.cpp

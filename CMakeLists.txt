@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-set(CMAKE_UNITY_BUILD TRUE)
+#set(CMAKE_UNITY_BUILD TRUE)
 
 option(DEV "Development code (logs and asserts)" ON)
 
