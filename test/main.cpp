@@ -14,6 +14,7 @@
 #include <array>
 
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include "imgui_adapter.hpp"
 
 using ENGH::Logger;
@@ -63,15 +64,15 @@ int main() {
   );
   window->Init();
   ImGuiAdapter imGuiAdapter(static_cast<GLFWWindow *>(window.get())->nativeWindow);
-  imGuiAdapter.Setup();
+  imGuiAdapter.Setup(false);
 
   PerspectiveCamera *cam = new PerspectiveCamera();
   cam->fov   = 80 * DEGtoRAD;
   cam->znear = 0.1;
   cam->zfar  = 1000;
-  window->SetResizeCallback([&cam](double width, double height) {
+  /*window->SetResizeCallback([&cam](double width, double height) {
     cam->aspect = width / height;
-  });
+  });*/
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
@@ -202,6 +203,23 @@ int main() {
 
     screenFb->Bind();
     imGuiAdapter.Begin();
+    ImGuiID dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
+    static bool first = true;
+    if(first){
+      first = false;
+      ImGui::DockBuilderRemoveNode(dockSpace);
+      ImGui::DockBuilderAddNode(dockSpace, ImGuiDockNodeFlags_DockSpace);
+      const auto [width, height] = window->GetSize();
+      ImGui::DockBuilderSetNodeSize(dockSpace, { static_cast<float>(width), static_cast<float>(height) });
+
+      ImGuiID dockRight, dockLeft, dockLeftDown, dockLeftUp;
+      dockLeft = ImGui::DockBuilderSplitNode(dockSpace, ImGuiDir_Left, 0.30f, NULL, &dockRight);
+      dockLeftUp = ImGui::DockBuilderSplitNode(dockLeft, ImGuiDir_Up, 0.50f, NULL, &dockLeftDown);
+
+      ImGui::DockBuilderDockWindow("Scene", dockRight);
+      ImGui::DockBuilderDockWindow("Stats", dockLeftUp);
+      ImGui::DockBuilderDockWindow("Ball", dockLeftDown);
+    }
     {
       ImGui::Begin("Scene");
       {
@@ -210,6 +228,7 @@ int main() {
           widgetWidth  = s.x;
           widgetHeight = s.y;
           fb->Resize(static_cast<float>(widgetWidth), static_cast<float>(widgetHeight));
+          cam->aspect = s.x / s.y;
         }
         ImGui::Image(
             reinterpret_cast<ImTextureID>(fb->GetColorTextureID()),

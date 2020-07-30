@@ -24,7 +24,7 @@ static bool OpenGL3_CreateDeviceObjects();
 
 ImGuiAdapter::ImGuiAdapter(GLFWwindow *window) : glfwWindow(window) {}
 
-void ImGuiAdapter::Setup() {
+void ImGuiAdapter::Setup(bool savelayout) {
   IMGUI_CHECKVERSION();
 
   ImGui::CreateContext();
@@ -36,6 +36,10 @@ void ImGuiAdapter::Setup() {
   io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
   //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
   //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+
+  if(!savelayout) {
+    io.IniFilename = nullptr;
+  }
 
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();

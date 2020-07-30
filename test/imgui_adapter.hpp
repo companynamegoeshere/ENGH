@@ -5,7 +5,7 @@ class ImGuiAdapter {
 public:
   ImGuiAdapter(struct GLFWwindow* window);
 
-  void Setup();
+  void Setup(bool savelayout);
 
   void Shutdown();
 
