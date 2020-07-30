@@ -4,7 +4,9 @@
 #include <GLFW/glfw3.h>
 
 #include <imgui/imgui.h>
-#include <imgui/examples/imgui_impl_glfw.h>
+bool ImGui_ImplGlfw_InitForOpenGL(GLFWwindow *window, bool install_callbacks);
+void ImGui_ImplGlfw_Shutdown();
+void ImGui_ImplGlfw_NewFrame();
 
 #include <cstdio>
 
@@ -20,7 +22,7 @@ static void OpenGL3_RenderDrawData(ImDrawData *draw_data);
 static void OpenGL3_SetupRenderState(ImDrawData *draw_data, int fb_width, int fb_height, GLuint vertex_array_object);
 static bool OpenGL3_CreateDeviceObjects();
 
-ImGuiAdapter::ImGuiAdapter(GLFWwindow* window) : glfwWindow(window) {}
+ImGuiAdapter::ImGuiAdapter(GLFWwindow *window) : glfwWindow(window) {}
 
 void ImGuiAdapter::Setup() {
   IMGUI_CHECKVERSION();
@@ -100,7 +102,7 @@ void ImGuiAdapter::Begin() {
 void ImGuiAdapter::End() {
   ImGuiIO &io = ImGui::GetIO();
 //  const auto[windowWidth, windowHeight] = window->GetSize();
-  int windowWidth, windowHeight;
+  int     windowWidth, windowHeight;
   glfwGetWindowSize(glfwWindow, &windowWidth, &windowHeight);
   io.DisplaySize = ImVec2(windowWidth, windowHeight);
 
@@ -375,13 +377,14 @@ static bool CheckProgram(GLuint handle, const char *desc) {
   return (GLboolean) status == GL_TRUE;
 }
 
-bool OpenGL3_CreateFontsTexture()
-{
+bool OpenGL3_CreateFontsTexture() {
   // Build texture atlas
-  ImGuiIO& io = ImGui::GetIO();
-  unsigned char* pixels;
-  int width, height;
-  io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
+  ImGuiIO       &io = ImGui::GetIO();
+  unsigned char *pixels;
+  int           width, height;
+  io.Fonts->GetTexDataAsRGBA32(&pixels,
+                               &width,
+                               &height);   // Load as RGBA 32-bits (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders. If your ImTextureId represent a higher-level concept than just a GL texture id, consider calling GetTexDataAsAlpha8() instead to save on GPU memory.
 
   // Upload texture to graphics system
   GLint last_texture;
@@ -396,7 +399,7 @@ bool OpenGL3_CreateFontsTexture()
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
   // Store our identifier
-  io.Fonts->TexID = (ImTextureID)(intptr_t)g_FontTexture;
+  io.Fonts->TexID = (ImTextureID) (intptr_t) g_FontTexture;
 
   // Restore state
   glBindTexture(GL_TEXTURE_2D, last_texture);

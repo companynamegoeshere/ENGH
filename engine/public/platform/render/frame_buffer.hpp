@@ -15,7 +15,7 @@ public:
 
   virtual void Invalidate() = 0;
 
-  virtual void Resize(uint32 width, uint32 height) = 0;
+  virtual void Resize(int64 width, int64 height) = 0;
 
   virtual uint32 GetWidth() = 0;
 

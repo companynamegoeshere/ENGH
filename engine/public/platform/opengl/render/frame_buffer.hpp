@@ -17,13 +17,13 @@ class OpenGLFrameBuffer : public FrameBuffer {
 
   static constexpr GLuint emptyID = ~static_cast<GLuint>(0);
 public:
-  OpenGLFrameBuffer(BufferType type, uint32 width, uint32 height, GLuint fbo = emptyID);
+  OpenGLFrameBuffer(BufferType type, int64 width, int64 height, GLuint fbo = emptyID);
 
   ~OpenGLFrameBuffer() override;
 
   void Invalidate() override;
 
-  void Resize(uint32 width, uint32 height) override;
+  void Resize(int64 width, int64 height) override;
 
   uint32 GetWidth() override;
 

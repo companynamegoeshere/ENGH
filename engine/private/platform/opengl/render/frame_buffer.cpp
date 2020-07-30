@@ -4,10 +4,10 @@ namespace ENGH::Platform::Render::OpenGL {
 
 // FBO == 0 means it's the screen
 
-OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height, GLuint fbo) :
+OpenGLFrameBuffer::OpenGLFrameBuffer(FrameBuffer::BufferType type, int64 width, int64 height, GLuint fbo) :
     type(type),
-    width(width),
-    height(height),
+    width(SafeCast::num<uint32>(width)),
+    height(SafeCast::num<uint32>(height)),
     fbo(fbo) {}
 
 OpenGLFrameBuffer::~OpenGLFrameBuffer() {
@@ -19,6 +19,13 @@ void OpenGLFrameBuffer::Invalidate() {
     return;
   }
   deleteData();
+
+  if(width == 0) {
+    width = 1;
+  }
+  if(height == 0) {
+    height = 1;
+  }
 
   glCreateFramebuffers(1, &fbo);
   glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -51,8 +58,9 @@ void OpenGLFrameBuffer::Invalidate() {
   }
 
 #ifdef ENGH_DEBUG
-  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-    ENGH_CORE_ERROR("Could not create framebuffer!");
+  GLenum frameBufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if (frameBufferStatus != GL_FRAMEBUFFER_COMPLETE) {
+    ENGH_CORE_ERROR("Could not create framebuffer! [", std::hex, frameBufferStatus, ']');
   }
 #endif
 }
@@ -68,9 +76,9 @@ void OpenGLFrameBuffer::deleteData() {
   textures[1] = 0;
 }
 
-void OpenGLFrameBuffer::Resize(uint32 width, uint32 height) {
-  this->width  = width;
-  this->height = height;
+void OpenGLFrameBuffer::Resize(int64 width, int64 height) {
+  this->width  = SafeCast::num<uint32>(width);
+  this->height = SafeCast::num<uint32>(height);
   Invalidate();
 }
 
