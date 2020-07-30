@@ -4,6 +4,7 @@
 [submodule "imgui"]
 	path = third/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "mathfu"]
 	path = third/mathfu/mathfu
 	url = https://github.com/google/mathfu.git
