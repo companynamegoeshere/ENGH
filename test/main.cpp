@@ -24,6 +24,7 @@ using ENGH::EObject::Comps::Component;
 using ENGH::EObject::World;
 using ENGH::Input::InputKey;
 using ENGH::Platform::Render::BufferDataTypes;
+using ENGH::Platform::Render::FrameBuffer;
 using ENGH::Platform::Render::RenderLibrary;
 using ENGH::Platform::Window;
 using ENGH::Platform::OpenGL::GLFWWindow;
@@ -65,31 +66,31 @@ int main() {
   imGuiAdapter.Setup();
 
   PerspectiveCamera *cam = new PerspectiveCamera();
-  cam->fov = 80 * DEGtoRAD;
+  cam->fov   = 80 * DEGtoRAD;
   cam->znear = 0.1;
-  cam->zfar = 1000;
+  cam->zfar  = 1000;
   window->SetResizeCallback([&cam](double width, double height) {
     cam->aspect = width / height;
   });
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
-  auto context = window->GetContext();
+  auto context  = window->GetContext();
   auto renderer = context->GetRenderer();
 
-  auto world = new World();
-  auto worldRenderer = new WorldRenderer(world, cam, context);
-  auto &dispatcher = worldRenderer->GetDispatcher();
+  auto world             = new World();
+  auto worldRenderer     = new WorldRenderer(world, cam, context);
+  auto &dispatcher       = worldRenderer->GetDispatcher();
 
   SphereComponent *head;
-  auto *actor = world->SpawnActor<Actor>();
+  auto            *actor = world->SpawnActor<Actor>();
   {
     BoxComponent *comp = actor->SetRoot<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
       head = comp->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
-      head->transform.scale = Vec3(0.6);
+      head->transform.scale    = Vec3(0.6);
     }
   }
 
@@ -110,10 +111,10 @@ int main() {
 
   input.RegisterAction(InputKey::KEY_SPACE, "add");
 
-  Quat yawRot = Quat::FromAngleAxis(0, VEC3_UP);
+  Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
   Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
 
-  auto &registrar = input.GetRegistrar();
+  auto &registrar               = input.GetRegistrar();
   registrar.BindAxis("xAxis", [&](double value, double delta) {
 //    actor->GetPosition().x += value * delta;
     cam->position += (yawRot * -VEC3_RIGHT) * float(value * delta);
@@ -137,8 +138,8 @@ int main() {
     if (pressed && !last) {
       head = head->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
-      head->transform.scale = Vec3(0.6f);
-      auto &transform = actor->GetTransform();
+      head->transform.scale    = Vec3(0.6f);
+      auto &transform          = actor->GetTransform();
       transform.position[1] -= transform.scale.y * 1.45f;
       transform.scale *= 1.3f;
     }
@@ -149,9 +150,9 @@ int main() {
 
   std::array<float, 60> fps{0};
   std::array<float, 60> frameTime{0};
-  double nextSec = 0;
+  double                nextSec = 0;
 
-  constexpr auto last = [](auto &v) constexpr -> auto & { return v[v.size() - 1]; };
+  constexpr auto last = [](auto &v) constexpr -> auto & {return v[v.size() - 1];};
 
   window->SetUpdateCallback([&](double delta, double total) {
     input.UpdateInputs();
@@ -160,15 +161,15 @@ int main() {
 
     if (total >= nextSec) {
       nextSec = total += 1;
-      for (int i = 1; i < fps.size(); i++) {
+      for (int i    = 1; i < fps.size(); i++) {
         fps[i - 1] = fps[i];
       }
-      for (int i = 1; i < frameTime.size(); i++) {
+      for (int i    = 1; i < frameTime.size(); i++) {
         frameTime[i - 1] = frameTime[i];
       }
-      double time = window->GetFrameTime();
+      double   time = window->GetFrameTime();
       last(frameTime) = time * 1000;
-      last(fps) = time < 0.0001 ? 0.0 : 1 / time;
+      last(fps)       = time < 0.0001 ? 0.0 : 1 / time;
     }
 
     cam->rotation = pitchRot * yawRot;
@@ -184,26 +185,60 @@ int main() {
     worldRenderer->SetupRender();
   });
 
+  auto screenFb = context->GetScreenFrameBuffer();
+
+  float widgetWidth = 300, widgetHeight = 300;
+  auto  fb          = context->CreateFrameBuffer(
+      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH),
+      static_cast<float>(widgetWidth),
+      static_cast<float>(widgetHeight)
+  );
+
   window->SetRenderCallback([&]() {
+
+    fb->Bind();
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     dispatcher.Render();
+
+    screenFb->Bind();
     imGuiAdapter.Begin();
     {
+      ImGui::Begin("Scene");
+      {
+        auto s = ImGui::GetContentRegionAvail();
+        if (widgetWidth != s.x || widgetHeight != s.y) {
+          widgetWidth  = s.x;
+          widgetHeight = s.y;
+          fb->Resize(static_cast<float>(widgetWidth), static_cast<float>(widgetHeight));
+        }
+        ImGui::Image(
+            reinterpret_cast<ImTextureID>(fb->GetColorTextureID()),
+            {
+                static_cast<float>(fb->GetWidth()),
+                static_cast<float>(fb->GetHeight())
+            },
+            {0, 1},
+            {1, 0}
+        );
+      }
+      ImGui::End();
 
       ImGui::Begin("Stats");
-      auto labelPlot = [&last](auto text, auto arr, auto t2) {
-        ImGui::Text("%s: %02f", text, last(arr));
-        ImGui::PlotLines(t2, arr.data(), arr.size());
-      };
-      labelPlot("FPS", fps, "");
-      labelPlot("FrameTime", frameTime, "ms");
+      {
+        auto labelPlot = [&last](auto text, auto arr, auto t2) {
+          ImGui::Text("%s: %02f", text, last(arr));
+          ImGui::PlotLines(t2, arr.data(), arr.size());
+        };
+        labelPlot("FPS", fps, "");
+        labelPlot("FrameTime", frameTime, "ms");
+      }
       ImGui::End();
 
       ImGui::Begin("Ball");
-
-      ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
-      ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
-
+      {
+        ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
+        ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
+      }
       ImGui::End();
     }
     imGuiAdapter.End();

@@ -1,9 +1,9 @@
 #pragma once
 
 class ImGuiAdapter {
-  class GLFWwindow* glfwWindow;
+  struct GLFWwindow* glfwWindow;
 public:
-  ImGuiAdapter(class GLFWwindow* window);
+  ImGuiAdapter(struct GLFWwindow* window);
 
   void Setup();
 

@@ -8,4 +8,6 @@ add_executable(
 target_link_libraries(engh_test dear_imgui)
 target_link_libraries(engh_test engh_engine)
 
+set_property(TARGET engh_test PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
 SetupEngineFlags()

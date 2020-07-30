@@ -1,9 +1,12 @@
 #include "imgui_adapter.hpp"
 
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
+
 #include <imgui/imgui.h>
 #include <imgui/examples/imgui_impl_glfw.h>
 
-class GLFWWindow;
+#include <cstdio>
 
 static GLuint       g_GlVersion             = 0;
 static char         g_GlslVersionString[32] = "";
