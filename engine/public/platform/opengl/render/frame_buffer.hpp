@@ -1,27 +1,41 @@
 #pragma once
 
-#include <platform/opengl/render/render_context.hpp>
 #include <platform/render/frame_buffer.hpp>
+
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 namespace ENGH::Platform::Render::OpenGL {
 
 class OpenGLFrameBuffer : public FrameBuffer {
   BufferType type;
-  GLuint fbo;
+  uint32     width, height;
+  GLuint     fbo;
+  GLuint     textures[2] = {0};
 
   inline void deleteData();
-public:
-  OpenGLFrameBuffer(BufferType type);
 
-  ~OpenGLFrameBuffer();
+  static constexpr GLuint emptyID = ~static_cast<GLuint>(0);
+public:
+  OpenGLFrameBuffer(BufferType type, uint32 width, uint32 height, GLuint fbo = emptyID);
+
+  ~OpenGLFrameBuffer() override;
 
   void Invalidate() override;
 
   void Resize(uint32 width, uint32 height) override;
 
+  uint32 GetWidth() override;
+
+  uint32 GetHeight() override;
+
   void Bind() const override;
 
   void Unbind() const override;
+
+  uint GetColorTextureID() override;
+
+  virtual GLuint GetSecondTextureID();
 };
 
 }

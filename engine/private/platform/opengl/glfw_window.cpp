@@ -67,9 +67,11 @@ void GLFWWindow::Init() {
         }
       }, nullptr);
 
-  auto doResize = [](GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
-    reinterpret_cast<GLFWWindow *>(glfwGetWindowUserPointer(window))->resizeCallback(width, height);
+  auto doResize = [](GLFWwindow *glfwWindow, int width, int height) {
+    GLFWWindow *window = reinterpret_cast<GLFWWindow *>(glfwGetWindowUserPointer(glfwWindow));
+    auto fb = std::dynamic_pointer_cast<Render::OpenGL::OpenGLRenderContext>(window->context)->GetScreenFrameBuffer();
+    std::dynamic_pointer_cast<Render::OpenGL::OpenGLFrameBuffer>(fb)->Resize(width, height);
+    window->resizeCallback(width, height);
   };
   glfwSetFramebufferSizeCallback(nativeWindow, doResize);
 

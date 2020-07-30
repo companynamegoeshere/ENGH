@@ -1,6 +1,7 @@
 #pragma once
 
 #include <core/engine.hpp>
+#include <platform/render/frame_buffer.hpp>
 #include <platform/render/index_buffer.hpp>
 #include <platform/render/program_shader.hpp>
 #include <platform/render/renderer.hpp>
@@ -28,6 +29,10 @@ public:
   virtual std::shared_ptr<VertexArray> CreateVertexArray() = 0;
 
   virtual std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) = 0;
+
+  virtual std::shared_ptr<FrameBuffer> CreateFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height) = 0;
+
+  virtual std::shared_ptr<FrameBuffer> GetScreenFrameBuffer() = 0;
 
   virtual std::shared_ptr<Renderer> GetRenderer() = 0;
 
