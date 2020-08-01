@@ -38,6 +38,7 @@
 //  2016-10-15: Misc: Added a void* user_data parameter to Clipboard function handlers.
 
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 // GLFW
 #include <GLFW/glfw3.h>
@@ -70,6 +71,8 @@ static GLFWcursor*          g_MouseCursors[ImGuiMouseCursor_COUNT] = {};
 static bool                 g_InstalledCallbacks = false;
 static bool                 g_WantUpdateMonitors = true;
 
+static ImGuiID              dockScene = NULL;    // The dock that receives inputs
+
 // Chain GLFW callbacks for main viewport: our callbacks will call the user's previously installed callbacks, if any.
 static GLFWmousebuttonfun   g_PrevUserCallbackMousebutton = NULL;
 static GLFWscrollfun        g_PrevUserCallbackScroll = NULL;
@@ -91,10 +94,18 @@ static void ImGui_ImplGlfw_SetClipboardText(void* user_data, const char* text)
   glfwSetClipboardString((GLFWwindow*)user_data, text);
 }
 
+static bool checkWindow(GLFWwindow *window) {
+  if(dockScene == NULL) {
+    return window == g_Window;
+  }
+  ImGuiWindow *w = GImGui->NavWindow;
+  return w != nullptr && w->ID == dockScene;
+}
+
 void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-  if (g_PrevUserCallbackMousebutton != NULL && window == g_Window)
-    g_PrevUserCallbackMousebutton(window, button, action, mods);
+  if (g_PrevUserCallbackMousebutton != NULL && checkWindow(window))
+    g_PrevUserCallbackMousebutton(g_Window, button, action, mods);
 
   if (action == GLFW_PRESS && button >= 0 && button < IM_ARRAYSIZE(g_MouseJustPressed))
     g_MouseJustPressed[button] = true;
@@ -102,8 +113,8 @@ void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int acti
 
 void ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-  if (g_PrevUserCallbackScroll != NULL && window == g_Window)
-    g_PrevUserCallbackScroll(window, xoffset, yoffset);
+  if (g_PrevUserCallbackScroll != NULL && checkWindow(window))
+    g_PrevUserCallbackScroll(g_Window, xoffset, yoffset);
 
   ImGuiIO& io = ImGui::GetIO();
   io.MouseWheelH += (float)xoffset;
@@ -112,8 +123,8 @@ void ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double xoffset, double yo
 
 void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  if (g_PrevUserCallbackKey != NULL && window == g_Window)
-    g_PrevUserCallbackKey(window, key, scancode, action, mods);
+  if (g_PrevUserCallbackKey != NULL && checkWindow(window))
+    g_PrevUserCallbackKey(g_Window, key, scancode, action, mods);
 
   ImGuiIO& io = ImGui::GetIO();
   if (action == GLFW_PRESS)
@@ -130,8 +141,8 @@ void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int a
 
 void ImGui_ImplGlfw_CharCallback(GLFWwindow* window, unsigned int c)
 {
-  if (g_PrevUserCallbackChar != NULL && window == g_Window)
-    g_PrevUserCallbackChar(window, c);
+  if (g_PrevUserCallbackChar != NULL && checkWindow(window))
+    g_PrevUserCallbackChar(g_Window, c);
 
   ImGuiIO& io = ImGui::GetIO();
   io.AddInputCharacter(c);
@@ -214,6 +225,10 @@ static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, Glfw
 
   g_ClientApi = client_api;
   return true;
+}
+
+void ImGui_Impl_SetDockId(ImGuiID id) {
+  dockScene = id;
 }
 
 bool ImGui_ImplGlfw_InitForOpenGL(GLFWwindow* window, bool install_callbacks)

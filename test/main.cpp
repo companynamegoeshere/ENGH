@@ -219,6 +219,8 @@ int main() {
       ImGui::DockBuilderDockWindow("Scene", dockRight);
       ImGui::DockBuilderDockWindow("Stats", dockLeftUp);
       ImGui::DockBuilderDockWindow("Ball", dockLeftDown);
+
+      imGuiAdapter.SetMainDock(ImHashStr("Scene"));
     }
     {
       ImGui::Begin("Scene");

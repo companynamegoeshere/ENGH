@@ -5,6 +5,7 @@
 
 #include <imgui/imgui.h>
 bool ImGui_ImplGlfw_InitForOpenGL(GLFWwindow *window, bool install_callbacks);
+void ImGui_Impl_SetDockId(ImGuiID id);
 void ImGui_ImplGlfw_Shutdown();
 void ImGui_ImplGlfw_NewFrame();
 
@@ -87,6 +88,10 @@ void ImGuiAdapter::Setup(bool savelayout) {
       OpenGL3_RenderDrawData(viewport->DrawData);
     };
   }
+}
+
+void ImGuiAdapter::SetMainDock(ImGuiID id) {
+  ImGui_Impl_SetDockId(id);
 }
 
 void ImGuiAdapter::Shutdown() {
