@@ -188,11 +188,8 @@ int main() {
 
   auto screenFb = context->GetScreenFrameBuffer();
 
-  float widgetWidth = 300, widgetHeight = 300;
-  auto  fb          = context->CreateFrameBuffer(
-      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH),
-      static_cast<float>(widgetWidth),
-      static_cast<float>(widgetHeight)
+  auto fb = context->CreateFrameBuffer(
+      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH), 0.0f, 0.0f
   );
 
   window->SetRenderCallback([&]() {
@@ -203,17 +200,17 @@ int main() {
 
     screenFb->Bind();
     imGuiAdapter.Begin();
-    ImGuiID dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
-    static bool first = true;
-    if(first){
+    ImGuiID     dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
+    static bool first     = true;
+    if (first) {
       first = false;
       ImGui::DockBuilderRemoveNode(dockSpace);
       ImGui::DockBuilderAddNode(dockSpace, ImGuiDockNodeFlags_DockSpace);
-      const auto [width, height] = window->GetSize();
-      ImGui::DockBuilderSetNodeSize(dockSpace, { static_cast<float>(width), static_cast<float>(height) });
+      const auto[width, height] = window->GetSize();
+      ImGui::DockBuilderSetNodeSize(dockSpace, {static_cast<float>(width), static_cast<float>(height)});
 
       ImGuiID dockRight, dockLeft, dockLeftDown, dockLeftUp;
-      dockLeft = ImGui::DockBuilderSplitNode(dockSpace, ImGuiDir_Left, 0.30f, NULL, &dockRight);
+      dockLeft   = ImGui::DockBuilderSplitNode(dockSpace, ImGuiDir_Left, 0.30f, NULL, &dockRight);
       dockLeftUp = ImGui::DockBuilderSplitNode(dockLeft, ImGuiDir_Up, 0.50f, NULL, &dockLeftDown);
 
       ImGui::DockBuilderDockWindow("Scene", dockRight);
@@ -223,15 +220,18 @@ int main() {
       imGuiAdapter.SetMainDock(ImHashStr("Scene"));
     }
     {
-      ImGui::Begin("Scene");
-      {
+      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0.0f, 0.0f});
+      if (ImGui::Begin("Scene")) {
+        static float w = 0, h = 0;
+
         auto s = ImGui::GetContentRegionAvail();
-        if (widgetWidth != s.x || widgetHeight != s.y) {
-          widgetWidth  = s.x;
-          widgetHeight = s.y;
-          fb->Resize(static_cast<float>(widgetWidth), static_cast<float>(widgetHeight));
+        if (w != s.x || h != s.y) {
+          w = s.x;
+          h = s.y;
+          fb->Resize(static_cast<float>(w), static_cast<float>(h));
           cam->aspect = s.x / s.y;
         }
+
         ImGui::Image(
             reinterpret_cast<ImTextureID>(fb->GetColorTextureID()),
             {
@@ -243,9 +243,9 @@ int main() {
         );
       }
       ImGui::End();
+      ImGui::PopStyleVar();
 
-      ImGui::Begin("Stats");
-      {
+      if (ImGui::Begin("Stats")) {
         auto labelPlot = [&last](auto text, auto arr, auto t2) {
           ImGui::Text("%s: %02f", text, last(arr));
           ImGui::PlotLines(t2, arr.data(), arr.size());
@@ -255,8 +255,7 @@ int main() {
       }
       ImGui::End();
 
-      ImGui::Begin("Ball");
-      {
+      if (ImGui::Begin("Ball")) {
         ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
         ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
       }
