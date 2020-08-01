@@ -1,4 +1,5 @@
 #include <platform/opengl/glfw_input_provider.hpp>
+#include <platform/opengl/glfw_window.hpp>
 #include <GLFW/glfw3.h>
 #include <map>
 
@@ -6,7 +7,7 @@ namespace ENGH::Platform::OpenGL {
 
 using namespace Input;
 
-static std::map<Input::InputKey, int> keyMapping = {
+static const std::map<Input::InputKey, int> keyMapping        = {
     {KEY_1, GLFW_KEY_1},
     {KEY_2, GLFW_KEY_2},
     {KEY_3, GLFW_KEY_3},
@@ -75,10 +76,47 @@ static std::map<Input::InputKey, int> keyMapping = {
     {KEY_Z, GLFW_KEY_Z},
 };
 
-GLFWInputProvider::GLFWInputProvider(GLFWwindow *window) : window(window) {}
+static std::map<int, Input::InputKey> _reverse(const std::map<Input::InputKey, int> &m) {
+  std::map<int, Input::InputKey> r;
+  for (const auto[p1, p2] : m) {
+    r[p2] = p1;
+  }
+  return r;
+}
+static const std::map<int, Input::InputKey> reverseKeyMapping = _reverse(keyMapping);
 
-bool ENGH::Platform::OpenGL::GLFWInputProvider::isPressed(ENGH::Input::InputKey key) const {
-  return glfwGetKey(window, keyMapping[key]) == GLFW_PRESS;
+void GLFWInputProvider::funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  static std::pair<GLFWwindow *, GLFWInputProvider *> last = {nullptr, nullptr};
+  if (last.first != window) {
+    last.first  = window;
+    last.second = reinterpret_cast<GLFWWindow::UserData *>(glfwGetWindowUserPointer(window))->inputProvider;
+  }
+  last.second->callback(window, key, scancode, action, mods);
+}
+
+GLFWInputProvider::GLFWInputProvider(GLFWwindow *window) : window(window) {
+  if(window != nullptr) {
+    lastCallback = glfwSetKeyCallback(window, GLFWInputProvider::funcCallback);
+  }
+}
+
+GLFWInputProvider::~GLFWInputProvider() {
+  if(window != nullptr && lastCallback != nullptr) {
+    glfwSetKeyCallback(window, lastCallback);
+  }
+}
+
+bool ENGH::Platform::OpenGL::GLFWInputProvider::isPressed(ENGH::Input::InputKey key) {
+  return keysPressed[key];
+}
+
+void GLFWInputProvider::callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+    keysPressed[reverseKeyMapping.find(key)->second] = action == GLFW_PRESS;
+  }
+  if(lastCallback != nullptr) {
+    lastCallback(window, key, scancode, action, mods);
+  }
 }
 
 }

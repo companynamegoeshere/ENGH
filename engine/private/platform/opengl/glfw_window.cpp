@@ -42,8 +42,9 @@ void GLFWWindow::Init() {
     glfwGetError(&desc);
     ENGH_CORE_THROW_FATAL("could not create glfw window: ", desc);
   }
-  glfwSetWindowUserPointer(nativeWindow, this);
   inputProvider = GLFWInputProvider(nativeWindow);
+  auto userPointer = new UserData { this, &inputProvider };
+  glfwSetWindowUserPointer(nativeWindow, userPointer);
   context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
   context->Setup();
 
@@ -68,7 +69,7 @@ void GLFWWindow::Init() {
       }, nullptr);
 
   auto doResize = [](GLFWwindow *glfwWindow, int width, int height) {
-    GLFWWindow *window = reinterpret_cast<GLFWWindow *>(glfwGetWindowUserPointer(glfwWindow));
+    GLFWWindow *window = reinterpret_cast<UserData *>(glfwGetWindowUserPointer(glfwWindow))->window;
     auto fb = std::dynamic_pointer_cast<Render::OpenGL::OpenGLRenderContext>(window->context)->GetScreenFrameBuffer();
     std::dynamic_pointer_cast<Render::OpenGL::OpenGLFrameBuffer>(fb)->Resize(width, height);
     window->resizeCallback(width, height);
@@ -164,11 +165,11 @@ double GLFWWindow::GetFrameTime() {
   return frameTime;
 }
 
-std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() const {
+std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() {
   return std::dynamic_pointer_cast<Render::RenderContext>(context);
 }
 
-const Input::InputProvider *GLFWWindow::GetInputProvider() const {
+Input::InputProvider *GLFWWindow::GetInputProvider() {
   return &inputProvider;
 }
 bool GLFWWindow::IsOpen() {

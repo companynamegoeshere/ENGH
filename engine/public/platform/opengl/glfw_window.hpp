@@ -16,6 +16,11 @@ public:
   GLFWInputProvider inputProvider;
   std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
 
+  struct UserData {
+    GLFWWindow* window;
+    GLFWInputProvider* inputProvider;
+  };
+
 public:
 
   explicit GLFWWindow(Config config);
