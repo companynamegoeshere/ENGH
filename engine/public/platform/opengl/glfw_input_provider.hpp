@@ -12,7 +12,9 @@ class GLFWInputProvider : public Input::InputProvider {
 public:
   GLFWInputProvider(GLFWwindow *window = 0);
 
-  bool isPressed(Input::InputKey key) const override;
+  ~GLFWInputProvider() override;
+
+  bool isPressed(Input::InputKey key) override;
 };
 
 }

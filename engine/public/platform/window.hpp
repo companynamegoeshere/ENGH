@@ -43,9 +43,9 @@ public:
 
   virtual double GetFrameTime() = 0;
 
-  virtual const Input::InputProvider *GetInputProvider() const = 0;
+  virtual Input::InputProvider *GetInputProvider() = 0;
 
-  virtual std::shared_ptr<Render::RenderContext> GetContext() const = 0;
+  virtual std::shared_ptr<Render::RenderContext> GetContext() = 0;
 
   virtual void SetUpdateCallback(UpdateCallback);
 

@@ -32,9 +32,9 @@ public:
 
   double GetFrameTime() override;
 
-  const Input::InputProvider *GetInputProvider() const override;
+  Input::InputProvider *GetInputProvider() override;
 
-  std::shared_ptr<Render::RenderContext> GetContext() const override;
+  std::shared_ptr<Render::RenderContext> GetContext() override;
 
 };
 

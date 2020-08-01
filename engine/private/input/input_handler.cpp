@@ -2,7 +2,7 @@
 
 namespace ENGH::Input {
 
-InputHandler::InputHandler(const InputProvider *provider) :
+InputHandler::InputHandler(InputProvider *provider) :
     registrar(*this),
     provider(provider) {}
 

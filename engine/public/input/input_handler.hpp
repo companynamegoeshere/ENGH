@@ -26,9 +26,9 @@ protected:
   std::map<std::string, TArray<AxisCallback>> axisBindings;
 
   InputRegistrar registrar;
-  const InputProvider *provider;
+  InputProvider *provider;
 public:
-  InputHandler(const InputProvider *provider);
+  InputHandler(InputProvider *provider);
 
   void RegisterAction(InputKey key, const std::string &name);
 

@@ -6,8 +6,9 @@ namespace ENGH::Input {
 
 class InputProvider {
 public:
-  virtual bool isPressed(InputKey key) const = 0;
+  virtual ~InputProvider() {};
 
+  virtual bool isPressed(InputKey key) = 0;
 };
 
 }
