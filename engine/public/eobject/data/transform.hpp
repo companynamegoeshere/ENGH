@@ -24,6 +24,14 @@ public:
     return rotation * Math::VEC3_FORWARD;
   }
 
+  inline operator Math::Mat4() const {
+    return ToMatrix();
+  }
+
+  inline Math::Mat4 operator*(const Math::Mat4& other) const {
+    return this->ToMatrix() * other;
+  }
+
 };
 
 }
