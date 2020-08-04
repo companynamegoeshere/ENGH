@@ -5,6 +5,8 @@
 namespace ENGH::EObject {
 
 class EObject {
+public:
+  virtual ~EObject() = 0;
 };
 
 }

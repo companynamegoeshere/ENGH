@@ -2,7 +2,7 @@
 
 #include <eobject/object.hpp>
 #include <eobject/world.hpp>
-#include <eobject/component/component.hpp>
+#include <eobject/component/scene_component.hpp>
 
 namespace ENGH::EObject {
 
@@ -10,7 +10,7 @@ class Actor : EObject {
 
 protected:
 
-  std::unique_ptr<Comps::Component> root;
+  Comps::SceneComponent *root;
 
 public:
 
@@ -20,14 +20,17 @@ public:
 
   Actor();
 
-  inline Comps::Component *GetRoot() {
-    return root.get();
+  inline Comps::SceneComponent& GetRoot() {
+    return *root;
   };
 
+  void SetRoot(Comps::SceneComponent *sceneComp);
+
   template<typename T, typename ...Args>
-  inline T *SetRoot(Args && ...args) {
-    root.reset(new T(std::forward<Args>(args)...));
-    return reinterpret_cast<T *>(GetRoot());
+  T &SetRoot(Args &&...args) {
+    static_assert(std::is_base_of_v<Comps::SceneComponent, T>);
+    _SetRoot(new T(std::forward<Args>(args)...));
+    return reinterpret_cast<T &>(*root);
   }
 
   inline Data::Transform &GetTransform() {
