@@ -6,7 +6,7 @@ namespace ENGH::Render {
 
 using EObject::Render::RenderableObject;
 
-WorldRenderer::WorldRenderer(EObject::World *world,
+WorldRenderer::WorldRenderer(EObject::World::World *world,
                              Camera::Camera *camera,
                              std::shared_ptr<Platform::Render::RenderContext> context)
     : world(world),
@@ -24,10 +24,10 @@ WorldRenderer::WorldRenderer(EObject::World *world,
 }
 
 void WorldRenderer::RenderComponent(EObject::Comps::Component *comp) {
-  comp->Render(this->renderDispatcher);
+  /*comp->Render(this->renderDispatcher);
   for (const auto &child : comp->children) {
     this->RenderComponent(child);
-  }
+  }*/
 }
 
 Math::Mat4 WorldRenderer::Transformer(Math::Mat4 original) {

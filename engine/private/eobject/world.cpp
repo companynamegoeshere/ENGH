@@ -1,30 +1,52 @@
 #include <eobject/world.hpp>
+#include <eobject/tick_target.hpp>
 #include <eobject/actor.hpp>
 
-void ENGH::EObject::World::BeginPlay() {
+namespace ENGH::EObject::World {
+
+void World::BeginPlay() {
   for (Actor *actor : actorList) {
+    actor->SetupTickFunction(true, true);
     actor->BeginPlay();
   }
 }
 
-void ENGH::EObject::World::EndPlay() {
+void World::EndPlay() {
   for (Actor *actor : actorList) {
+    actor->SetupTickFunction(false, true);
     actor->EndPlay();
   }
 }
 
-void ENGH::EObject::World::Tick(double delta) {
+void World::Tick(double delta) {
   this->delta = delta;
-  for (Actor *actor : tickingActorList) {
-    actor->Tick();
+  for (const auto& target : tickingList) {
+    target->ExecuteTick(delta);
   }
 }
 
-ENGH::EObject::Actor *ENGH::EObject::World::SpawnExistingActor(Actor *actor) {
+Actor *World::SpawnExistingActor(Actor *actor) {
   actor->world = this;
   actorList += actor;
-  if (actor->tickingEnabled) {
-    tickingActorList += actor;
-  }
+  actor->SetupTickFunction(true, true);
   return actor;
+}
+
+void TickTarget::RegisterFunction(World *world) {
+  ASSERT(world != nullptr, "World must be not null");
+
+  if(this->world != nullptr) {
+    this->UnregisterFunction();
+  }
+  if(enableTicking) {
+    this->world = world;
+    this->world->tickingList += this;
+  }
+}
+
+void TickTarget::UnregisterFunction() {
+  this->world->tickingList -= this;
+  this->world = nullptr;
+}
+
 }

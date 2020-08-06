@@ -10,10 +10,13 @@ add_library(
 
         public/eobject/actor.hpp
         public/eobject/object.hpp
+        public/eobject/tick_target.hpp
         public/eobject/world.hpp
 
         public/eobject/component/box_component.hpp
         public/eobject/component/component.hpp
+        public/eobject/component/primitive_component.hpp
+        public/eobject/component/scene_component.hpp
         public/eobject/component/sphere_component.hpp
 
         public/eobject/data/transform.hpp
@@ -22,7 +25,6 @@ add_library(
         public/eobject/render/renderable_object.hpp
         public/eobject/render/sphere.hpp
         public/eobject/render/standard_shaders.hpp
-        public/eobject/render/standard_render.hpp
 
         public/input/input_events.hpp
         public/input/input_handler.hpp
@@ -63,8 +65,11 @@ add_library(
         public/render/camera/camera.hpp
         public/render/camera/perspective_camera.hpp
 
+        public/render/component/primitive_render_delegate.hpp
+
         public/util/array.hpp
         public/util/memory.hpp
+        public/util/set.hpp
 
 
         private/core/debug.cpp
@@ -76,6 +81,8 @@ add_library(
 
         private/eobject/component/box_component.cpp
         private/eobject/component/component.cpp
+        private/eobject/component/primitive_component.cpp
+        private/eobject/component/scene_component.cpp
         private/eobject/component/sphere_component.cpp
 
         private/eobject/data/transform.cpp
@@ -84,7 +91,6 @@ add_library(
         private/eobject/render/renderable_object.cpp
         private/eobject/render/sphere.cpp
         private/eobject/render/standard_shaders.cpp
-        private/eobject/render/standard_render.cpp
 
         private/input/input_events.cpp
         private/input/input_handler.cpp
@@ -119,6 +125,8 @@ add_library(
 
         private/render/camera/camera.cpp
         private/render/camera/perspective_camera.cpp
+
+        private/render/component/primitive_render_delegate.cpp
 
         private/util/array.cpp
 )

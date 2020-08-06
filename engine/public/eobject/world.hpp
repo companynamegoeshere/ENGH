@@ -7,26 +7,31 @@ class WorldRenderer;
 }
 
 namespace ENGH::EObject {
-
 class Actor;
+}
+
+namespace ENGH::EObject::World {
+
+class TickTarget;
 
 class World : public EObject {
 
   friend class Render::WorldRenderer;
+  friend class TickTarget;
 
   Actor *SpawnExistingActor(Actor *actor);
 
 protected:
-  TArray<Actor *> tickingActorList;
+  TSet<TickTarget *> tickingList;
   TArray<Actor *> actorList;
 
   double delta;
 
 public:
 
-  template<typename T>
-  T *SpawnActor() {
-    return reinterpret_cast<T *>(SpawnExistingActor(new T()));
+  template<typename T, typename... Args>
+  inline T *SpawnActor(Args &&...args) {
+    return reinterpret_cast<T *>(SpawnExistingActor(new T(std::forward<Args>(args)...)));
   }
 
   void BeginPlay();

@@ -22,7 +22,7 @@ using ENGH::EObject::Actor;
 using ENGH::EObject::Comps::BoxComponent;
 using ENGH::EObject::Comps::SphereComponent;
 using ENGH::EObject::Comps::Component;
-using ENGH::EObject::World;
+using ENGH::EObject::World::World;
 using ENGH::Input::InputKey;
 using ENGH::Platform::Render::BufferDataTypes;
 using ENGH::Platform::Render::FrameBuffer;
@@ -86,7 +86,7 @@ int main() {
   SphereComponent *head;
   auto            *actor = world->SpawnActor<Actor>();
   {
-    BoxComponent *comp = actor->SetRoot<BoxComponent>();
+    BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
       head = comp->AttachComponent<SphereComponent>();

@@ -9,7 +9,7 @@ namespace ENGH::Render {
 
 class WorldRenderer {
 
-  EObject::World *world;
+  EObject::World::World *world;
 
   Camera::Camera *camera;
   Math::Mat4 cameraProjectionCache;
@@ -22,7 +22,7 @@ class WorldRenderer {
   void RenderComponent(EObject::Comps::Component *);
 
 public:
-  WorldRenderer(EObject::World *world, Camera::Camera *camera, std::shared_ptr<Platform::Render::RenderContext> context);
+  WorldRenderer(EObject::World::World *world, Camera::Camera *camera, std::shared_ptr<Platform::Render::RenderContext> context);
 
   void SetupRender();
 

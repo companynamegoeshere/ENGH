@@ -2,11 +2,24 @@
 
 namespace ENGH::EObject {
 
-Actor::Actor() :
-    root(new Comps::SceneComponent) {}
+Actor::Actor() : root(new Comps::SceneComponent) {
+  root->owner = this;
+}
 
-void Actor::SetRoot(ENGH::EObject::Comps::SceneComponent *sceneComp) {
+Actor::~Actor() {
   delete root;
+}
+
+void Actor::BeginPlay() {}
+
+void Actor::EndPlay() {}
+
+void Actor::Tick(float delta) {}
+
+void Actor::SetRootComponent(ENGH::EObject::Comps::SceneComponent *sceneComp, bool alsoDelete) {
+  if (alsoDelete) {
+    delete root;
+  }
   root = sceneComp;
   root->owner  = this;
   root->parent = nullptr;
@@ -21,11 +34,27 @@ void Actor::SetRoot(ENGH::EObject::Comps::SceneComponent *sceneComp) {
   };
   iter(root->children, iter);
 }
+void Actor::SetupTickFunction(bool isRegistering, bool components) {
+  if (isRegistering) {
+    actorTickTarget.target = this;
+    actorTickTarget.RegisterFunction(world);
+    if (components) {
+      root->Traverse([](Comps::Component *c) {
+        c->SetupTickFunction(true);
+        return true;
+      });
+    }
+  } else {
+    actorTickTarget.UnregisterFunction();
+    root->Traverse([](Comps::Component *c) {
+      c->SetupTickFunction(false);
+      return true;
+    });
+  }
+}
 
-void Actor::BeginPlay() {}
-
-void Actor::EndPlay() {}
-
-void Actor::Tick() {}
+void World::ActorTickTarget::ExecuteTick(float deltaTime) {
+  this->target->Tick(deltaTime);
+}
 
 }
