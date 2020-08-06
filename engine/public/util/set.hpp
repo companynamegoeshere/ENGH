@@ -4,18 +4,18 @@
 #include <core/debug.hpp>
 #include <util/memory.hpp>
 #include <algorithm>
-#include <vector>
+#include <set>
 
 namespace ENGH::Util {
 
 template<typename T>
-class TArray : public std::vector<T> {
+class TSet : public std::set<T> {
 public:
 
-  TArray() : std::vector<T>() {
+  TSet() : std::set<T>() {
   }
 
-  TArray(std::initializer_list<T> elements) : std::vector<T>(elements) {
+  TSet(std::initializer_list<T> elements) : std::set<T>(elements) {
   }
 
   uint16 length() const {
@@ -23,7 +23,11 @@ public:
   }
 
   constexpr void operator+=(T value) {
-    this->push_back(value);
+    this->insert(value);
+  }
+
+  constexpr size_t operator-=(const T& value) {
+    return this->erase(value);
   }
 
   constexpr void Clear() {
