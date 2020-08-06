@@ -1,21 +1,10 @@
 #include <eobject/component/box_component.hpp>
-#include <eobject/render/box.hpp>
-#include <eobject/render/standard_render.hpp>
-#include <eobject/render/standard_shaders.hpp>
+#include <render/component/primitive_render_delegate.hpp>
 
-using ENGH::EObject::Render::Box;
-using ENGH::EObject::Render::StandardRender;
-using ENGH::EObject::Render::StandardShaders;
-using ENGH::Platform::Render::ProgramShader;
-using ENGH::Render::RenderCommand;
+namespace ENGH::EObject::Comps {
 
-void ENGH::EObject::Comps::BoxComponent::Render(ENGH::Render::RenderDispatcher &dispatcher) {
-  Component::Render(dispatcher);
-  StandardRender::RenderStaticMesh(
-      this,
-      dispatcher,
-      Box::Get().array.get(),
-      Box::Get().indexBuffer.get(),
-      StandardShaders::Get().flatColor.get()
-  );
+Render::Component::PrimitiveRenderDelegate *BoxComponent::CreateRenderDelegate() {
+  return PrimitiveComponent::CreateRenderDelegate();
+}
+
 }

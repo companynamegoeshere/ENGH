@@ -1,14 +1,12 @@
 #pragma once
 
-#include <eobject/component/component.hpp>
+#include <eobject/component/primitive_component.hpp>
 
 namespace ENGH::EObject::Comps {
 
-class BoxComponent : public Component {
-
+class BoxComponent : public PrimitiveComponent {
 public:
-  void Render(ENGH::Render::RenderDispatcher &dispatcher) override;
-
+  Render::Component::PrimitiveRenderDelegate *CreateRenderDelegate() override;
 };
 
 }
