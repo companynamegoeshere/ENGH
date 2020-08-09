@@ -1,9 +1,9 @@
 #pragma once
 
-#include <eobject/world.hpp>
+#include <eobject/component/component.hpp>
+#include <eobject/world/world.hpp>
 #include <render/camera/camera.hpp>
 #include <render/render_dispatcher_impl.hpp>
-#include <eobject/component/component.hpp>
 
 namespace ENGH::Render {
 
@@ -11,7 +11,6 @@ class WorldRenderer {
 
   EObject::World::World *world;
 
-  Camera::Camera *camera;
   Math::Mat4 cameraProjectionCache;
   Math::Mat4 cameraViewCache;
 
@@ -22,9 +21,9 @@ class WorldRenderer {
   void RenderComponent(EObject::Comps::Component *);
 
 public:
-  WorldRenderer(EObject::World::World *world, Camera::Camera *camera, std::shared_ptr<Platform::Render::RenderContext> context);
+  WorldRenderer(EObject::World::World *world, std::shared_ptr<Platform::Render::RenderContext> context);
 
-  void SetupRender();
+  void SetupRender(Camera::Camera *camera);
 
   inline RenderDispatcherImpl &GetDispatcher() { return renderDispatcher; }
 

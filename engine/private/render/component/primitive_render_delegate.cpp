@@ -9,4 +9,8 @@ PrimitiveRenderDelegate::PrimitiveRenderDelegate(ENGH::EObject::Comps::Primitive
 
 PrimitiveRenderDelegate::~PrimitiveRenderDelegate() {}
 
+bool PrimitiveRenderDelegate::IsDirty() {
+  return primitive->isRenderDirty;
+}
+
 }

@@ -7,10 +7,8 @@ namespace ENGH::Render {
 using EObject::Render::RenderableObject;
 
 WorldRenderer::WorldRenderer(EObject::World::World *world,
-                             Camera::Camera *camera,
                              std::shared_ptr<Platform::Render::RenderContext> context)
     : world(world),
-      camera(camera),
       renderDispatcher(
           context, [this](auto o) { return this->Transformer(o); }
       ) {
@@ -34,7 +32,7 @@ Math::Mat4 WorldRenderer::Transformer(Math::Mat4 original) {
   return cameraProjectionCache * cameraViewCache * original;
 }
 
-void WorldRenderer::SetupRender() {
+void WorldRenderer::SetupRender(Camera::Camera *camera) {
   cameraProjectionCache = camera->GetProjection();
   cameraViewCache       = camera->GetView();
   for (const auto &actor : this->world->actorList) {

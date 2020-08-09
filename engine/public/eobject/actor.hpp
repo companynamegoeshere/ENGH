@@ -1,10 +1,10 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <eobject/tick_target.hpp>
-#include <eobject/world.hpp>
 #include <eobject/component/scene_component.hpp>
 #include <eobject/component/component.hpp>
+#include <eobject/world/tick_target.hpp>
+#include <eobject/world/world.hpp>
 
 namespace ENGH::EObject {
 
@@ -74,6 +74,7 @@ public:
 
   void SetupTickFunction(bool isRegistering, bool components);
 
+  void RegisterWorldFunctions(World::WorldRegistry& registry);
 };
 
 }

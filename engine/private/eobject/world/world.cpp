@@ -1,6 +1,7 @@
-#include <eobject/world.hpp>
-#include <eobject/tick_target.hpp>
+#include <eobject/world/world.hpp>
+
 #include <eobject/actor.hpp>
+#include <eobject/world/tick_target.hpp>
 
 namespace ENGH::EObject::World {
 
@@ -29,6 +30,7 @@ Actor *World::SpawnExistingActor(Actor *actor) {
   actor->world = this;
   actorList += actor;
   actor->SetupTickFunction(true, true);
+  actor->RegisterWorldFunctions(registry);
   return actor;
 }
 

@@ -10,6 +10,8 @@ public:
   PrimitiveRenderDelegate(EObject::Comps::PrimitiveComponent *primitive);
 
   virtual ~PrimitiveRenderDelegate() = 0;
+
+  virtual bool IsDirty();
 };
 
 }

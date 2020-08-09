@@ -29,7 +29,7 @@ public:
     }
   };
 
-  void Traverse(const std::function<bool(Component*)>& target, bool receiveSelf = true);
+  virtual void Traverse(const std::function<bool(Component*)>& target, bool receiveSelf = true);
 
 };
 

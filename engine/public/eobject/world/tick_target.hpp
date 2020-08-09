@@ -1,9 +1,10 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <eobject/world.hpp>
 
 namespace ENGH::EObject::World {
+
+class World;
 
 class TickTarget {
   World *world = nullptr;

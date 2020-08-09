@@ -2,6 +2,8 @@
 
 #include <eobject/object.hpp>
 
+#include <eobject/world/world_registry.hpp>
+
 namespace ENGH::Render {
 class WorldRenderer;
 }
@@ -18,6 +20,8 @@ class World : public EObject {
 
   friend class Render::WorldRenderer;
   friend class TickTarget;
+
+  WorldRegistry registry;
 
   Actor *SpawnExistingActor(Actor *actor);
 

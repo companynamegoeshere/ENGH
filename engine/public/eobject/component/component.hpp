@@ -1,8 +1,8 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <eobject/tick_target.hpp>
 #include <render/render_dispatcher.hpp>
+#include <eobject/world/tick_target.hpp>
 
 namespace ENGH::EObject {
 class Actor;
@@ -13,12 +13,16 @@ class SceneComponent;
 }
 
 namespace ENGH::EObject::World {
+
+class WorldRegistry;
+
 class ComponentTickTarget : public TickTarget {
   friend class ::ENGH::EObject::Comps::Component;
   Comps::Component *target;
 public:
   void ExecuteTick(float deltaTime) override;
 };
+
 }
 
 namespace ENGH::EObject::Comps {
@@ -34,10 +38,11 @@ public:
 
   Component();
 
-  void Tick(float delta);
+  virtual void Tick(float delta);
 
-  void SetupTickFunction(bool isRegistering);
+  virtual void SetupTickFunction(bool isRegistering);
 
+  virtual void RegisterWorldFunctions(class ENGH::EObject::World::WorldRegistry &registry);
 };
 
 }

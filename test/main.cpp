@@ -1,7 +1,7 @@
 #include <iostream>
 #include <core/math.hpp>
 #include <eobject/actor.hpp>
-#include <eobject/world.hpp>
+#include <eobject/world/world.hpp>
 #include <eobject/component/box_component.hpp>
 #include <eobject/component/sphere_component.hpp>
 #include <input/input_handler.hpp>
@@ -80,7 +80,7 @@ int main() {
   auto renderer = context->GetRenderer();
 
   auto world             = new World();
-  auto worldRenderer     = new WorldRenderer(world, cam, context);
+  auto worldRenderer     = new WorldRenderer(world, context);
   auto &dispatcher       = worldRenderer->GetDispatcher();
 
   SphereComponent *head;
@@ -183,7 +183,7 @@ int main() {
   });
 
   window->SetSetupRenderCallback([&]() {
-    worldRenderer->SetupRender();
+    worldRenderer->SetupRender(cam);
   });
 
   auto screenFb = context->GetScreenFrameBuffer();

@@ -10,8 +10,10 @@ add_library(
 
         public/eobject/actor.hpp
         public/eobject/object.hpp
-        public/eobject/tick_target.hpp
-        public/eobject/world.hpp
+
+        public/eobject/world/tick_target.hpp
+        public/eobject/world/world.hpp
+        public/eobject/world/world_registry.hpp
 
         public/eobject/component/box_component.hpp
         public/eobject/component/component.hpp
@@ -77,7 +79,9 @@ add_library(
 
         private/eobject/actor.cpp
         private/eobject/object.cpp
-        private/eobject/world.cpp
+
+        private/eobject/world/world.cpp
+        private/eobject/world/world_registry.cpp
 
         private/eobject/component/box_component.cpp
         private/eobject/component/component.cpp

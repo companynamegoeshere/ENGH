@@ -53,6 +53,13 @@ void Actor::SetupTickFunction(bool isRegistering, bool components) {
   }
 }
 
+void Actor::RegisterWorldFunctions(World::WorldRegistry& registry) {
+  GetRoot()->Traverse([&registry](Comps::Component *c) {
+    c->RegisterWorldFunctions(registry);
+    return true;
+  });
+}
+
 void World::ActorTickTarget::ExecuteTick(float deltaTime) {
   this->target->Tick(deltaTime);
 }
