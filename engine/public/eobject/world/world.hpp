@@ -29,14 +29,17 @@ protected:
   TSet<TickTarget *> tickingList;
   TArray<Actor *> actorList;
 
-  double delta;
+  double delta = 0.0;
 
 public:
 
   template<typename T, typename... Args>
   inline T *SpawnActor(Args &&...args) {
+    static_assert(std::is_base_of_v<Actor, T>, "T is not a Actor subclass");
     return reinterpret_cast<T *>(SpawnExistingActor(new T(std::forward<Args>(args)...)));
   }
+
+  World();
 
   void BeginPlay();
 
@@ -46,6 +49,7 @@ public:
 
   inline double GetDelta() { return delta; }
 
+  WorldRegistry& GetRegistry();
 };
 
 }

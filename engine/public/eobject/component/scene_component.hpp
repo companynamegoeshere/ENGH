@@ -18,10 +18,12 @@ public:
 
   template<typename T, typename ...Args>
   T *AttachComponent(Args &&...args) {
+    static_assert(std::is_base_of_v<Component, T>, "T is not a Component subclass");
     T *t = new T(std::forward<Args>(args)...);
     t->owner  = this->owner;
     t->parent = this;
     children += t;
+    t->RegisterWorldFunctions();
     return t;
   }
 
@@ -32,6 +34,8 @@ public:
       return transform;
     }
   };
+
+  void RegisterWorldFunctions() override;
 
   virtual void Traverse(const std::function<bool(Component*)>& target, bool receiveSelf = true);
 

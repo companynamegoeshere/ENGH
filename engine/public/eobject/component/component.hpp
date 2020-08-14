@@ -42,7 +42,7 @@ public:
 
   virtual void SetupTickFunction(bool isRegistering);
 
-  virtual void RegisterWorldFunctions(class ENGH::EObject::World::WorldRegistry &registry);
+  virtual void RegisterWorldFunctions();
 };
 
 }

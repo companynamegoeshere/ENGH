@@ -1,5 +1,7 @@
 #include <render/component/primitive_render_delegate.hpp>
 
+#include <eobject/component/primitive_component.hpp>
+
 namespace ENGH::Render::Component {
 
 PrimitiveRenderDelegate::PrimitiveRenderDelegate(ENGH::EObject::Comps::PrimitiveComponent *primitive) :
@@ -10,7 +12,7 @@ PrimitiveRenderDelegate::PrimitiveRenderDelegate(ENGH::EObject::Comps::Primitive
 PrimitiveRenderDelegate::~PrimitiveRenderDelegate() {}
 
 bool PrimitiveRenderDelegate::IsDirty() {
-  return primitive->isRenderDirty;
+  return primitive == nullptr || primitive->isRenderDirty;
 }
 
 }

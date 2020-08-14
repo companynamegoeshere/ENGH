@@ -2,20 +2,28 @@
 
 namespace ENGH::EObject::Comps {
 
+void SceneComponent::RegisterWorldFunctions() {
+  Component::RegisterWorldFunctions();
+  this->Traverse([](Component *c) {
+    c->RegisterWorldFunctions();
+    return true;
+  }, false);
+}
+
 void SceneComponent::Traverse(const std::function<bool(Component *)> &target, bool receiveSelf) {
   if (receiveSelf) {
     if (!target(this)) {
       return;
     }
   }
-  auto iter = [target](const auto& list, const auto& iter) -> bool {
+  auto iter = [target](const auto &list, const auto &iter) -> bool {
     for (const auto &e : list) {
       if (!target(e)) {
         return false;
       }
       SceneComponent *sc = dynamic_cast<SceneComponent *>(e);
       if (sc) {
-        if(!iter(sc->children, iter)) {
+        if (!iter(sc->children, iter)) {
           return false;
         }
       }

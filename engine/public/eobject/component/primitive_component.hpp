@@ -15,9 +15,12 @@ protected:
 
   bool isRenderDirty;
 public:
+
+  ~PrimitiveComponent() override;
+
   virtual Render::Component::PrimitiveRenderDelegate *CreateRenderDelegate();
 
-  void RegisterWorldFunctions(World::WorldRegistry &registry) override;
+  void RegisterWorldFunctions() override;
 };
 
 }

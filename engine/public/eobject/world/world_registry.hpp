@@ -1,13 +1,26 @@
 #pragma once
 
-#include <render/component/primitive_render_delegate.hpp>
+#include <core/engine.hpp>
+
+namespace ENGH::Render::Component {
+class PrimitiveRenderDelegate;
+}
 
 namespace ENGH::EObject::World {
 
+class World;
+
 class WorldRegistry {
-  TArray<ENGH::Render::Component::PrimitiveRenderDelegate*> render;
+  friend class World;
+
+  World *world;
+
+  TArray<ENGH::Render::Component::PrimitiveRenderDelegate *> render;
+
+  WorldRegistry(World *world);
+
 public:
-  void RegisterPrimitive(ENGH::Render::Component::PrimitiveRenderDelegate* primitiveRender);
+  void RegisterPrimitive(ENGH::Render::Component::PrimitiveRenderDelegate *primitiveRender);
 };
 
 }

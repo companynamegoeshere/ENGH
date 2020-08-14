@@ -1,10 +1,13 @@
 #pragma once
 
-#include <eobject/component/primitive_component.hpp>
+namespace ENGH::EObject::Comps {
+class PrimitiveComponent;
+}
 
 namespace ENGH::Render::Component {
 
 class PrimitiveRenderDelegate {
+  friend class EObject::Comps::PrimitiveComponent;
   EObject::Comps::PrimitiveComponent *primitive;
 public:
   PrimitiveRenderDelegate(EObject::Comps::PrimitiveComponent *primitive);

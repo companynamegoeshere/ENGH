@@ -17,7 +17,8 @@ void Comps::Component::SetupTickFunction(bool isRegistering) {
   }
 }
 
-void Comps::Component::RegisterWorldFunctions(World::WorldRegistry &registry) {
+void Comps::Component::RegisterWorldFunctions() {
+
 }
 
 void World::ComponentTickTarget::ExecuteTick(float deltaTime) {

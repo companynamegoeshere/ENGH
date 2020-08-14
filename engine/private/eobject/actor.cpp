@@ -16,8 +16,8 @@ void Actor::EndPlay() {}
 
 void Actor::Tick(float delta) {}
 
-void Actor::SetRootComponent(ENGH::EObject::Comps::SceneComponent *sceneComp, bool alsoDelete) {
-  if (alsoDelete) {
+void Actor::SetRootComponent(ENGH::EObject::Comps::SceneComponent *sceneComp, bool deleteOld) {
+  if (deleteOld) {
     delete root;
   }
   root = sceneComp;
@@ -33,6 +33,7 @@ void Actor::SetRootComponent(ENGH::EObject::Comps::SceneComponent *sceneComp, bo
     }
   };
   iter(root->children, iter);
+  GetRoot()->RegisterWorldFunctions();
 }
 void Actor::SetupTickFunction(bool isRegistering, bool components) {
   if (isRegistering) {
@@ -53,11 +54,8 @@ void Actor::SetupTickFunction(bool isRegistering, bool components) {
   }
 }
 
-void Actor::RegisterWorldFunctions(World::WorldRegistry& registry) {
-  GetRoot()->Traverse([&registry](Comps::Component *c) {
-    c->RegisterWorldFunctions(registry);
-    return true;
-  });
+void Actor::RegisterWorldFunctions() {
+  GetRoot()->RegisterWorldFunctions();
 }
 
 void World::ActorTickTarget::ExecuteTick(float deltaTime) {

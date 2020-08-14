@@ -1,9 +1,13 @@
 #include <eobject/world/world.hpp>
 
-#include <eobject/actor.hpp>
 #include <eobject/world/tick_target.hpp>
+#include <eobject/actor.hpp>
 
 namespace ENGH::EObject::World {
+
+World::World() : registry(this) {
+
+}
 
 void World::BeginPlay() {
   for (Actor *actor : actorList) {
@@ -30,8 +34,12 @@ Actor *World::SpawnExistingActor(Actor *actor) {
   actor->world = this;
   actorList += actor;
   actor->SetupTickFunction(true, true);
-  actor->RegisterWorldFunctions(registry);
+  actor->RegisterWorldFunctions();
   return actor;
+}
+
+WorldRegistry& World::GetRegistry() {
+  return registry;
 }
 
 void TickTarget::RegisterFunction(World *world) {

@@ -39,12 +39,12 @@ public:
 
   virtual void Tick(float delta);
 
-  void SetRootComponent(Comps::SceneComponent *sceneComp, bool alsoDelete = true);
+  void SetRootComponent(Comps::SceneComponent *sceneComp, bool deleteOld = true);
 
-  template<typename T, bool alsoDelete = true, typename ...Args>
+  template<typename T, bool deleteOld = true, typename ...Args>
   T &SetRootComponent(Args &&...args) {
-    static_assert(std::is_base_of_v<Comps::SceneComponent, T>);
-    SetRootComponent(new T(std::forward<Args>(args)...), alsoDelete);
+    static_assert(std::is_base_of_v<Comps::SceneComponent, T>, "T is not a SceneComponent subclass");
+    SetRootComponent(new T(std::forward<Args>(args)...), deleteOld);
     return reinterpret_cast<T &>(*root);
   }
 
@@ -74,7 +74,8 @@ public:
 
   void SetupTickFunction(bool isRegistering, bool components);
 
-  void RegisterWorldFunctions(World::WorldRegistry& registry);
+  // Runs somewhere before BeginPlay and after constructor
+  void RegisterWorldFunctions();
 };
 
 }
