@@ -8,6 +8,8 @@ add_library(
         public/core/log.hpp
         public/core/math.hpp
 
+        public/core/smallfun/smallfun.hpp
+
         public/eobject/actor.hpp
         public/eobject/object.hpp
 

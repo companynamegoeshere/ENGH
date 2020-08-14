@@ -9,6 +9,8 @@
 #include <core/log.hpp>
 #include <core/safe_cast.hpp>
 
+#include <core/smallfun/smallfun.hpp>
+
 #include <util/array.hpp>
 #include <util/set.hpp>
 #include <util/memory.hpp>
