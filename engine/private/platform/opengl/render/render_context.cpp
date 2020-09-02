@@ -50,7 +50,7 @@ std::shared_ptr<ProgramShader> OpenGLRenderContext::CreateShader(const std::stri
   return prog;
 }
 
-std::shared_ptr<FrameBuffer> OpenGLRenderContext::CreateFrameBuffer(FrameBuffer::BufferType type, ENGH::uint32 width, ENGH::uint32 height) {
+std::shared_ptr<FrameBuffer> OpenGLRenderContext::CreateFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height) {
   auto fb = std::make_shared<OpenGLFrameBuffer>(type, width, height);
   fb->Invalidate();
   return fb;

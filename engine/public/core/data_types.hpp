@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace ENGH {
+namespace ENGH::Nums {
 
 template<typename T>
 class Number {
@@ -50,3 +50,5 @@ typedef unsigned int uint;
 using UInt = Number<uint>;
 
 }
+
+using namespace ::ENGH::Nums;
