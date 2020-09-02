@@ -34,8 +34,6 @@ void GLFWWindow::Init() {
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 #endif
 
-  glfwWindowHint(GLFW_SAMPLES, 4);
-
   nativeWindow = glfwCreateWindow(config.width, config.height, config.title.c_str(), nullptr, nullptr);
   if (!nativeWindow) {
     const char *desc;
@@ -47,8 +45,6 @@ void GLFWWindow::Init() {
   glfwSetWindowUserPointer(nativeWindow, userPointer);
   context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
   context->Setup();
-
-  glEnable(GL_MULTISAMPLE);
 
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
