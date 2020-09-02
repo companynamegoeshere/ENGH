@@ -10,6 +10,10 @@ class SceneComponent : public Component {
 protected:
   TArray<Component *> children;
 public:
+
+  typedef TArray<Component*>::iterator iterator;
+  typedef TArray<Component*>::const_iterator const_iterator;
+
   Data::Transform transform;
 
   template<typename T, typename ...Args>
@@ -30,6 +34,14 @@ public:
   };
 
   virtual void Traverse(const std::function<bool(Component*)>& target, bool receiveSelf = true);
+
+  inline iterator begin() { return children.begin(); }
+
+  inline const_iterator begin() const { return children.begin(); }
+
+  inline iterator end() { return children.end(); }
+
+  inline const_iterator end() const { return children.end(); }
 
 };
 
