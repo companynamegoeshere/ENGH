@@ -17,7 +17,7 @@ static std::string readFile(const char *fileName) {
 
 namespace ENGH::EObject::Render {
 
-StandardShaders* StandardShaders::instance = RenderableObject::Instantiate<StandardShaders>();
+//StandardShaders* StandardShaders::instance = RenderableObject::Instantiate<StandardShaders>();
 
 void ENGH::EObject::Render::StandardShaders::SetupRender(ENGH::Platform::Render::RenderContext &context) {
   this->flatColor = context.CreateShader(

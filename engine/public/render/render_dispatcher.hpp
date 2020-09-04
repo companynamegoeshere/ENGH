@@ -1,21 +1,28 @@
 #pragma once
 
-#include <core/math.hpp>
+#include <platform/render/render_context.hpp>
 #include <render/render_command.hpp>
-#include <platform/render/renderer.hpp>
-#include <platform/render/program_shader.hpp>
 
 namespace ENGH::Render {
 
 class RenderDispatcher {
-protected:
-  std::function<Math::Mat4(Math::Mat4)> transformer;
+
+  std::shared_ptr<Platform::Render::RenderContext>           context;
+
+  smallfun::SmallFun<Math::Mat4(Math::Mat4), sizeof(void *) * 2> transformer;
+
+  TArray<RenderCommand> queue;
+
 public:
-  virtual void Dispatch(RenderCommand command) = 0;
 
-  virtual void Enqueue(std::function<void()> target) = 0;
+  RenderDispatcher(
+      std::shared_ptr<Platform::Render::RenderContext> renderer,
+      smallfun::SmallFun<Math::Mat4(Math::Mat4), sizeof(void *) * 2> transformer
+  );
 
-  inline const std::function<Math::Mat4(Math::Mat4)> &GetMatrixTransformer() const { return transformer; }
+  void Render();
+
+  RenderDispatcherProxy GetProxy();
 
 };
 

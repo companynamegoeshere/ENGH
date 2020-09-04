@@ -25,11 +25,6 @@ add_library(
 
         public/eobject/data/transform.hpp
 
-        public/eobject/render/box.hpp
-        public/eobject/render/renderable_object.hpp
-        public/eobject/render/sphere.hpp
-        public/eobject/render/standard_shaders.hpp
-
         public/input/input_events.hpp
         public/input/input_handler.hpp
         public/input/input_provider.hpp
@@ -62,8 +57,8 @@ add_library(
         public/platform/render/vertex_buffer.hpp
 
         public/render/render_command.hpp
+        public/render/render_dispatcher_proxy.hpp
         public/render/render_dispatcher.hpp
-        public/render/render_dispatcher_impl.hpp
         public/render/world_renderer.hpp
 
         public/render/camera/camera.hpp
@@ -93,11 +88,6 @@ add_library(
 
         private/eobject/data/transform.cpp
 
-        private/eobject/render/box.cpp
-        private/eobject/render/renderable_object.cpp
-        private/eobject/render/sphere.cpp
-        private/eobject/render/standard_shaders.cpp
-
         private/input/input_events.cpp
         private/input/input_handler.cpp
         private/input/input_provider.cpp
@@ -125,8 +115,8 @@ add_library(
         private/platform/render/render_context.cpp
 
         private/render/render_command.cpp
+        private/render/render_dispatcher_proxy.cpp
         private/render/render_dispatcher.cpp
-        private/render/render_dispatcher_impl.cpp
         private/render/world_renderer.cpp
 
         private/render/camera/camera.cpp

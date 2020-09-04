@@ -37,7 +37,7 @@ public:
 
   void RegisterWorldFunctions() override;
 
-  virtual void Traverse(const std::function<bool(Component*)>& target, bool receiveSelf = true);
+  virtual void Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf = true);
 
   inline iterator begin() { return children.begin(); }
 

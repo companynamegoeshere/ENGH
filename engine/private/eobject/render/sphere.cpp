@@ -7,7 +7,7 @@ namespace ENGH::EObject::Render {
 
 static std::map<std::pair<uint32, uint32>, std::weak_ptr<Sphere>> instances;
 
-std::shared_ptr<Sphere> Sphere::Get(uint32 latCount, uint32 longCount) {
+/*std::shared_ptr<Sphere> Sphere::Get(uint32 latCount, uint32 longCount) {
   auto key = std::make_pair(latCount, longCount);
   auto first = instances.find(key);
   if(first == instances.end() || first->second.expired()) {
@@ -16,7 +16,7 @@ std::shared_ptr<Sphere> Sphere::Get(uint32 latCount, uint32 longCount) {
     return p;
   }
   return first->second.lock();
-}
+}*/
 
 Sphere::Sphere(uint32 latCount, uint32 longCount) : latCount(latCount), longCount(longCount) {}
 

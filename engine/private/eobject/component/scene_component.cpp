@@ -10,13 +10,13 @@ void SceneComponent::RegisterWorldFunctions() {
   }, false);
 }
 
-void SceneComponent::Traverse(const std::function<bool(Component *)> &target, bool receiveSelf) {
+void SceneComponent::Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf) {
   if (receiveSelf) {
     if (!target(this)) {
       return;
     }
   }
-  auto iter = [target](const auto &list, const auto &iter) -> bool {
+  auto iter = [&target](const auto &list, const auto &iter) -> bool {
     for (const auto &e : list) {
       if (!target(e)) {
         return false;

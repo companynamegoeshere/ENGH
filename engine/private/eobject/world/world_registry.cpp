@@ -8,7 +8,7 @@ WorldRegistry::WorldRegistry(World *world) : world(world) {
 }
 
 void WorldRegistry::RegisterPrimitive(PrimitiveRenderDelegate *primitiveRender) {
-  this->render += primitiveRender;
+  this->primitives += primitiveRender;
 }
 
 }

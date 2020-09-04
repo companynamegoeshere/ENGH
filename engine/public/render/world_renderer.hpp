@@ -3,7 +3,7 @@
 #include <eobject/component/component.hpp>
 #include <eobject/world/world.hpp>
 #include <render/camera/camera.hpp>
-#include <render/render_dispatcher_impl.hpp>
+#include <render/render_dispatcher.hpp>
 
 namespace ENGH::Render {
 
@@ -14,19 +14,16 @@ class WorldRenderer {
   Math::Mat4 cameraProjectionCache;
   Math::Mat4 cameraViewCache;
 
-  RenderDispatcherImpl renderDispatcher;
-
-  Math::Mat4 Transformer(Math::Mat4 original);
-
-  void RenderComponent(EObject::Comps::Component *);
+  RenderDispatcher renderDispatcher;
 
 public:
   WorldRenderer(EObject::World::World *world, std::shared_ptr<Platform::Render::RenderContext> context);
 
   void SetupRender(Camera::Camera *camera);
 
-  inline RenderDispatcherImpl &GetDispatcher() { return renderDispatcher; }
+  void Render();
 
+  inline RenderDispatcherProxy GetDispatcher() { return renderDispatcher.GetProxy(); }
 };
 
 }

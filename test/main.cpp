@@ -81,18 +81,18 @@ int main() {
 
   auto world             = new World();
   auto worldRenderer     = new WorldRenderer(world, context);
-  auto &dispatcher       = worldRenderer->GetDispatcher();
+  auto dispatcher       = worldRenderer->GetDispatcher();
 
   SphereComponent *head;
   auto            *actor = world->SpawnActor<Actor>();
   {
-    BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
+    /*BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
       head = comp->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
       head->transform.scale    = Vec3(0.6);
-    }
+    }*/
   }
 
   input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
@@ -137,12 +137,12 @@ int main() {
   registrar.BindAction("add", [&](bool pressed, double delta) {
     static bool last = false;
     if (pressed && !last) {
-      head = head->AttachComponent<SphereComponent>();
+      /*head = head->AttachComponent<SphereComponent>();
       head->transform.position = {0.0f, 1.6f, 0.0f};
       head->transform.scale    = Vec3(0.6f);
       auto &transform          = actor->GetTransform();
       transform.position[1] -= transform.scale.y * 1.45f;
-      transform.scale *= 1.3f;
+      transform.scale *= 1.3f;*/
     }
     last = pressed;
   });
@@ -196,7 +196,7 @@ int main() {
 
     fb->Bind();
     renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
-    dispatcher.Render();
+    worldRenderer->Render();
 
     screenFb->Bind();
     imGuiAdapter.Begin();
@@ -256,8 +256,8 @@ int main() {
       ImGui::End();
 
       if (ImGui::Begin("Ball")) {
-        ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
-        ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
+//        ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
+//        ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
       }
       ImGui::End();
     }

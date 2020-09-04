@@ -11,7 +11,7 @@ struct RenderCommand {
   Platform::Render::VertexArray *data;
   Platform::Render::IndexBuffer *index;
   Platform::Render::ProgramShader *shader;
-  std::function<void(Platform::Render::ProgramShader * )> setupUniforms;
+  smallfun::SmallFun<void(Platform::Render::ProgramShader * ), 1 << 7> setupUniforms;
 };
 
 }

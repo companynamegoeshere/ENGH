@@ -2,6 +2,10 @@
 
 #include <core/engine.hpp>
 
+namespace ENGH::Render {
+class WorldRenderer;
+}
+
 namespace ENGH::Render::Component {
 class PrimitiveRenderDelegate;
 }
@@ -12,10 +16,11 @@ class World;
 
 class WorldRegistry {
   friend class World;
+  friend class ENGH::Render::WorldRenderer;
 
   World *world;
 
-  TArray<ENGH::Render::Component::PrimitiveRenderDelegate *> render;
+  TArray<ENGH::Render::Component::PrimitiveRenderDelegate *> primitives;
 
   WorldRegistry(World *world);
 
