@@ -33,6 +33,8 @@ protected:
 
 public:
 
+  Math::Vec3 ClearColor = {0.2f, 0.2f, 0.2f};
+
   template<typename T, typename... Args>
   inline T *SpawnActor(Args &&...args) {
     static_assert(std::is_base_of_v<Actor, T>, "T is not a Actor subclass");

@@ -195,10 +195,10 @@ int main() {
   window->SetRenderCallback([&]() {
 
     fb->Bind();
-    renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
     worldRenderer->Render();
 
-    screenFb->Bind();
+    context->GetScreenFrameBuffer()->Bind();
+    context->GetRenderer()->Clear(0.0f, 0.0f, 0.0f, 1.0f);
     imGuiAdapter.Begin();
     ImGuiID     dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
     static bool first     = true;

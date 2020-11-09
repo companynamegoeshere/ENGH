@@ -10,14 +10,14 @@ namespace ENGH::Render {
 class WorldRenderer {
 
   EObject::World::World *world;
+  std::shared_ptr<Platform::Render::RenderContext> context;
+  RenderDispatcher renderDispatcher;
 
   Math::Mat4 cameraProjectionCache;
   Math::Mat4 cameraViewCache;
 
-  RenderDispatcher renderDispatcher;
-
 public:
-  WorldRenderer(EObject::World::World *world, std::shared_ptr<Platform::Render::RenderContext> context);
+  WorldRenderer(EObject::World::World *world, const std::shared_ptr<Platform::Render::RenderContext>& context);
 
   void SetupRender(Camera::Camera *camera);
 
