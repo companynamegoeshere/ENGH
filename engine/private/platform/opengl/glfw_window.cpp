@@ -3,7 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
-#include <condition_variable>
+#include <utility>
 
 namespace ENGH::Platform::OpenGL {
 
@@ -12,7 +12,7 @@ GLFWWindow::~GLFWWindow() {
 }
 
 GLFWWindow::GLFWWindow(Window::Config config) :
-    Window(config),
+    Window(std::move(config)),
     frameTime(0.0),
     initialized(false),
     inputProvider() {}
@@ -124,12 +124,10 @@ void GLFWWindow::StartLoop() {
         ENGH_CORE_FINER("World tick count: ", tickCount / 5, " delay: ", delay);
         tickCount = 0;
       }
-
-      if (!renderLock) {
-        renderLock = true;
-        this->updateCallback(delta, total);
-        renderLock = false;
-      }
+      wait();
+      renderLock = true;
+      this->updateCallback(delta, total);
+      renderLock = false;
     }
   });
 
@@ -142,10 +140,11 @@ void GLFWWindow::StartLoop() {
 
     this->renderCallback();
     glfwPollEvents();
-    wait();
-    renderLock = true;
-    setupRenderCallback();
-    renderLock = false;
+    if (!renderLock) {
+      renderLock = true;
+      setupRenderCallback();
+      renderLock = false;
+    }
   }
   run = false;
   updateThread.join();
