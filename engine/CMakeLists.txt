@@ -71,6 +71,8 @@ add_library(
         public/util/memory.hpp
         public/util/set.hpp
 
+        public/util/file/fs.hpp
+
 
         private/core/debug.cpp
         private/core/log.cpp
@@ -128,6 +130,8 @@ add_library(
         private/render/component/primitive_render_delegate.cpp
 
         private/util/array.cpp
+
+        private/util/file/fs.cpp
 )
 
 set_target_properties(engh_engine

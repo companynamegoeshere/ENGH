@@ -5,24 +5,14 @@
 #include <platform/opengl/render/vertex_buffer.hpp>
 #include <platform/opengl/render/vertex_shader.hpp>
 
+#include <util/file/fs.hpp>
+
 #include <fstream>
 
 using namespace ENGH::Platform::Render;
 using namespace ENGH::Platform::Render::OpenGL;
 
-static std::string readFile(const char *fileName) {
-  std::ifstream in(fileName, std::ios::in | std::ios::ate | std::ios::binary);
-  if (!in) {
-    ENGH_CORE_ERROR("Could not read shader file: ", fileName);
-    return "";
-  }
-  std::string data;
-  data.resize(in.tellg());
-  in.seekg(0, std::ios::beg);
-  in.read(&data[0], data.size());
-  in.close();
-  return data;
-}
+using ENGH::Util::File::readFile;
 
 OpenGLRenderContext::OpenGLRenderContext(GLFWwindow *window) : window(window) {}
 
@@ -37,10 +27,22 @@ void OpenGLRenderContext::Setup() {
   screenFrameBuffer = std::make_shared<OpenGLFrameBuffer>(FrameBuffer::BufferType::NONE, width, height, 0);
   glEnable(GL_DEPTH_TEST);
 
-  ProgramShader::DEBUG_SHADER = CreateShader(
-      readFile("shaders/flat_vert.glsl"),
-      readFile("shaders/flat_frag.glsl")
-  );
+  auto setupShader = [&](std::shared_ptr<ProgramShader>& shader, const char* name) {
+    auto vName = std::string("shaders/") + name + "_vert.glsl";
+    auto fName = std::string("shaders/") + name + "_frag.glsl";
+    auto vData = readFile(vName);
+    if(!vData) {
+      ENGH_CORE_ERROR("Could not read shader vertex file: ", vName);
+      return;
+    }
+    auto fData = readFile(fName);
+    if(!fData) {
+      ENGH_CORE_ERROR("Could not read shader vertex file: ", fName);
+      return;
+    }
+    shader = CreateShader(*vData, *fData);
+  };
+  setupShader(ProgramShader::DEBUG_SHADER, "flat");
 }
 
 OpenGLRenderContext::~OpenGLRenderContext() {}
