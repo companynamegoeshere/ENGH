@@ -8,6 +8,7 @@ class SphereComponent : public PrimitiveComponent {
 public:
   uint32 latCount = 40;
   uint32 longCount = 40;
+public:
 
   Render::Component::PrimitiveRenderDelegate *CreateRenderDelegate() override;
 };

@@ -21,6 +21,8 @@ public:
   virtual Render::Component::PrimitiveRenderDelegate *CreateRenderDelegate();
 
   void RegisterWorldFunctions() override;
+
+  inline void MarkRenderDirty() { isRenderDirty = true; }
 };
 
 }

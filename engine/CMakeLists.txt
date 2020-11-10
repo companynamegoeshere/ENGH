@@ -66,7 +66,6 @@ add_library(
         public/render/camera/camera.hpp
         public/render/camera/perspective_camera.hpp
 
-        public/render/component/primitive_box_render_delegate.hpp
         public/render/component/primitive_render_delegate.hpp
         public/render/component/primitive_static_mesh_render_delegate.hpp
 
@@ -132,7 +131,6 @@ add_library(
         private/render/camera/camera.cpp
         private/render/camera/perspective_camera.cpp
 
-        private/render/component/primitive_box_render_delegate.cpp
         private/render/component/primitive_render_delegate.cpp
         private/render/component/primitive_static_mesh_render_delegate.cpp
 
