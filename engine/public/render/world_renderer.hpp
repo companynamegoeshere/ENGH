@@ -12,6 +12,7 @@ class WorldRenderer {
   EObject::World::World *world;
   std::shared_ptr<Platform::Render::RenderContext> context;
   RenderDispatcher renderDispatcher;
+  std::unique_ptr<RenderDispatcherProxy> proxy;
 
   Math::Mat4 cameraProjectionCache;
   Math::Mat4 cameraViewCache;
@@ -23,7 +24,7 @@ public:
 
   void Render();
 
-  inline RenderDispatcherProxy GetDispatcher() { return renderDispatcher.GetProxy(); }
+  inline RenderDispatcherProxy GetDispatcher() { return *proxy; }
 };
 
 }

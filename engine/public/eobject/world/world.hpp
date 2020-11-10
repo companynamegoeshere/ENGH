@@ -1,7 +1,7 @@
 #pragma once
 
+#include <core/math.hpp>
 #include <eobject/object.hpp>
-
 #include <eobject/world/world_registry.hpp>
 
 namespace ENGH::Render {
@@ -49,7 +49,7 @@ public:
 
   void Tick(double delta);
 
-  inline double GetDelta() { return delta; }
+  inline double GetDelta() const { return delta; }
 
   WorldRegistry& GetRegistry();
 };

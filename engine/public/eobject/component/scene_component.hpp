@@ -7,12 +7,13 @@ namespace ENGH::EObject::Comps {
 
 class SceneComponent : public Component {
   friend class ::ENGH::EObject::Actor;
+
 protected:
   TArray<Component *> children;
 public:
 
-  typedef TArray<Component*>::iterator iterator;
-  typedef TArray<Component*>::const_iterator const_iterator;
+  typedef TArray<Component *>::iterator iterator;
+  typedef TArray<Component *>::const_iterator const_iterator;
 
   Data::Transform transform;
 
@@ -20,7 +21,7 @@ public:
   T *AttachComponent(Args &&...args) {
     static_assert(std::is_base_of_v<Component, T>, "T is not a Component subclass");
     T *t = new T(std::forward<Args>(args)...);
-    t->owner  = this->owner;
+    t->owner = this->owner;
     t->parent = this;
     children += t;
     t->RegisterWorldFunctions();
@@ -37,7 +38,11 @@ public:
 
   void RegisterWorldFunctions() override;
 
-  virtual void Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf = true);
+  inline void Traverse(const smallfun::SmallFun<bool(Component *), 32> &target) {
+    Traverse(target, true);
+  }
+
+  virtual void Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf);
 
   inline iterator begin() { return children.begin(); }
 

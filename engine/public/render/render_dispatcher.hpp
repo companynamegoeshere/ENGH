@@ -7,22 +7,28 @@ namespace ENGH::Render {
 
 class RenderDispatcher {
 
-  std::shared_ptr<Platform::Render::RenderContext>           context;
+  std::shared_ptr<Platform::Render::RenderContext> context;
+  smallfun::SmallFun<Math::Mat4(const Math::Mat4 &), sizeof(void *) * 2> transformer;
 
-  smallfun::SmallFun<Math::Mat4(Math::Mat4), sizeof(void *) * 2> transformer;
+  struct RenderEntry {
+    std::shared_ptr<Platform::Render::VertexArray> vao;
+    std::shared_ptr<Platform::Render::IndexBuffer> index;
+    Platform::Render::ProgramShader* shader;
+    smallfun::SmallFun<void(Platform::Render::ProgramShader * ), 32> setupUniforms;
+  };
 
-  TArray<RenderCommand> queue;
+  TArray<RenderEntry> queue;
 
 public:
 
   RenderDispatcher(
       std::shared_ptr<Platform::Render::RenderContext> renderer,
-      smallfun::SmallFun<Math::Mat4(Math::Mat4), sizeof(void *) * 2> transformer
+      const smallfun::SmallFun<Math::Mat4(const Math::Mat4 &), sizeof(void *) * 2> &transformer
   );
 
   void Render();
 
-  RenderDispatcherProxy GetProxy();
+  std::unique_ptr<RenderDispatcherProxy> GetProxy();
 
 };
 

@@ -11,10 +11,11 @@ WorldRenderer::WorldRenderer(EObject::World::World *world,
       context(context),
       renderDispatcher(
           context,
-          [this](Math::Mat4 o) {
+          [this](const Math::Mat4& o) {
             return cameraProjectionCache * cameraViewCache * o;
           }
-      ) {}
+      ),
+      proxy(renderDispatcher.GetProxy()) {}
 
 void WorldRenderer::SetupRender(Camera::Camera *camera) {
   cameraProjectionCache = camera->GetProjection();
@@ -23,7 +24,8 @@ void WorldRenderer::SetupRender(Camera::Camera *camera) {
   auto            &registry = this->world->registry;
   for (const auto &p : registry.primitives) {
     if(p->IsDirty()) {
-
+      p->UnDirty();
+      p->WriteCommandBuffer(*proxy);
     }
   }
 }

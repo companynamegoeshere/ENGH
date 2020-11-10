@@ -8,8 +8,11 @@
 namespace ENGH::Render {
 
 struct RenderDispatcherProxy {
-  const smallfun::SmallFun<Math::Mat4(Math::Mat4), sizeof(void *) * 2> MatrixTransformer;
-  const smallfun::SmallFun<void(RenderCommand), sizeof(void *) * 2>    Dispatch;
+  const smallfun::SmallFun<Math::Mat4(const Math::Mat4 &), sizeof(void *) * 2> MatrixTransformer;
+  const smallfun::SmallFun<size_t(const RenderCommand &), sizeof(void *) * 2> Dispatch;
+
+  const smallfun::SmallFun<void(size_t id, const TArray<float> &), sizeof(void *) * 2> UpdateData;
+  const smallfun::SmallFun<void(size_t id, const TArray<uint32> &), sizeof(void *) * 2> UpdateIndex;
 };
 
 }

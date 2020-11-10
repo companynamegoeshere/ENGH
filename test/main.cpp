@@ -1,4 +1,6 @@
 #include <iostream>
+#include <filesystem>
+
 #include <core/math.hpp>
 #include <eobject/actor.hpp>
 #include <eobject/world/world.hpp>
@@ -63,10 +65,11 @@ int main() {
       RenderLibrary::OPENGL
   );
   window->Init();
-  ImGuiAdapter imGuiAdapter(static_cast<GLFWWindow *>(window.get())->nativeWindow);
-  imGuiAdapter.Setup(false);
+  ImGuiAdapter imGuiAdapter(dynamic_cast<GLFWWindow *>(window.get())->nativeWindow);
+  imGuiAdapter.Setup(true);
+  bool loadDefaultLayout = !std::filesystem::exists(ImGui::GetIO().IniFilename);
 
-  PerspectiveCamera *cam = new PerspectiveCamera();
+  auto *cam = new PerspectiveCamera();
   cam->fov   = 80 * DEGtoRAD;
   cam->znear = 0.1;
   cam->zfar  = 1000;
@@ -77,22 +80,21 @@ int main() {
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
   auto context  = window->GetContext();
-  auto renderer = context->GetRenderer();
 
   auto world             = new World();
   auto worldRenderer     = new WorldRenderer(world, context);
-  auto dispatcher       = worldRenderer->GetDispatcher();
+//  auto dispatcher       = worldRenderer->GetDispatcher();
 
   SphereComponent *head;
   auto            *actor = world->SpawnActor<Actor>();
   {
-    /*BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
+    auto *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
-      head = comp->AttachComponent<SphereComponent>();
-      head->transform.position = {0.0f, 1.6f, 0.0f};
-      head->transform.scale    = Vec3(0.6);
-    }*/
+//      head = comp->AttachComponent<SphereComponent>();
+//      head->transform.position = {0.0f, 1.6f, 0.0f};
+//      head->transform.scale    = Vec3(0.6);
+    }
   }
 
   input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
@@ -153,7 +155,7 @@ int main() {
   std::array<float, 60> frameTime{0};
   double                nextSec = 0;
 
-  constexpr auto last = [](auto &v) constexpr -> auto & {return v[v.size() - 1];};
+  constexpr auto last = [](auto &v) constexpr -> auto & { return v[v.size() - 1]; };
 
   window->SetUpdateCallback([&](double delta, double total) {
     input.UpdateInputs();
@@ -186,10 +188,8 @@ int main() {
     worldRenderer->SetupRender(cam);
   });
 
-  auto screenFb = context->GetScreenFrameBuffer();
-
   auto fb = context->CreateFrameBuffer(
-      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH), 0.0f, 0.0f
+      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH), 0, 0
   );
 
   window->SetRenderCallback([&]() {
@@ -198,12 +198,10 @@ int main() {
     worldRenderer->Render();
 
     context->GetScreenFrameBuffer()->Bind();
-    context->GetRenderer()->Clear(0.0f, 0.0f, 0.0f, 1.0f);
     imGuiAdapter.Begin();
     ImGuiID     dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
-    static bool first     = true;
-    if (first) {
-      first = false;
+    if (loadDefaultLayout) {
+      loadDefaultLayout = false;
       ImGui::DockBuilderRemoveNode(dockSpace);
       ImGui::DockBuilderAddNode(dockSpace, ImGuiDockNodeFlags_DockSpace);
       const auto[width, height] = window->GetSize();
@@ -228,16 +226,13 @@ int main() {
         if (w != s.x || h != s.y) {
           w = s.x;
           h = s.y;
-          fb->Resize(static_cast<float>(w), static_cast<float>(h));
+          fb->Resize(static_cast<int64>(w * 4), static_cast<int64>(h * 4));
           cam->aspect = s.x / s.y;
         }
 
         ImGui::Image(
             reinterpret_cast<ImTextureID>(fb->GetColorTextureID()),
-            {
-                static_cast<float>(fb->GetWidth()),
-                static_cast<float>(fb->GetHeight())
-            },
+            {w, h},
             {0, 1},
             {1, 0}
         );

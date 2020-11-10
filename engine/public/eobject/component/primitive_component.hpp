@@ -13,7 +13,7 @@ class PrimitiveComponent : public SceneComponent {
 protected:
   Render::Component::PrimitiveRenderDelegate *renderDelegate = nullptr;
 
-  bool isRenderDirty;
+  bool isRenderDirty = true;
 public:
 
   ~PrimitiveComponent() override;

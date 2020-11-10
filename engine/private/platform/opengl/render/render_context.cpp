@@ -1,13 +1,28 @@
 #include <platform/opengl/render/render_context.hpp>
 #include <platform/opengl/render/fragment_shader.hpp>
 #include <platform/opengl/render/index_buffer.hpp>
-#include <platform/opengl/render/program_shader.hpp>
 #include <platform/opengl/render/vertex_array.hpp>
 #include <platform/opengl/render/vertex_buffer.hpp>
 #include <platform/opengl/render/vertex_shader.hpp>
 
+#include <fstream>
+
 using namespace ENGH::Platform::Render;
 using namespace ENGH::Platform::Render::OpenGL;
+
+static std::string readFile(const char *fileName) {
+  std::ifstream in(fileName, std::ios::in | std::ios::ate | std::ios::binary);
+  if (!in) {
+    ENGH_CORE_ERROR("Could not read shader file: ", fileName);
+    return "";
+  }
+  std::string data;
+  data.resize(in.tellg());
+  in.seekg(0, std::ios::beg);
+  in.read(&data[0], data.size());
+  in.close();
+  return data;
+}
 
 OpenGLRenderContext::OpenGLRenderContext(GLFWwindow *window) : window(window) {}
 
@@ -21,6 +36,11 @@ void OpenGLRenderContext::Setup() {
   glfwGetFramebufferSize(window, &width, &height);
   screenFrameBuffer = std::make_shared<OpenGLFrameBuffer>(FrameBuffer::BufferType::NONE, width, height, 0);
   glEnable(GL_DEPTH_TEST);
+
+  ProgramShader::DEBUG_SHADER = CreateShader(
+      readFile("shaders/flat_vert.glsl"),
+      readFile("shaders/flat_frag.glsl")
+  );
 }
 
 OpenGLRenderContext::~OpenGLRenderContext() {}

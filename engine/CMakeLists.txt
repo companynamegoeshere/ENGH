@@ -64,6 +64,7 @@ add_library(
         public/render/camera/camera.hpp
         public/render/camera/perspective_camera.hpp
 
+        public/render/component/primitive_box_render_delegate.hpp
         public/render/component/primitive_render_delegate.hpp
 
         public/util/array.hpp
@@ -110,6 +111,7 @@ add_library(
         private/platform/opengl/render/vertex_shader.cpp
 
         private/platform/render/buffer_layout.cpp
+        private/platform/render/program_shader.cpp
         private/platform/render/renderer.cpp
         private/platform/render/render_device.cpp
         private/platform/render/render_context.cpp
@@ -122,6 +124,7 @@ add_library(
         private/render/camera/camera.cpp
         private/render/camera/perspective_camera.cpp
 
+        private/render/component/primitive_box_render_delegate.cpp
         private/render/component/primitive_render_delegate.cpp
 
         private/util/array.cpp

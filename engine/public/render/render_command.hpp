@@ -8,10 +8,12 @@
 namespace ENGH::Render {
 
 struct RenderCommand {
-  Platform::Render::VertexArray *data;
-  Platform::Render::IndexBuffer *index;
+  size_t id = -1;
+  TArray<float> data;
+  TArray<uint32> index;
+  Platform::Render::BufferLayout layout;
   Platform::Render::ProgramShader *shader;
-  smallfun::SmallFun<void(Platform::Render::ProgramShader * ), 1 << 7> setupUniforms;
+  smallfun::SmallFun<void(Platform::Render::ProgramShader * ), 32> setupUniforms;
 };
 
 }
