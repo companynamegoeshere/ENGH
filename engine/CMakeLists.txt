@@ -22,7 +22,9 @@ add_library(
         public/eobject/component/primitive_component.hpp
         public/eobject/component/scene_component.hpp
         public/eobject/component/sphere_component.hpp
+        public/eobject/component/static_mesh_component.hpp
 
+        public/eobject/data/model_3d.hpp
         public/eobject/data/transform.hpp
 
         public/input/input_events.hpp
@@ -66,12 +68,14 @@ add_library(
 
         public/render/component/primitive_box_render_delegate.hpp
         public/render/component/primitive_render_delegate.hpp
+        public/render/component/primitive_static_mesh_render_delegate.hpp
 
         public/util/array.hpp
         public/util/memory.hpp
         public/util/set.hpp
 
         public/util/file/fs.hpp
+        public/util/file/model/obj.hpp
 
 
         private/core/debug.cpp
@@ -88,7 +92,9 @@ add_library(
         private/eobject/component/primitive_component.cpp
         private/eobject/component/scene_component.cpp
         private/eobject/component/sphere_component.cpp
+        private/eobject/component/static_mesh_component.cpp
 
+        private/eobject/data/model_3d.cpp
         private/eobject/data/transform.cpp
 
         private/input/input_events.cpp
@@ -128,10 +134,12 @@ add_library(
 
         private/render/component/primitive_box_render_delegate.cpp
         private/render/component/primitive_render_delegate.cpp
+        private/render/component/primitive_static_mesh_render_delegate.cpp
 
         private/util/array.cpp
 
         private/util/file/fs.cpp
+        private/util/file/model/obj.cpp
 )
 
 set_target_properties(engh_engine

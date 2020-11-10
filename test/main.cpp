@@ -1,11 +1,14 @@
 #include <iostream>
 #include <filesystem>
+#include <fstream>
+#include <array>
 
 #include <core/math.hpp>
 #include <eobject/actor.hpp>
 #include <eobject/world/world.hpp>
 #include <eobject/component/box_component.hpp>
 #include <eobject/component/sphere_component.hpp>
+#include <eobject/component/static_mesh_component.hpp>
 #include <input/input_handler.hpp>
 #include <render/camera/perspective_camera.hpp>
 #include <render/world_renderer.hpp>
@@ -13,7 +16,7 @@
 
 #include <platform/opengl/glfw_window.hpp>
 
-#include <array>
+#include <util/file/model/obj.hpp>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -23,6 +26,7 @@ using ENGH::Logger;
 using ENGH::EObject::Actor;
 using ENGH::EObject::Comps::BoxComponent;
 using ENGH::EObject::Comps::SphereComponent;
+using ENGH::EObject::Comps::StaticMeshComponent;
 using ENGH::EObject::Comps::Component;
 using ENGH::EObject::World::World;
 using ENGH::Input::InputKey;
@@ -88,7 +92,13 @@ int main() {
   SphereComponent *head;
   auto            *actor = world->SpawnActor<Actor>();
   {
-    auto *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
+    ENGH::EObject::Data::Model3D model;
+    std::ifstream modelFile("models/Handgun_obj.obj");
+    bool ok = ENGH::Util::File::Model::parseObj(modelFile, model);
+    if(!ok) {
+      ENGH_CORE_WARN("Could not load Handgun_obj.obj model");
+    }
+    auto *comp = actor->GetRoot()->AttachComponent<StaticMeshComponent>(model);
     comp->transform.scale = Vec3(0.4);
     {
 //      head = comp->AttachComponent<SphereComponent>();
