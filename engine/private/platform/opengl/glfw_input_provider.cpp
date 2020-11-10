@@ -110,12 +110,16 @@ bool ENGH::Platform::OpenGL::GLFWInputProvider::isPressed(ENGH::Input::InputKey 
   return keysPressed[key];
 }
 
-void GLFWInputProvider::callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-  if (action == GLFW_PRESS || action == GLFW_RELEASE) {
-    keysPressed[reverseKeyMapping.find(key)->second] = action == GLFW_PRESS;
+void GLFWInputProvider::callback(GLFWwindow *nativeWindow, int key, int scancode, int action, int mods) {
+  const auto pressed = action == GLFW_PRESS;
+  if (pressed || action == GLFW_RELEASE) {
+    auto e = reverseKeyMapping.find(key);
+    if(e != reverseKeyMapping.end()) {
+      keysPressed[e->second] = pressed;
+    }
   }
   if(lastCallback != nullptr) {
-    lastCallback(window, key, scancode, action, mods);
+    lastCallback(nativeWindow, key, scancode, action, mods);
   }
 }
 

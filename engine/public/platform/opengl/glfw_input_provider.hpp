@@ -16,7 +16,7 @@ class GLFWInputProvider : public Input::InputProvider {
 
   static void funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
-  void callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+  void callback(GLFWwindow *nativeWindow, int key, int scancode, int action, int mods);
 
 public:
   GLFWInputProvider(GLFWwindow *window = 0);
