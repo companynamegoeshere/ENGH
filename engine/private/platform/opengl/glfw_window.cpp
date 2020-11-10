@@ -76,7 +76,7 @@ void GLFWWindow::Init() {
   glfwGetFramebufferSize(nativeWindow, &width, &height);
   glViewport(0, 0, width, height);
 
-  glfwSwapInterval(0);
+  glfwSwapInterval(1);
 }
 
 void GLFWWindow::StartLoop() {
@@ -124,10 +124,12 @@ void GLFWWindow::StartLoop() {
         ENGH_CORE_FINER("World tick count: ", tickCount / 5, " delay: ", delay);
         tickCount = 0;
       }
-      wait();
-      renderLock = true;
-      this->updateCallback(delta, total);
-      renderLock = false;
+
+      if (!renderLock) {
+        renderLock = true;
+        this->updateCallback(delta, total);
+        renderLock = false;
+      }
     }
   });
 
@@ -140,11 +142,10 @@ void GLFWWindow::StartLoop() {
 
     this->renderCallback();
     glfwPollEvents();
-    if (!renderLock) {
-      renderLock = true;
-      setupRenderCallback();
-      renderLock = false;
-    }
+    wait();
+    renderLock = true;
+    setupRenderCallback();
+    renderLock = false;
   }
   run = false;
   updateThread.join();
