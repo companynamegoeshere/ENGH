@@ -26,8 +26,20 @@ public:
     this->push_back(value);
   }
 
+  constexpr void operator+=(std::initializer_list<T> elements) {
+    this->insert(this->end(), elements);
+  }
+
   constexpr void Clear() {
     this->clear();
+  }
+
+  constexpr T& Last() {
+    return static_cast<struct IndexData &>(this[this->size() - 1]);
+  }
+
+  constexpr const T& Last() const {
+    return this[this->size() - 1];
   }
 };
 
