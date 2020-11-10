@@ -6,6 +6,7 @@ namespace ENGH::Platform::Render {
 
 class ProgramShader : public RenderDevice {
 public:
+  static std::shared_ptr<ProgramShader> DEBUG_SHADER;
 
   virtual void SetUniformFloat(const std::string &name, const float value) = 0;
 
