@@ -7,9 +7,11 @@ BaseShader::BaseShader(GLenum type, const std::string &data) {
     const GLchar *src = data.c_str();
     glShaderSource(shaderId, 1, &src, nullptr);
     glCompileShader(shaderId);
-#ifdef ENGH_DEV
     GLint result = GL_FALSE;
-    if (! (glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result), result)) {
+    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &result);
+    success = result == GL_TRUE;
+#ifdef ENGH_DEBUG
+    if (!result) {
         ENGH_CORE_WARN("could not compile ", type == GL_VERTEX_SHADER ? "vertex" : "frag", " shader");
     }
     int logLength;

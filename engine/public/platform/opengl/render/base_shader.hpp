@@ -8,6 +8,7 @@ namespace ENGH::Platform::Render::OpenGL::Shader {
 class BaseShader {
 protected:
     GLuint shaderId;
+    bool success;
 public:
     BaseShader(GLenum type, const std::string &data);
 
@@ -16,6 +17,8 @@ public:
     void Attach(const GLuint program) const;
 
     void Detach(const GLuint program) const;
+
+    inline bool CompiledSuccess() const { return success; }
 };
 
 }

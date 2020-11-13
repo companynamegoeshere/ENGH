@@ -28,6 +28,8 @@ public:
 
   std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) override;
 
+  void ReloadShader(std::shared_ptr<ProgramShader>&, const std::string &vertex, const std::string &fragment) override;
+
   std::shared_ptr<FrameBuffer> CreateFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height) override;
 
   std::shared_ptr<FrameBuffer> GetScreenFrameBuffer() override;

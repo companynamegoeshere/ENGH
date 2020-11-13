@@ -72,6 +72,21 @@ std::shared_ptr<ProgramShader> OpenGLRenderContext::CreateShader(const std::stri
   return prog;
 }
 
+void OpenGLRenderContext::ReloadShader(std::shared_ptr<ProgramShader> &shaderPtr,
+                                       const std::string &vertex,
+                                       const std::string &fragment) {
+  auto *shader = dynamic_cast<Shader::OpenGLProgramShader*>(shaderPtr.get());
+  Shader::OpenGLVertexShader   vert(vertex);
+  if(!vert.CompiledSuccess()) {
+    return;
+  }
+  Shader::OpenGLFragmentShader frag(fragment);
+  if(!frag.CompiledSuccess()) {
+    return;
+  }
+  shader->Attach(vert, frag);
+}
+
 std::shared_ptr<FrameBuffer> OpenGLRenderContext::CreateFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height) {
   auto fb = std::make_shared<OpenGLFrameBuffer>(type, width, height);
   fb->Invalidate();

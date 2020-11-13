@@ -30,6 +30,8 @@ public:
 
   virtual std::shared_ptr<ProgramShader> CreateShader(const std::string &vertex, const std::string &fragment) = 0;
 
+  virtual void ReloadShader(std::shared_ptr<ProgramShader>&, const std::string &vertex, const std::string &fragment) = 0;
+
   virtual std::shared_ptr<FrameBuffer> CreateFrameBuffer(FrameBuffer::BufferType type, uint32 width, uint32 height) = 0;
 
   virtual std::shared_ptr<FrameBuffer> GetScreenFrameBuffer() = 0;

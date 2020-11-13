@@ -34,7 +34,8 @@ void OpenGLProgramShader::Attach(const OpenGLVertexShader &vertShader,
   if ((glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength), logLength) > 0) {
     std::string msg;
     msg.resize(logLength + 1);
-    glGetProgramInfoLog(program, logLength, nullptr, msg.data());
+    GLint length;
+    glGetProgramInfoLog(program, logLength, &length, &msg[0]);
     ENGH_CORE_WARN(msg);
   }
 
