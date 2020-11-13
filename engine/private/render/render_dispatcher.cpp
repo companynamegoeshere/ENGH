@@ -5,10 +5,8 @@
 namespace ENGH::Render {
 
 RenderDispatcher::RenderDispatcher(
-    std::shared_ptr<Platform::Render::RenderContext> context,
-    const smallfun::SmallFun<Math::Mat4(const Math::Mat4 &), sizeof(void *) * 2> &transformer) :
-    context(std::move(context)),
-    transformer(transformer) {}
+    std::shared_ptr<Platform::Render::RenderContext> context
+) : context(std::move(context)) {}
 
 void RenderDispatcher::Render() {
   auto &renderer = *context->GetRenderer();
@@ -19,9 +17,9 @@ void RenderDispatcher::Render() {
   }
 }
 
-std::unique_ptr<RenderDispatcherProxy> RenderDispatcher::GetProxy() {
-  return std::make_unique<RenderDispatcherProxy>(RenderDispatcherProxy {
-      transformer,
+std::unique_ptr<RenderDispatcherProxy> RenderDispatcher::GetProxy(RenderData *renderData) {
+  return std::make_unique<RenderDispatcherProxy>(RenderDispatcherProxy{
+      renderData,
       [this](const RenderCommand &t) -> size_t {
         if (t.id == -1) {
           auto vbo = context->CreateVertexBuffer();

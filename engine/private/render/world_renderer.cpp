@@ -5,25 +5,23 @@
 
 namespace ENGH::Render {
 
-WorldRenderer::WorldRenderer(EObject::World::World *world,
-                             const std::shared_ptr<Platform::Render::RenderContext>& context)
-    : world(world),
-      context(context),
-      renderDispatcher(
-          context,
-          [this](const Math::Mat4& o) {
-            return cameraProjectionCache * cameraViewCache * o;
-          }
-      ),
-      proxy(renderDispatcher.GetProxy()) {}
+WorldRenderer::WorldRenderer(
+    EObject::World::World *world,
+    const std::shared_ptr<Platform::Render::RenderContext> &context
+) : world(world),
+    context(context),
+    renderDispatcher(context) {
+  proxy = renderDispatcher.GetProxy(&renderData);
+}
 
 void WorldRenderer::SetupRender(Camera::Camera *camera) {
-  cameraProjectionCache = camera->GetProjection();
-  cameraViewCache       = camera->GetView();
+  renderData.camera = camera;
+  renderData.projection = camera->GetProjection();
+  renderData.view = camera->GetView();
 
-  auto            &registry = this->world->registry;
+  auto &registry = this->world->registry;
   for (const auto &p : registry.primitives) {
-    if(p->IsDirty()) {
+    if (p->IsDirty()) {
       p->UnDirty();
       p->WriteCommandBuffer(*proxy);
     }

@@ -14,8 +14,7 @@ class WorldRenderer {
   RenderDispatcher renderDispatcher;
   std::unique_ptr<RenderDispatcherProxy> proxy;
 
-  Math::Mat4 cameraProjectionCache;
-  Math::Mat4 cameraViewCache;
+  RenderData renderData;
 
 public:
   WorldRenderer(EObject::World::World *world, const std::shared_ptr<Platform::Render::RenderContext>& context);
