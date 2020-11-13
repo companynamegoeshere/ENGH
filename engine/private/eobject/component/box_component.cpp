@@ -1,59 +1,58 @@
 #include <eobject/component/box_component.hpp>
 #include <render/component/primitive_render_delegate.hpp>
 
+#include <array>
+
 using namespace ENGH::Render;
 using namespace ENGH::Render::Component;
+using namespace ENGH::Math;
 
 namespace ENGH::EObject::Comps {
+
+static TArray<float> data;
+static TArray<uint32> indexes;
 
 Render::Component::PrimitiveRenderDelegate *BoxComponent::CreateRenderDelegate() {
   class Render : public PrimitiveRenderDelegate {
   public:
-    explicit Render(ENGH::EObject::Comps::BoxComponent *component) : PrimitiveRenderDelegate(component) {}
+    size_t id = -1;
 
-  private:
+    explicit Render(ENGH::EObject::Comps::BoxComponent *component) : PrimitiveRenderDelegate(component) {
+      if (data.empty()) {
+        uint32 count = 0;
+        for (float j = -1.0f; j <= 1.0f;) {
+          for (int i = 0; i < 3; i++) {
+            Vec3 n(0.0f);
+            n[i] = static_cast<float>(-j);
+            size_t p1 = i == 0 ? 1 : 0;
+            size_t p2 = i == 2 ? 1 : 2;
+            for (int k = 0; k < 4; k++) {
+              Vec3 v(j);
+              v[p1] = k % 2 != 0 ? -j : j;
+              v[p2] = k / 2 != 0 ? -j : j;
+              data += {v.x, v.y, v.z, n.x, n.y, n.z};
+            }
+            indexes += {count, count + 1, count + 2, count + 1, count + 3, count + 2};
+            count += 4;
+          }
+          j += 2.0f;
+        }
+      }
+    }
 
     void WriteCommandBuffer(const RenderDispatcherProxy &proxy) override {
-      proxy.Dispatch(
+      id = proxy.Dispatch(
           RenderCommand{
-              static_cast<size_t>(-1),
-              {
-                  -1.0f, -1.0f, -1.0f, // 0
-                  +1.0f, -1.0f, -1.0f, // 1
-                  -1.0f, -1.0f, +1.0f, // 2
-                  +1.0f, -1.0f, +1.0f, // 3
-
-                  -1.0f, +1.0f, -1.0f, // 4
-                  +1.0f, +1.0f, -1.0f, // 5
-                  -1.0f, +1.0f, +1.0f, // 6
-                  +1.0f, +1.0f, +1.0f  // 7
-              },
-              {
-                  0, 1, 3, // bottom
-                  0, 3, 2,
-
-                  0, 2, 6, // left
-                  0, 6, 4,
-
-                  0, 4, 5, // back
-                  0, 5, 1,
-
-                  1, 5, 7, // right
-                  1, 7, 3,
-
-                  2, 6, 7, // front
-                  2, 7, 3,
-
-                  4, 5, 7, // top
-                  4, 7, 6
-              },
+              id,
+              data,
+              indexes,
               Platform::Render::BufferLayout{
-                  {"a_Position", Platform::Render::BufferDataTypes::FLOAT3}
+                  {"a_Position", Platform::Render::BufferDataTypes::FLOAT3},
+                  {"a_Normal", Platform::Render::BufferDataTypes::FLOAT3}
               },
               Platform::Render::ProgramShader::DEBUG_SHADER.get(),
               [&](auto *shader) {
-                auto out = proxy.MatrixTransformer(this->primitive->GetWorldMatrix());
-                shader->SetUniformMat4("transform", &out[0], true);
+                SetupStandardUniforms(*shader, proxy);
               }
           }
       );

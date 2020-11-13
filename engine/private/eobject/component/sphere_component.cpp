@@ -47,8 +47,7 @@ Render::Component::PrimitiveRenderDelegate *SphereComponent::CreateRenderDelegat
               },
               Platform::Render::ProgramShader::DEBUG_SHADER.get(),
               [&](auto *shader) {
-                auto out = proxy.MatrixTransformer(this->primitive->GetWorldMatrix());
-                shader->SetUniformMat4("transform", &out[0], true);
+                SetupStandardUniforms(*shader, proxy);
               }
           }
       );

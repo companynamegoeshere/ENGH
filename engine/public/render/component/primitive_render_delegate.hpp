@@ -18,6 +18,7 @@ class PrimitiveRenderDelegate {
 protected:
   EObject::Comps::PrimitiveComponent *primitive;
 public:
+
   explicit PrimitiveRenderDelegate(EObject::Comps::PrimitiveComponent *primitive);
 
   virtual ~PrimitiveRenderDelegate() = 0;
@@ -27,6 +28,8 @@ public:
   virtual bool IsDirty();
 
   virtual void WriteCommandBuffer(const RenderDispatcherProxy &proxy) = 0;
+
+  void SetupStandardUniforms(Platform::Render::ProgramShader&, const RenderDispatcherProxy&);
 };
 
 }
