@@ -16,6 +16,7 @@
 
 #include <platform/opengl/glfw_window.hpp>
 
+#include <util/file/fs.hpp>
 #include <util/file/model/obj.hpp>
 
 #include <imgui/imgui.h>
@@ -24,6 +25,8 @@
 
 using ENGH::Logger;
 using ENGH::EObject::Actor;
+using ENGH::EObject::Comps::PrimitiveComponent;
+using ENGH::EObject::Comps::SceneComponent;
 using ENGH::EObject::Comps::BoxComponent;
 using ENGH::EObject::Comps::SphereComponent;
 using ENGH::EObject::Comps::StaticMeshComponent;
@@ -89,40 +92,49 @@ int main() {
   auto worldRenderer     = new WorldRenderer(world, context);
 //  auto dispatcher       = worldRenderer->GetDispatcher();
 
-  SphereComponent *head;
+  auto *lightBulb = world->SpawnActor<Actor>();
+  lightBulb->GetRoot()->AttachComponent<SphereComponent>();
+  lightBulb->GetTransform().position = { 1.2f, 1.0f, -2.0f };
+  lightBulb->GetTransform().scale = Vec3(0.2f);
+
+  PrimitiveComponent *head;
+  BoxComponent    *comp;
   auto            *actor = world->SpawnActor<Actor>();
   {
     ENGH::EObject::Data::Model3D model;
     std::ifstream modelFile("models/Handgun_obj.obj");
     bool ok = ENGH::Util::File::Model::parseObj(modelFile, model);
+    modelFile.close();
     if(!ok) {
-      ENGH_CORE_WARN("Could not load Handgun_obj.obj model");
+      ENGH_WARN("Could not load Handgun_obj.obj model");
     }
-    auto *comp = actor->GetRoot()->AttachComponent<StaticMeshComponent>(model);
+    comp = actor->GetRoot()->AttachComponent<BoxComponent>();
     comp->transform.scale = Vec3(0.4);
     {
-//      head = comp->AttachComponent<SphereComponent>();
-//      head->transform.position = {0.0f, 1.6f, 0.0f};
-//      head->transform.scale    = Vec3(0.6);
+      head = comp->AttachComponent<StaticMeshComponent>(model);
+      head->transform.position = {0.0f, 1.6f, 0.0f};
+      head->transform.scale    = Vec3(0.6);
     }
   }
 
   input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
   input.RegisterAxis(InputKey::KEY_A, "xAxis", +1.0);
 
-  input.RegisterAxis(InputKey::KEY_E, "yAxis", +1.0);
-  input.RegisterAxis(InputKey::KEY_Q, "yAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_E, "yAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_Q, "yAxis", +1.0);
 
   input.RegisterAxis(InputKey::KEY_W, "zAxis", +1.0);
   input.RegisterAxis(InputKey::KEY_S, "zAxis", -1.0);
 
-  input.RegisterAxis(InputKey::KEY_RIGHT, "yawAxis", 1.0);
-  input.RegisterAxis(InputKey::KEY_LEFT, "yawAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_RIGHT, "yawAxis", -1.0);
+  input.RegisterAxis(InputKey::KEY_LEFT, "yawAxis", +1.0);
 
-  input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
-  input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
+  input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", +1.0);
+  input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", -1.0);
 
   input.RegisterAction(InputKey::KEY_SPACE, "add");
+
+  input.RegisterAction(InputKey::KEY_R, "reload");
 
   Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
   Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
@@ -130,15 +142,15 @@ int main() {
   auto &registrar               = input.GetRegistrar();
   registrar.BindAxis("xAxis", [&](double value, double delta) {
 //    actor->GetPosition().x += value * delta;
-    cam->position += (yawRot * -VEC3_RIGHT) * float(value * delta);
+    cam->position += (yawRot * VEC3_RIGHT) * float(value * delta);
   });
   registrar.BindAxis("yAxis", [&](double value, double delta) {
 //    actor->GetPosition().y += value * delta;
-    cam->position.y += value * delta;
+    cam->position.y += float(value * delta);
   });
   registrar.BindAxis("zAxis", [&](double value, double delta) {
 //    actor->GetPosition().z += value * delta;
-    cam->position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
+    cam->position += yawRot * ((pitchRot * VEC3_FORWARD) * float(value * delta));
   });
   registrar.BindAxis("yawAxis", [&](double value, double delta) {
     yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
@@ -155,6 +167,15 @@ int main() {
       auto &transform          = actor->GetTransform();
       transform.position[1] -= transform.scale.y * 1.45f;
       transform.scale *= 1.3f;*/
+    }
+    last = pressed;
+  });
+
+  std::atomic_bool resetShader = false;
+  registrar.BindAction("reload", [&](bool pressed, double delta) {
+    static bool last = false;
+    if(pressed && !last) {
+      resetShader = true;
     }
     last = pressed;
   });
@@ -185,7 +206,7 @@ int main() {
       last(fps)       = time < 0.0001 ? 0.0 : 1 / time;
     }
 
-    cam->rotation = pitchRot * yawRot;
+    cam->rotation = yawRot * pitchRot;
 
     auto &transform = actor->GetTransform();
     transform.rotation = Quat::FromEulerAngles(0, total * 20 * DEGtoRAD, 0);
@@ -195,6 +216,25 @@ int main() {
   });
 
   window->SetSetupRenderCallback([&]() {
+    if(resetShader) {
+      resetShader = false;
+      auto setupShader = [&](std::shared_ptr<ENGH::Platform::Render::ProgramShader>& shader, const char* name) {
+        auto vName = std::string("shaders/") + name + "_vert.glsl";
+        auto fName = std::string("shaders/") + name + "_frag.glsl";
+        auto vData = ENGH::Util::File::readFile(vName);
+        if(!vData) {
+          ENGH_CORE_ERROR("Could not read shader vertex file: ", vName);
+          return;
+        }
+        auto fData = ENGH::Util::File::readFile(fName);
+        if(!fData) {
+          ENGH_CORE_ERROR("Could not read shader vertex file: ", fName);
+          return;
+        }
+        context->ReloadShader(shader, *vData, *fData);
+      };
+      setupShader(ENGH::Platform::Render::ProgramShader::DEBUG_SHADER, "flat");
+    }
     worldRenderer->SetupRender(cam);
   });
 
@@ -209,7 +249,7 @@ int main() {
 
     context->GetScreenFrameBuffer()->Bind();
     imGuiAdapter.Begin();
-    ImGuiID     dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
+    ImGuiID     dockSpace = ImGui::DockSpaceOverViewport();
     if (loadDefaultLayout) {
       loadDefaultLayout = false;
       ImGui::DockBuilderRemoveNode(dockSpace);
@@ -217,13 +257,15 @@ int main() {
       const auto[width, height] = window->GetSize();
       ImGui::DockBuilderSetNodeSize(dockSpace, {static_cast<float>(width), static_cast<float>(height)});
 
-      ImGuiID dockRight, dockLeft, dockLeftDown, dockLeftUp;
+      ImGuiID dockRight, dockLeft, dockLeftDown, dockLeftUp, dockLeftDownUp, dockLeftDownDown;
       dockLeft   = ImGui::DockBuilderSplitNode(dockSpace, ImGuiDir_Left, 0.30f, NULL, &dockRight);
-      dockLeftUp = ImGui::DockBuilderSplitNode(dockLeft, ImGuiDir_Up, 0.50f, NULL, &dockLeftDown);
+      dockLeftUp = ImGui::DockBuilderSplitNode(dockLeft, ImGuiDir_Up, 0.30f, NULL, &dockLeftDown);
+      dockLeftDownUp = ImGui::DockBuilderSplitNode(dockLeftDown, ImGuiDir_Up, 0.40f, NULL, &dockLeftDownDown);
 
       ImGui::DockBuilderDockWindow("Scene", dockRight);
       ImGui::DockBuilderDockWindow("Stats", dockLeftUp);
-      ImGui::DockBuilderDockWindow("Ball", dockLeftDown);
+      ImGui::DockBuilderDockWindow("Ball", dockLeftDownUp);
+      ImGui::DockBuilderDockWindow("Camera", dockLeftDownDown);
 
       imGuiAdapter.SetMainDock(ImHashStr("Scene"));
     }
@@ -236,7 +278,7 @@ int main() {
         if (w != s.x || h != s.y) {
           w = s.x;
           h = s.y;
-          fb->Resize(static_cast<int64>(w * 4), static_cast<int64>(h * 4));
+          fb->Resize(static_cast<int64>(w), static_cast<int64>(h));
           cam->aspect = s.x / s.y;
         }
 
@@ -261,8 +303,16 @@ int main() {
       ImGui::End();
 
       if (ImGui::Begin("Ball")) {
-//        ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
-//        ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
+//        bool o1 = ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
+//        bool o2 = ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
+//        if(o1 || o2) {
+//          head->MarkRenderDirty();
+//        }
+      }
+      ImGui::End();
+
+      if(ImGui::Begin("Camera")) {
+        ImGui::SliderFloat3("Position", &cam->position.x, -1000.0, 1000.0);
       }
       ImGui::End();
     }
