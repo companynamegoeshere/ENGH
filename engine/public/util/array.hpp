@@ -22,6 +22,11 @@ public:
     return this->size();
   }
 
+  template<typename E>
+  constexpr void addAll(const E &e) {
+    this->insert(this->end(), e.begin(), e.end());
+  }
+
   constexpr void operator+=(T value) {
     this->push_back(value);
   }
@@ -34,11 +39,11 @@ public:
     this->clear();
   }
 
-  constexpr T& Last() {
+  constexpr T &Last() {
     return static_cast<struct IndexData &>(this[this->size() - 1]);
   }
 
-  constexpr const T& Last() const {
+  constexpr const T &Last() const {
     return this[this->size() - 1];
   }
 };
