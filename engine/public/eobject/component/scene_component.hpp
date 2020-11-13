@@ -30,7 +30,7 @@ public:
 
   inline Math::Mat4 GetWorldMatrix() const {
     if (parent != nullptr) {
-      return parent->transform * transform;
+      return parent->GetWorldMatrix() * transform;
     } else {
       return transform;
     }
