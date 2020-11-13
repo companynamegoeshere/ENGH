@@ -15,15 +15,16 @@ void PrimitiveStaticMeshRenderDelegate::WriteCommandBuffer(const RenderDispatche
   proxy.Dispatch(
       RenderCommand{
           static_cast<size_t>(-1),
-          comp->model.vertex,
+          comp->model.vertexData,
           comp->model.index,
           Platform::Render::BufferLayout{
-              {"a_Position", Platform::Render::BufferDataTypes::FLOAT3}
+              {"a_Position", Platform::Render::BufferDataTypes::FLOAT3},
+              {"a_Normal",   Platform::Render::BufferDataTypes::FLOAT3},
+              {"a_UV",       Platform::Render::BufferDataTypes::FLOAT2}
           },
           Platform::Render::ProgramShader::DEBUG_SHADER.get(),
           [&](auto *shader) {
-            auto out = proxy.MatrixTransformer(this->primitive->GetWorldMatrix());
-            shader->SetUniformMat4("transform", &out[0], true);
+            SetupStandardUniforms(*shader, proxy);
           }
       }
   );

@@ -4,16 +4,19 @@
 #include <core/math.hpp>
 #include <util/array.hpp>
 
+#include <string>
+
 namespace ENGH::EObject::Data {
 
 class Model3D {
 public:
-  Util::TArray<float> vertex;   // 3 float per vertex
-  Util::TArray<float> uvCoords; // 2 float per vertex
-  Util::TArray<float> normals;  // 3 float per vertex
+
+  std::string name;
+
+  Util::TArray<float> vertexData;
   Util::TArray<uint32> index;
 
-  void clearData();
+  void ClearData();
 };
 
 }
