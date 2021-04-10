@@ -1,0 +1,5 @@
+set(FILAMENT_ENABLE_JAVA OFF CACHE BOOL "" FORCE)
+set(FILAMENT_ENABLE_LTO ON CACHE BOOL "" FORCE)
+PROJECT(__filament C)
+#add_compile_options(-w)
+add_subdirectory(filament)

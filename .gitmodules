@@ -8,3 +8,6 @@
 [submodule "mathfu"]
 	path = third/mathfu/mathfu
 	url = https://github.com/google/mathfu.git
+[submodule "third/filament/filament"]
+	path = third/filament/filament
+	url = https://github.com/google/filament.git

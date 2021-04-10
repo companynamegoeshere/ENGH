@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 option(DEV "Development code (logs and asserts)" ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DENGH_DEBUG")
 
@@ -63,10 +63,12 @@ MACRO(DllSetup PROJECT)
     ENDIF ()
 ENDMACRO()
 
-FILE(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/third/*")
+#[[FILE(GLOB children RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/third/*")
 FOREACH (child ${children})
     add_subdirectory(${child})
-ENDFOREACH ()
+ENDFOREACH ()]]
+
+add_subdirectory(third)
 
 add_subdirectory(engine)
 add_subdirectory(editor)
