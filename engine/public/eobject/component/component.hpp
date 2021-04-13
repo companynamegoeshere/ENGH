@@ -1,7 +1,6 @@
 #pragma once
 
 #include <eobject/object.hpp>
-#include <render/render_dispatcher_proxy.hpp>
 #include <eobject/world/tick_target.hpp>
 
 namespace ENGH::EObject {

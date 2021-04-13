@@ -1,5 +1,4 @@
 #include <eobject/component/box_component.hpp>
-#include <render/component/primitive_render_delegate.hpp>
 
 #include <array>
 

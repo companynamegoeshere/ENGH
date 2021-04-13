@@ -1,5 +1,4 @@
 #include <eobject/component/sphere_component.hpp>
-#include <render/component/primitive_render_delegate.hpp>
 
 using namespace ENGH::Render;
 using namespace ENGH::Render::Component;

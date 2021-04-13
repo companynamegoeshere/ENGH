@@ -10,7 +10,8 @@ void SceneComponent::RegisterWorldFunctions() {
   }, false);
 }
 
-void SceneComponent::Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf) {
+//void SceneComponent::Traverse(smallfun::SmallFun<bool(Component *), 128> target, bool receiveSelf) {
+void SceneComponent::Traverse(std::function<bool(Component *)> target, bool receiveSelf) {
   if (receiveSelf) {
     if (!target(this)) {
       return;
