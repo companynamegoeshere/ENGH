@@ -14,7 +14,7 @@ public:
   static constexpr bool SIGNED = ref::is_signed;
   static constexpr bool INTEGER = ref::is_integer;
   static constexpr int DIGITS = ref::digits;
-  static constexpr size_t SIZE = sizeof(T);
+  static constexpr std::size_t SIZE = sizeof(T);
 };
 
 typedef int8_t byte;

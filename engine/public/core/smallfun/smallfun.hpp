@@ -49,7 +49,7 @@ class SmallFun<ReturnType(Xs...), size> {
   char memory[size];
 
   bool allocated = 0;
-  using concept = SFConcept<ReturnType, Xs...>;
+  using sfConcept = SFConcept<ReturnType, Xs...>;
 public:
   SmallFun(){}
 
@@ -79,30 +79,30 @@ public:
 
   void clean() {
     if (allocated) {
-      ((concept*)memory)->~concept();
+      ((sfConcept*)memory)->~sfConcept();
       allocated = 0;
     }
   }
 
   ~SmallFun() {
     if (allocated) {
-      ((concept*)memory)->~concept();
+      ((sfConcept*)memory)->~sfConcept();
     }
   }
 
   template<class...Ys>
   ReturnType operator()(Ys&&...ys) {
-    return (*(concept*)memory)(std::forward<Ys>(ys)...);
+    return (*(sfConcept*)memory)(std::forward<Ys>(ys)...);
   }
 
   template<class...Ys>
   ReturnType operator()(Ys&&...ys)const {
-    return (*(concept*)memory)(std::forward<Ys>(ys)...);
+    return (*(sfConcept*)memory)(std::forward<Ys>(ys)...);
   }
 
   void copy(void* data)const {
     if (allocated) {
-      ((concept*)memory)->copy(data);
+      ((sfConcept*)memory)->copy(data);
     }
   }
 };

@@ -1,23 +1,26 @@
-#include <platform/opengl/glfw_window.hpp>
+#include <platform/glfw/glfw_window.hpp>
+
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 #include <chrono>
 #include <thread>
 #include <atomic>
 #include <utility>
 
-namespace ENGH::Platform::OpenGL {
+namespace ENGH::Platform::GLFW {
 
-GLFWWindow::~GLFWWindow() {
+Window::~Window() {
   glfwDestroyWindow(nativeWindow);
 }
 
-GLFWWindow::GLFWWindow(Window::Config config) :
-    Window(std::move(config)),
+Window::Window(filament::Engine *engine, Config config) :
+    ::ENGH::Platform::Window(engine, std::move(config)),
     frameTime(0.0),
     initialized(false),
     inputProvider() {}
 
-void GLFWWindow::Init() {
+void Window::Init() {
   if (initialized) {
     ENGH_CORE_THROW_FATAL("window already initialized");
   }
@@ -40,11 +43,11 @@ void GLFWWindow::Init() {
     glfwGetError(&desc);
     ENGH_CORE_THROW_FATAL("could not create glfw window: ", desc);
   }
-  inputProvider = GLFWInputProvider(nativeWindow);
+  inputProvider = InputProvider(nativeWindow);
   auto userPointer = new UserData { this, &inputProvider };
   glfwSetWindowUserPointer(nativeWindow, userPointer);
-  context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
-  context->Setup();
+  /*context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
+  context->Setup();*/
 
   glEnable(GL_DEBUG_OUTPUT);
   glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -64,13 +67,13 @@ void GLFWWindow::Init() {
         }
       }, nullptr);
 
-  auto doResize = [](GLFWwindow *glfwWindow, int width, int height) {
+  /*auto doResize = [](GLFWwindow *glfwWindow, int width, int height) {
     GLFWWindow *window = reinterpret_cast<UserData *>(glfwGetWindowUserPointer(glfwWindow))->window;
     auto fb = std::dynamic_pointer_cast<Render::OpenGL::OpenGLRenderContext>(window->context)->GetScreenFrameBuffer();
     std::dynamic_pointer_cast<Render::OpenGL::OpenGLFrameBuffer>(fb)->Resize(width, height);
     window->resizeCallback(width, height);
   };
-  glfwSetFramebufferSizeCallback(nativeWindow, doResize);
+  glfwSetFramebufferSizeCallback(nativeWindow, doResize);*/
 
   int width, height;
   glfwGetFramebufferSize(nativeWindow, &width, &height);
@@ -79,7 +82,7 @@ void GLFWWindow::Init() {
   glfwSwapInterval(1);
 }
 
-void GLFWWindow::StartLoop() {
+void Window::StartLoop() {
 
   if (!renderCallback) {
     ENGH_CORE_ERROR("Could not start Loop, Render callback is not set");
@@ -151,25 +154,34 @@ void GLFWWindow::StartLoop() {
   updateThread.join();
 }
 
-std::pair<double, double> GLFWWindow::GetSize() {
+std::pair<double, double> Window::GetSize() {
   int w, h;
   glfwGetFramebufferSize(nativeWindow, &w, &h);
   return std::make_pair(static_cast<double>(w), static_cast<double>(h));
 }
 
-double GLFWWindow::GetFrameTime() {
+double Window::GetFrameTime() {
   return frameTime;
 }
 
-std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() {
-  return std::dynamic_pointer_cast<Render::RenderContext>(context);
+double Window::GetTotalTime() {
+  return totalTime;
 }
 
-Input::InputProvider *GLFWWindow::GetInputProvider() {
+/*std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() {
+  return std::dynamic_pointer_cast<Render::RenderContext>(context);
+}*/
+
+Input::InputProvider *Window::GetInputProvider() {
   return &inputProvider;
 }
-bool GLFWWindow::IsOpen() {
+
+bool Window::IsOpen() {
   return glfwWindowShouldClose(nativeWindow) == 0;
+}
+
+void* Window::GetNativeHandler() {
+  return nativeWindow;
 }
 
 }

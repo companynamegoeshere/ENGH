@@ -38,11 +38,11 @@ public:
 
   void RegisterWorldFunctions() override;
 
-  inline void Traverse(const smallfun::SmallFun<bool(Component *), 32> &target) {
+  inline void Traverse(const std::function<bool(Component *)> &target) {
     Traverse(target, true);
   }
 
-  virtual void Traverse(smallfun::SmallFun<bool(Component *), 32> target, bool receiveSelf);
+  virtual void Traverse(const std::function<bool(Component *)> &target, bool receiveSelf);
 
   inline iterator begin() { return children.begin(); }
 

@@ -6,22 +6,22 @@
 
 struct GLFWwindow;
 
-namespace ENGH::Platform::OpenGL {
+namespace ENGH::Platform::GLFW {
 
-class GLFWInputProvider : public Input::InputProvider {
+class InputProvider : public Input::InputProvider {
   GLFWwindow *window;
   void (*lastCallback)(GLFWwindow *, int, int, int, int);
 
-  std::map<ENGH::Input::InputKey, bool> keysPressed;
+  std::map<::ENGH::Input::InputKey, bool> keysPressed;
 
   static void funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
   void callback(GLFWwindow *nativeWindow, int key, int scancode, int action, int mods);
 
 public:
-  GLFWInputProvider(GLFWwindow *window = 0);
+  InputProvider(GLFWwindow *window = 0);
 
-  ~GLFWInputProvider() override;
+  ~InputProvider() override;
 
   bool isPressed(Input::InputKey key) override;
 };

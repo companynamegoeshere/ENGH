@@ -1,9 +1,9 @@
-#include <platform/opengl/glfw_input_provider.hpp>
-#include <platform/opengl/glfw_window.hpp>
+#include <platform/glfw/glfw_input_provider.hpp>
+#include <platform/glfw/glfw_window.hpp>
 #include <GLFW/glfw3.h>
 #include <map>
 
-namespace ENGH::Platform::OpenGL {
+namespace ENGH::Platform::GLFW {
 
 using namespace Input;
 
@@ -85,32 +85,32 @@ static std::map<int, Input::InputKey> _reverse(const std::map<Input::InputKey, i
 }
 static const std::map<int, Input::InputKey> reverseKeyMapping = _reverse(keyMapping);
 
-void GLFWInputProvider::funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-  static std::pair<GLFWwindow *, GLFWInputProvider *> last = {nullptr, nullptr};
+void InputProvider::funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  static std::pair<GLFWwindow *, InputProvider *> last = {nullptr, nullptr};
   if (last.first != window) {
     last.first  = window;
-    last.second = reinterpret_cast<GLFWWindow::UserData *>(glfwGetWindowUserPointer(window))->inputProvider;
+    last.second = reinterpret_cast<GLFW::Window::UserData *>(glfwGetWindowUserPointer(window))->inputProvider;
   }
   last.second->callback(window, key, scancode, action, mods);
 }
 
-GLFWInputProvider::GLFWInputProvider(GLFWwindow *window) : window(window) {
+InputProvider::InputProvider(GLFWwindow *window) : window(window) {
   if(window != nullptr) {
-    lastCallback = glfwSetKeyCallback(window, GLFWInputProvider::funcCallback);
+    lastCallback = glfwSetKeyCallback(window, InputProvider::funcCallback);
   }
 }
 
-GLFWInputProvider::~GLFWInputProvider() {
+InputProvider::~InputProvider() {
   if(window != nullptr && lastCallback != nullptr) {
     glfwSetKeyCallback(window, lastCallback);
   }
 }
 
-bool ENGH::Platform::OpenGL::GLFWInputProvider::isPressed(ENGH::Input::InputKey key) {
+bool ENGH::Platform::GLFW::InputProvider::isPressed(ENGH::Input::InputKey key) {
   return keysPressed[key];
 }
 
-void GLFWInputProvider::callback(GLFWwindow *nativeWindow, int key, int scancode, int action, int mods) {
+void InputProvider::callback(GLFWwindow *nativeWindow, int key, int scancode, int action, int mods) {
   const auto pressed = action == GLFW_PRESS;
   if (pressed || action == GLFW_RELEASE) {
     auto e = reverseKeyMapping.find(key);

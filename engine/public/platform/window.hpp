@@ -5,7 +5,10 @@
 #include <core/data_types.hpp>
 #include <core/engine.hpp>
 #include <input/input_provider.hpp>
-#include <platform/render/render_context.hpp>
+
+namespace filament {
+class Engine;
+}
 
 namespace ENGH::Platform {
 
@@ -16,20 +19,23 @@ public:
   using ResizeCallback = std::function<void(double width, double height)>;
 
   struct Config {
+    bool resizable;
     std::string title;
     uint width, height;
+
   };
 protected:
+  filament::Engine *engine;
   Config config;
-
-  UpdateCallback updateCallback;
-  RenderCallback setupRenderCallback;
-  RenderCallback renderCallback;
-  ResizeCallback resizeCallback;
 
 public:
 
-  explicit Window(Config  = {});
+  UpdateCallback updateCallback;
+  RenderCallback renderCallback;
+  RenderCallback setupRenderCallback = []() {};
+  ResizeCallback resizeCallback = [](double w, double h) {};
+
+  explicit Window(filament::Engine* engine, Config  = {});
 
   virtual ~Window() = 0;
 
@@ -43,20 +49,13 @@ public:
 
   virtual double GetFrameTime() = 0;
 
+  virtual double GetTotalTime() = 0;
+
   virtual Input::InputProvider *GetInputProvider() = 0;
 
-  virtual std::shared_ptr<Render::RenderContext> GetContext() = 0;
+//  virtual std::shared_ptr<Render::RenderContext> GetContext() = 0;
 
-  virtual void SetUpdateCallback(UpdateCallback);
-
-  virtual void SetSetupRenderCallback(RenderCallback);
-
-  virtual void SetRenderCallback(RenderCallback);
-
-  virtual void SetResizeCallback(ResizeCallback);
-
-  static std::shared_ptr<Window> CreateNewWindow(Window::Config cfg, Render::RenderLibrary library);
-
+  virtual void* GetNativeHandler() = 0;
 };
 
 }
