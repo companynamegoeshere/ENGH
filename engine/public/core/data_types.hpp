@@ -17,11 +17,12 @@ public:
   static constexpr std::size_t SIZE = sizeof(T);
 };
 
-typedef int8_t byte;
-using Byte = Number<byte>;
 
-typedef uint8_t ubyte;
-using UByte = Number<byte>;
+typedef int8_t int8;
+using Int8 = Number<int8>;
+
+typedef uint8_t uint8;
+using UInt8 = Number<uint8>;
 
 typedef int16_t int16;
 using Int16 = Number<int16>;

@@ -1,6 +1,4 @@
 #pragma once
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cert-err58-cpp"
 
 #include <core/data_types.hpp>
 #include <mathfu/glsl_mappings.h>
@@ -45,4 +43,3 @@ constexpr float RADtoDEG = 180.0f / PI;
 }
 
 }
-#pragma clang diagnostic pop
