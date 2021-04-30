@@ -1,17 +1,10 @@
 #include <platform/glfw/glfw_window.hpp>
 #include <platform/engh.hpp>
 
+#include <platform/glfw/glfw_native.h>
+
 //#include <glad/gl.h>
 #include <GLFW/glfw3.h>
-
-#if _WIN32
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
-#elif __linux__
-#define GLFW_EXPOSE_NATIVE_X11
-#define GLFW_EXPOSE_NATIVE_GLX
-#endif
-#include <GLFW/glfw3native.h>
 
 #include <filament/Engine.h>
 #include <filament/Renderer.h>
@@ -154,12 +147,7 @@ bool Window::IsOpen() {
 }
 
 void *Window::GetNativeHandler() {
-#ifdef _WIN32
-  HWND nativePointer = glfwGetWin32Window(glfwWindow);
-#else
-#error Only windows supported
-#endif
-  return reinterpret_cast<void *>(nativePointer);
+  return getNativeHandleFromGLFWWindow(glfwWindow);
 }
 
 void Window::doResize(int width, int height) {
