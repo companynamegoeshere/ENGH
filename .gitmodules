@@ -11,3 +11,4 @@
 [submodule "third/filament/filament"]
 	path = third/filament/filament
 	url = https://github.com/google/filament.git
+	branch = main
