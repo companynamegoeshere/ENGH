@@ -5,11 +5,26 @@
 
 namespace ENGH::Platform {
 
-ENGH::ENGH(filament::backend::Backend backend) {
-  engine = filament::Engine::create(backend);
+ECore::ECore() {}
+
+ECore::~ECore() {
+  if(engine != nullptr) {
+    if(renderer != nullptr) {
+      engine->destroy(renderer);
+      renderer = nullptr;
+    }
+    filament::Engine::destroy(engine);
+    engine = nullptr;
+  }
+};
+
+void ECore::Setup(filament::backend::Backend backend) {
+  engine = filament::Engine::create(backend); // TODO Ignore backend right now
+  renderer = engine->createRenderer();
 }
-Window *ENGH::CreateWindow(Window::Config config) {
-  return reinterpret_cast<::ENGH::Platform::Window*>(new GLFW::Window(engine, config));
+
+Window *ECore::CreateWindow(Window::Config config) {
+  return reinterpret_cast<::ENGH::Platform::Window*>(new GLFW::Window(this, config));
 }
 
 }

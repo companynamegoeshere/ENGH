@@ -6,16 +6,28 @@
 
 namespace filament {
 class Engine;
+class Renderer;
+class View;
 };
 
 namespace ENGH::Platform {
 
-class ENGH {
-  filament::Engine *engine;
-public:
-  ENGH(filament::backend::Backend backend = filament::backend::Backend::DEFAULT);
+class ECore {
+  filament::Engine   *engine = nullptr;
+  filament::Renderer *renderer = nullptr;
 
-  Window* CreateWindow(Window::Config config);
+public:
+  ECore();
+
+  ~ECore();
+
+  void Setup(filament::backend::Backend backend = filament::backend::Backend::DEFAULT);
+
+  Window *CreateWindow(Window::Config config);
+
+  inline filament::Renderer &GetRenderer() const { return *renderer; }
+
+  inline filament::Engine *GetEngine() const { return engine; }
 };
 
 }

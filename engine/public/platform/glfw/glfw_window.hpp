@@ -3,27 +3,37 @@
 #include <platform/glfw/glfw_input_provider.hpp>
 #include <platform/window.hpp>
 
+namespace filament {
+class SwapChain;
+};
+
+namespace ENGH::Platform {
+class ECore;
+}
 namespace ENGH::Platform::GLFW {
 
 class Window : public ::ENGH::Platform::Window {
   double totalTime;
   double frameTime;
-public:
+
   bool initialized;
 
-  GLFWwindow *nativeWindow{};
+  GLFWwindow *glfwWindow{};
+
+  uint width, height;
+
+public:
 
   InputProvider inputProvider;
-//  std::shared_ptr<Render::OpenGL::OpenGLRenderContext> context;
 
   struct UserData {
-    Window* window;
-    InputProvider* inputProvider;
+    Window& window;
+    InputProvider& inputProvider;
   };
 
 public:
 
-  Window(filament::Engine *engine, Config config);
+  Window(ECore *engh, Config config);
 
   ~Window() override;
 
@@ -41,9 +51,11 @@ public:
 
   Input::InputProvider *GetInputProvider() override;
 
-//  std::shared_ptr<Render::RenderContext> GetContext() override;
-
   void* GetNativeHandler() override;
+
+private:
+
+  void doResize(int width, int height);
 
 };
 

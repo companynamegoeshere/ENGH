@@ -1,21 +1,36 @@
 #include <platform/glfw/glfw_window.hpp>
+#include <platform/engh.hpp>
 
-#include <glad/gl.h>
+//#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
+#if _WIN32
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#elif __linux__
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_GLX
+#endif
+#include <GLFW/glfw3native.h>
+
+#include <filament/Engine.h>
+#include <filament/Renderer.h>
+
+#include <atomic>
 #include <chrono>
 #include <thread>
-#include <atomic>
 #include <utility>
+
+#include <iostream>
 
 namespace ENGH::Platform::GLFW {
 
 Window::~Window() {
-  glfwDestroyWindow(nativeWindow);
+  glfwDestroyWindow(glfwWindow);
 }
 
-Window::Window(filament::Engine *engine, Config config) :
-    ::ENGH::Platform::Window(engine, std::move(config)),
+Window::Window(ECore *engh, Config config) :
+    ::ENGH::Platform::Window(engh, std::move(config)),
     frameTime(0.0),
     initialized(false),
     inputProvider() {}
@@ -28,58 +43,31 @@ void Window::Init() {
   if (!glfwInit()) {
     const char *desc;
     glfwGetError(&desc);
-    ENGH_CORE_THROW_FATAL("could not initialize glfw (OpenGL): ", desc);
+    ENGH_CORE_THROW_FATAL("could not initialize GLFW: ", desc);
   }
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-#ifdef ENGH_DEBUG
-  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
+//  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+//  glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 
-  nativeWindow = glfwCreateWindow(config.width, config.height, config.title.c_str(), nullptr, nullptr);
-  if (!nativeWindow) {
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+  width      = config.width;
+  height     = config.height;
+  glfwWindow = glfwCreateWindow(width, height, config.title.c_str(), nullptr, nullptr);
+  if (!glfwWindow) {
     const char *desc;
     glfwGetError(&desc);
     ENGH_CORE_THROW_FATAL("could not create glfw window: ", desc);
   }
-  inputProvider = InputProvider(nativeWindow);
-  auto userPointer = new UserData { this, &inputProvider };
-  glfwSetWindowUserPointer(nativeWindow, userPointer);
-  /*context = std::make_shared<Render::OpenGL::OpenGLRenderContext>(nativeWindow);
-  context->Setup();*/
+  inputProvider = InputProvider(glfwWindow);
+  auto userPointer = new UserData{*this, inputProvider};
+  glfwSetWindowUserPointer(glfwWindow, userPointer);
 
-  glEnable(GL_DEBUG_OUTPUT);
-  glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-  glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-  glDebugMessageCallback(
-      [](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *msg,
-         const void *data) {
-        switch (severity) {
-        case GL_DEBUG_SEVERITY_HIGH:ENGH_CORE_ERROR(msg);
-          break;
-        case GL_DEBUG_SEVERITY_MEDIUM:ENGH_CORE_WARN(msg);
-          break;
-        case GL_DEBUG_SEVERITY_LOW:ENGH_CORE_FINER(msg);
-          break;
-        case GL_DEBUG_SEVERITY_NOTIFICATION:ENGH_CORE_FINEST(msg);
-          break;
-        }
-      }, nullptr);
+  glfwSetFramebufferSizeCallback(glfwWindow, [](GLFWwindow *glfwWindow, int width, int height) {
+    auto &w = reinterpret_cast<UserData *>(glfwGetWindowUserPointer(glfwWindow))->window;
+    w.doResize(width, height);
+  });
 
-  /*auto doResize = [](GLFWwindow *glfwWindow, int width, int height) {
-    GLFWWindow *window = reinterpret_cast<UserData *>(glfwGetWindowUserPointer(glfwWindow))->window;
-    auto fb = std::dynamic_pointer_cast<Render::OpenGL::OpenGLRenderContext>(window->context)->GetScreenFrameBuffer();
-    std::dynamic_pointer_cast<Render::OpenGL::OpenGLFrameBuffer>(fb)->Resize(width, height);
-    window->resizeCallback(width, height);
-  };
-  glfwSetFramebufferSizeCallback(nativeWindow, doResize);*/
-
-  int width, height;
-  glfwGetFramebufferSize(nativeWindow, &width, &height);
-  glViewport(0, 0, width, height);
-
-  glfwSwapInterval(1);
+  swapChain = engh->GetEngine()->createSwapChain(GetNativeHandler());
 }
 
 void Window::StartLoop() {
@@ -89,75 +77,64 @@ void Window::StartLoop() {
     return;
   }
 
-  if (!setupRenderCallback) {
-    ENGH_CORE_ERROR("Could not start Loop, Setup Render callback is not set");
-    return;
-  }
+  filament::Renderer &renderer = engh->GetRenderer();
 
-  if (!updateCallback) {
-    ENGH_CORE_ERROR("Could not start Loop, Update callback is not set");
-    return;
-  }
+  using namespace std::chrono_literals;
+  using clock = std::chrono::high_resolution_clock;
+  using secD = std::chrono::duration<double, std::chrono::seconds>;
 
-  std::atomic<bool> renderLock = false;
-  auto wait = [&renderLock]() { while (renderLock); };
+  constexpr std::chrono::nanoseconds desireFrameTime = std::chrono::nanoseconds((int)1e9) / 60; // 60 FPS
 
-  const double desiredTickCount = 1.0 / 240;
-
-  bool run = true;
-
-  auto updateThread = std::thread([&]() {
-    std::chrono::time_point lastTime = std::chrono::steady_clock::now();
-    int lastSec = 5, tickCount = 0;
-    double delay = 0, total = 0;
-
-    while (run) {
-      auto now = std::chrono::steady_clock::now();
-      double delta = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTime).count() * 1e-9;
-      total += delta;
-      lastTime = now;
-
-      delay += desiredTickCount - delta;
-      if (delay > 0)
-        std::this_thread::sleep_for(std::chrono::duration<double>(delay));
-
-      tickCount++;
-      if (total > lastSec) {
-        lastSec += 5;
-        ENGH_CORE_FINER("World tick count: ", tickCount / 5, " delay: ", delay);
-        tickCount = 0;
-      }
-
-      if (!renderLock) {
-        renderLock = true;
-        this->updateCallback(delta, total);
-        renderLock = false;
-      }
-    }
-  });
-
-  double last = glfwGetTime();
-
+  auto begin = clock::now();
+  auto last = begin;
   while (IsOpen()) {
-    double now = glfwGetTime();
-    frameTime = now - last;
-    last = now;
+    if (nextView != nullptr) {
+      currentView = nextView;
+      nextView    = nullptr;
+    }
 
-    this->renderCallback();
+    auto now           = clock::now();
+    auto cFrameTime    = now - last;
+    auto nanoNow       = std::chrono::duration_cast<std::chrono::nanoseconds>(now - begin).count();
+    auto nanoFrameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(cFrameTime).count();
+    frameTime = nanoFrameTime / (double) 1e9;
+    last      = now;
+
+    this->renderCallback(frameTime, nanoNow / 1e9);
+
+#if UTILS_HAS_THREADING == 0
+    engine->execute();
+#endif
+
+    static int skippingFrames = 0;
+    static int frames = 0;
+    if (renderer.beginFrame(GetSwapChain(), nanoNow)) {
+      renderer.render(currentView);
+      renderer.endFrame();
+      frames++;
+    } else {
+      skippingFrames++;
+    }
     glfwPollEvents();
-    wait();
-    renderLock = true;
-    setupRenderCallback();
-    renderLock = false;
+
+    static long long nextNano = 0;
+    if(nanoNow > nextNano) {
+      nextNano = nanoNow + (int)1e9;
+      std::cout << "Skipped frames: " << skippingFrames << " FPS: " << frames << " NOW: " << nanoNow * 1e-9 << " NEXT: " << nextNano * 1e-9 << std::endl;
+      frames = 0;
+      skippingFrames = 0;
+    }
+
+    if (cFrameTime < desireFrameTime) {
+      std::this_thread::sleep_for(desireFrameTime - cFrameTime);
+    }
   }
-  run = false;
-  updateThread.join();
+
+  engh->GetEngine()->destroy(swapChain);
 }
 
 std::pair<double, double> Window::GetSize() {
-  int w, h;
-  glfwGetFramebufferSize(nativeWindow, &w, &h);
-  return std::make_pair(static_cast<double>(w), static_cast<double>(h));
+  return std::make_pair(static_cast<double>(width), static_cast<double>(height));
 }
 
 double Window::GetFrameTime() {
@@ -168,20 +145,26 @@ double Window::GetTotalTime() {
   return totalTime;
 }
 
-/*std::shared_ptr<Render::RenderContext> GLFWWindow::GetContext() {
-  return std::dynamic_pointer_cast<Render::RenderContext>(context);
-}*/
-
 Input::InputProvider *Window::GetInputProvider() {
   return &inputProvider;
 }
 
 bool Window::IsOpen() {
-  return glfwWindowShouldClose(nativeWindow) == 0;
+  return glfwWindowShouldClose(glfwWindow) == 0;
 }
 
-void* Window::GetNativeHandler() {
-  return nativeWindow;
+void *Window::GetNativeHandler() {
+#ifdef _WIN32
+  HWND nativePointer = glfwGetWin32Window(glfwWindow);
+#else
+#error Only windows supported
+#endif
+  return reinterpret_cast<void *>(nativePointer);
+}
+
+void Window::doResize(int width, int height) {
+  this->width  = width;
+  this->height = height;
 }
 
 }

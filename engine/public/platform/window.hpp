@@ -8,14 +8,16 @@
 
 namespace filament {
 class Engine;
+class SwapChain;
+class View;
 }
 
 namespace ENGH::Platform {
+class ECore;
 
 class Window {
 public:
-  using UpdateCallback = std::function<void(double delta, double time)>;
-  using RenderCallback = std::function<void()>;
+  using RenderCallback = std::function<void(double delta, double time)>;
   using ResizeCallback = std::function<void(double width, double height)>;
 
   struct Config {
@@ -25,17 +27,19 @@ public:
 
   };
 protected:
-  filament::Engine *engine;
+  ECore *engh;
+  filament::SwapChain *swapChain;
+
+  filament::View *currentView;
+  filament::View *nextView;
   Config config;
 
 public:
 
-  UpdateCallback updateCallback;
   RenderCallback renderCallback;
-  RenderCallback setupRenderCallback = []() {};
   ResizeCallback resizeCallback = [](double w, double h) {};
 
-  explicit Window(filament::Engine* engine, Config  = {});
+  explicit Window(ECore *engh, Config  = {});
 
   virtual ~Window() = 0;
 
@@ -53,7 +57,9 @@ public:
 
   virtual Input::InputProvider *GetInputProvider() = 0;
 
-//  virtual std::shared_ptr<Render::RenderContext> GetContext() = 0;
+  inline filament::SwapChain *GetSwapChain() { return swapChain; }
+
+  void SelectView(filament::View *next) { nextView = next; }
 
   virtual void* GetNativeHandler() = 0;
 };
