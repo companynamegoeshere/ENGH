@@ -8,11 +8,28 @@
 #include <platform/window.hpp>
 #include <platform/engh.hpp>
 
+#include <filament/Camera.h>
+#include <filament/Engine.h>
+#include <filament/IndexBuffer.h>
+#include <filament/Material.h>
+#include <filament/RenderableManager.h>
+#include <filament/Renderer.h>
+#include <filament/Scene.h>
+#include <filament/TransformManager.h>
+#include <filament/VertexBuffer.h>
+#include <filament/View.h>
+#include <filament/Viewport.h>
+
+#include <utils/EntityManager.h>
+#include <math/vec3.h>
+
 #include <array>
 
-#include <imgui/imgui.h>
+#include <generated/resources/resources.h>
+
+/*#include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
-#include "imgui_adapter.hpp"
+#include "imgui_adapter.hpp"*/
 
 using ENGH::Logger;
 using ENGH::EObject::Actor;
@@ -24,7 +41,15 @@ using ENGH::Input::InputKey;
 using ENGH::Platform::Window;
 using ENGH::Render::WorldRenderer;
 
+using namespace filament;
+using namespace utils;
+
 using namespace ENGH::Math;
+
+struct Vertex {
+  math::float2 position;
+  uint32_t     color;
+};
 
 /*bool logInit = false;
 void *operator new(size_t size) {
@@ -47,16 +72,24 @@ int main() {
 //  logInit = true;
   ENGH_INFO("Test application");
 
-  auto engh = ENGH::Platform::ENGH();
+  auto engh = new ENGH::Platform::ECore();
 
-  auto window = engh.CreateWindow({
-                                      true,
-                                      "ASD",
-                                      800, 600
-                                  });
+  auto window = engh->CreateWindow({
+                                       true,
+                                       "ASD",
+                                       800, 600
+                                   });
+  engh->Setup(filament::backend::Backend::DEFAULT);
   window->Init();
-  ImGuiAdapter imGuiAdapter(static_cast<GLFWwindow *>(window->GetNativeHandler()));
-  imGuiAdapter.Setup(false);
+
+  engh->GetRenderer().setClearOptions({
+                                          {0.0f, 0.204f, 0.4f, 1.0f},
+                                          true,
+                                          true,
+                                      });
+
+  /*ImGuiAdapter imGuiAdapter(static_cast<GLFWwindow *>(window->GetNativeHandler()));
+  imGuiAdapter.Setup(false);*/
 
   /*PerspectiveCamera *cam = new PerspectiveCamera();
   cam->fov   = 80 * DEGtoRAD;
@@ -65,6 +98,62 @@ int main() {
   /*window->SetResizeCallback([&cam](double width, double height) {
     cam->aspect = width / height;
   });*/
+
+  Engine *engine = engh->GetEngine();
+
+  Scene *scene = engine->createScene();
+
+  auto *material = Material::Builder()
+      .package(RESOURCES_BAKEDCOLOR_DATA, RESOURCES_BAKEDCOLOR_SIZE)
+      .build(*engine);
+
+  static const Vertex TRIANGLE_VERTICES[3] = {
+      {{1, 0}, 0xffff0000u},
+      {{cos(M_PI * 2 / 3), sin(M_PI * 2 / 3)}, 0xff00ff00u},
+      {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, 0xff0000ffu},
+  };
+
+  static constexpr uint16_t TRIANGLE_INDICES[3] = {0, 1, 2};
+
+  auto *vb = VertexBuffer::Builder()
+      .vertexCount(3)
+      .bufferCount(1)
+      .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT2, 0, 12)
+      .attribute(VertexAttribute::COLOR, 0, VertexBuffer::AttributeType::UBYTE4, 8, 12)
+      .normalized(VertexAttribute::COLOR)
+      .build(*engine);
+  vb->setBufferAt(*engine, 0, VertexBuffer::BufferDescriptor(TRIANGLE_VERTICES, 36, nullptr));
+  auto *ib = IndexBuffer::Builder()
+      .indexCount(3)
+      .bufferType(IndexBuffer::IndexType::USHORT)
+      .build(*engine);
+  ib->setBuffer(*engine, IndexBuffer::BufferDescriptor(TRIANGLE_INDICES, 6, nullptr));
+
+  Entity quad = EntityManager::get().create();
+// build a quad
+  RenderableManager::Builder(1)
+      .boundingBox({{-1, -1, -1}, {1, 1, 1}})
+      .material(0, material->getDefaultInstance())
+      .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, vb, ib, 0, 3)
+      .culling(false)
+      .receiveShadows(false)
+      .castShadows(false)
+      .build(*engine, quad);
+  scene->addEntity(quad);
+
+  Camera *cam = engine->createCamera(EntityManager::get().create());
+
+  View *view = engine->createView();
+  {
+    const auto[w, h] = window->GetSize();
+    view->setViewport({0, 0, static_cast<uint32>(w), static_cast<uint32>(h)});
+    view->setVisibleLayers(0x4, 0x4);
+    view->setPostProcessingEnabled(false);
+    view->setScene(scene);
+    view->setCamera(cam);
+  }
+
+  window->SelectView(view);
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
 
@@ -87,54 +176,61 @@ int main() {
     }
   }*/
 
-  input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
-  input.RegisterAxis(InputKey::KEY_A, "xAxis", +1.0);
+  {
+    input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
+    input.RegisterAxis(InputKey::KEY_A, "xAxis", +1.0);
 
-  input.RegisterAxis(InputKey::KEY_E, "yAxis", +1.0);
-  input.RegisterAxis(InputKey::KEY_Q, "yAxis", -1.0);
+    input.RegisterAxis(InputKey::KEY_E, "yAxis", +1.0);
+    input.RegisterAxis(InputKey::KEY_Q, "yAxis", -1.0);
 
-  input.RegisterAxis(InputKey::KEY_W, "zAxis", +1.0);
-  input.RegisterAxis(InputKey::KEY_S, "zAxis", -1.0);
+    input.RegisterAxis(InputKey::KEY_W, "zAxis", +1.0);
+    input.RegisterAxis(InputKey::KEY_S, "zAxis", -1.0);
 
-  input.RegisterAxis(InputKey::KEY_RIGHT, "yawAxis", 1.0);
-  input.RegisterAxis(InputKey::KEY_LEFT, "yawAxis", -1.0);
+    input.RegisterAxis(InputKey::KEY_RIGHT, "yawAxis", 1.0);
+    input.RegisterAxis(InputKey::KEY_LEFT, "yawAxis", -1.0);
 
-  input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
-  input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
+    input.RegisterAxis(InputKey::KEY_UP, "pitchAxis", -1.0);
+    input.RegisterAxis(InputKey::KEY_DOWN, "pitchAxis", +1.0);
 
-  input.RegisterAction(InputKey::KEY_SPACE, "add");
+    input.RegisterAction(InputKey::KEY_SPACE, "add");
+  }
 
   Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
   Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
 
-  auto &registrar               = input.GetRegistrar();
-  registrar.BindAxis("xAxis", [&](double value, double delta) {
+  double x = 0.0;
+
+  {
+    auto &registrar = input.GetRegistrar();
+    registrar.BindAxis("xAxis", [&](double value, double delta) {
 //    cam->position += (yawRot * -VEC3_RIGHT) * float(value * delta);
-  });
-  registrar.BindAxis("yAxis", [&](double value, double delta) {
+      x += value * delta;
+    });
+    registrar.BindAxis("yAxis", [&](double value, double delta) {
 //    cam->position.y += value * delta;
-  });
-  registrar.BindAxis("zAxis", [&](double value, double delta) {
+    });
+    registrar.BindAxis("zAxis", [&](double value, double delta) {
 //    cam->position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
-  });
-  registrar.BindAxis("yawAxis", [&](double value, double delta) {
-    yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
-  });
-  registrar.BindAxis("pitchAxis", [&](double value, double delta) {
-    pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
-  });
-  registrar.BindAction("add", [&](bool pressed, double delta) {
-    static bool last = false;
-    if (pressed && !last) {
-      /*head = head->AttachComponent<SphereComponent>();
-      head->transform.position = {0.0f, 1.6f, 0.0f};
-      head->transform.scale    = Vec3(0.6f);
-      auto &transform          = actor->GetTransform();
-      transform.position[1] -= transform.scale.y * 1.45f;
-      transform.scale *= 1.3f;*/
-    }
-    last             = pressed;
-  });
+    });
+    registrar.BindAxis("yawAxis", [&](double value, double delta) {
+      yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
+    });
+    registrar.BindAxis("pitchAxis", [&](double value, double delta) {
+      pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
+    });
+    registrar.BindAction("add", [&](bool pressed, double delta) {
+      static bool last = false;
+      if (pressed && !last) {
+        /*head = head->AttachComponent<SphereComponent>();
+        head->transform.position = {0.0f, 1.6f, 0.0f};
+        head->transform.scale    = Vec3(0.6f);
+        auto &transform          = actor->GetTransform();
+        transform.position[1] -= transform.scale.y * 1.45f;
+        transform.scale *= 1.3f;*/
+      }
+      last             = pressed;
+    });
+  }
 
 //  world->BeginPlay();
 
@@ -254,7 +350,24 @@ int main() {
     context->SwapBuffers();
   });*/
 
+  window->renderCallback = [&](double delta, double time) {
+    input.UpdateInputs();
+    input.Tick(delta);
+    constexpr float ZOOM   = 1.5f;
+    const uint32_t  w      = view->getViewport().width;
+    const uint32_t  h      = view->getViewport().height;
+    const float     aspect = (float) w / h;
+    cam->setProjection(Camera::Projection::ORTHO,
+                       -aspect * ZOOM, aspect * ZOOM,
+                       -ZOOM, ZOOM, 0, 1);
+    auto &tcm = engine->getTransformManager();
+    tcm.setTransform(
+        tcm.getInstance(quad),
+        math::mat4f::translation<float>({-x, 0.0f, 0.0f}) * filament::math::mat4f::rotation(time, filament::math::float3{0.0f, 0.0f, 0.1f})
+    );
+  };
+
   window->StartLoop();
-  imGuiAdapter.Shutdown();
+//  imGuiAdapter.Shutdown();
 
 }
