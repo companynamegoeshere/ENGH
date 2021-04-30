@@ -86,10 +86,10 @@ static std::map<int, Input::InputKey> _reverse(const std::map<Input::InputKey, i
 static const std::map<int, Input::InputKey> reverseKeyMapping = _reverse(keyMapping);
 
 void InputProvider::funcCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-  static std::pair<GLFWwindow *, InputProvider *> last = {nullptr, nullptr};
+  static std::pair<GLFWwindow *, InputProvider*> last;
   if (last.first != window) {
     last.first  = window;
-    last.second = reinterpret_cast<GLFW::Window::UserData *>(glfwGetWindowUserPointer(window))->inputProvider;
+    last.second = &reinterpret_cast<GLFW::Window::UserData *>(glfwGetWindowUserPointer(window))->inputProvider;
   }
   last.second->callback(window, key, scancode, action, mods);
 }
@@ -106,7 +106,7 @@ InputProvider::~InputProvider() {
   }
 }
 
-bool ENGH::Platform::GLFW::InputProvider::isPressed(ENGH::Input::InputKey key) {
+bool ::ENGH::Platform::GLFW::InputProvider::isPressed(::ENGH::Input::InputKey key) {
   return keysPressed[key];
 }
 
