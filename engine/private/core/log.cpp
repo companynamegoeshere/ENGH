@@ -6,7 +6,7 @@ using Level = ENGH::Logger::Level;
 
 const Level Level::OFF("OFF", Int32::MAX);
 const Level Level::FATAL("FATAL", 1000);
-const Level Level::ERROR("ERROR", 900);
+const Level Level::ERR("ERROR", 900);
 const Level Level::WARN("WARN", 800);
 const Level Level::INFO("INFO", 700);
 const Level Level::DEBUG("DEBUG", 600);
