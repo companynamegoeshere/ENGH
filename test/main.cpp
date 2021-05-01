@@ -11,6 +11,7 @@
 #include <filament/Camera.h>
 #include <filament/Engine.h>
 #include <filament/IndexBuffer.h>
+#include <filament/LightManager.h>
 #include <filament/Material.h>
 #include <filament/RenderableManager.h>
 #include <filament/Renderer.h>
@@ -19,6 +20,7 @@
 #include <filament/VertexBuffer.h>
 #include <filament/View.h>
 #include <filament/Viewport.h>
+#include <math/norm.h>
 
 #include <utils/EntityManager.h>
 #include <math/vec3.h>
@@ -48,7 +50,8 @@ using namespace ENGH::Math;
 
 struct Vertex {
   math::float2 position;
-  uint32_t     color;
+//  uint32_t     color;
+  math::short4 tangents;
 };
 
 /*bool logInit = false;
@@ -104,13 +107,32 @@ int main() {
   Scene *scene = engine->createScene();
 
   auto *material = Material::Builder()
-      .package(RESOURCES_BAKEDCOLOR_DATA, RESOURCES_BAKEDCOLOR_SIZE)
+//      .package(RESOURCES_BAKEDCOLOR_DATA, RESOURCES_BAKEDCOLOR_SIZE)
+      .package(RESOURCES_AIDEFAULTMAT_DATA, RESOURCES_AIDEFAULTMAT_SIZE)
       .build(*engine);
 
+  auto mi = material->createInstance();
+  mi->setParameter("baseColor", RgbType::sRGB, math::float3{1.0f, 0.55f, 0.0f});
+  mi->setParameter("metallic", 1.0f);
+  mi->setParameter("roughness", 0.4f);
+  mi->setParameter("reflectance", 0.5f);
+
+//  const auto up = math::quatf::fromAxisAngle(math::float3{1.0f, 0.0f, 0.0f}, DEGtoRAD * 90.0).xyzw;
+  math::short4 up = math::packSnorm16(
+      math::mat3f::packTangentFrame({
+                                        math::float3{0.0f, 1.0f, 0.0f},
+                                        math::float3{1.0f, 0.0f, 0.0f},
+                                        math::float3{0.0f, 0.0f, 1.0f}
+                                    }).xyzw
+  );
+
   static const Vertex TRIANGLE_VERTICES[3] = {
-      {{1, 0}, 0xffff0000u},
+      /*{{1, 0}, 0xffff0000u},
       {{cos(M_PI * 2 / 3), sin(M_PI * 2 / 3)}, 0xff00ff00u},
-      {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, 0xff0000ffu},
+      {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, 0xff0000ffu},*/
+      {{1, 0}, up},
+      {{cos(M_PI * 2 / 3), sin(M_PI * 2 / 3)}, up},
+      {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, up}
   };
 
   static constexpr uint16_t TRIANGLE_INDICES[3] = {0, 1, 2};
@@ -118,22 +140,26 @@ int main() {
   auto *vb = VertexBuffer::Builder()
       .vertexCount(3)
       .bufferCount(1)
-      .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT2, 0, 12)
-      .attribute(VertexAttribute::COLOR, 0, VertexBuffer::AttributeType::UBYTE4, 8, 12)
-      .normalized(VertexAttribute::COLOR)
+      .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT2, offsetof(Vertex, position), sizeof(Vertex))
+      .attribute(VertexAttribute::TANGENTS, 0, VertexBuffer::AttributeType::SHORT4, offsetof(Vertex, tangents), sizeof(Vertex))
+      .normalized(VertexAttribute::TANGENTS)
+//      .attribute(VertexAttribute::POSITION, 0, VertexBuffer::AttributeType::FLOAT2, 0, 12)
+//      .attribute(VertexAttribute::COLOR, 0, VertexBuffer::AttributeType::UBYTE4, 8, 12)
+//      .normalized(VertexAttribute::COLOR)
       .build(*engine);
-  vb->setBufferAt(*engine, 0, VertexBuffer::BufferDescriptor(TRIANGLE_VERTICES, 36, nullptr));
+  vb->setBufferAt(*engine, 0, VertexBuffer::BufferDescriptor(TRIANGLE_VERTICES, sizeof(TRIANGLE_VERTICES), nullptr));
   auto *ib = IndexBuffer::Builder()
       .indexCount(3)
       .bufferType(IndexBuffer::IndexType::USHORT)
       .build(*engine);
-  ib->setBuffer(*engine, IndexBuffer::BufferDescriptor(TRIANGLE_INDICES, 6, nullptr));
+  ib->setBuffer(*engine, IndexBuffer::BufferDescriptor(TRIANGLE_INDICES, sizeof(TRIANGLE_INDICES), nullptr));
 
   Entity quad = EntityManager::get().create();
 // build a quad
   RenderableManager::Builder(1)
       .boundingBox({{-1, -1, -1}, {1, 1, 1}})
-      .material(0, material->getDefaultInstance())
+//      .material(0, material->getDefaultInstance())
+      .material(0, mi)
       .geometry(0, RenderableManager::PrimitiveType::TRIANGLES, vb, ib, 0, 3)
       .culling(false)
       .receiveShadows(false)
@@ -141,7 +167,16 @@ int main() {
       .build(*engine, quad);
   scene->addEntity(quad);
 
-  Camera *cam = engine->createCamera(EntityManager::get().create());
+  auto light = EntityManager::get().create();
+  LightManager::Builder(LightManager::Type::DIRECTIONAL)
+      .color(Color::toLinear<ACCURATE>({0.98f, 0.92f, 0.89f}))
+      .intensity(110000)
+      .direction({0.6, -1, -0.8})
+      .build(*engine, light);
+  scene->addEntity(light);
+
+  auto   camEnt = EntityManager::get().create();
+  Camera *cam   = engine->createCamera(camEnt);
 
   View *view = engine->createView();
   {
@@ -156,25 +191,6 @@ int main() {
   window->SelectView(view);
 
   auto input = ENGH::Input::InputHandler(window->GetInputProvider());
-
-  /*auto context  = window->GetContext();
-  auto renderer = context->GetRenderer();
-
-  auto world             = new World();
-  auto worldRenderer     = new WorldRenderer(world, context);
-  auto dispatcher        = worldRenderer->GetDispatcher();
-
-  SphereComponent *head;
-  auto            *actor = world->SpawnActor<Actor>();*/
-  /*{
-    BoxComponent *comp = actor->GetRoot()->AttachComponent<BoxComponent>();
-    comp->transform.scale = Vec3(0.4);
-    {
-      head = comp->AttachComponent<SphereComponent>();
-      head->transform.position = {0.0f, 1.6f, 0.0f};
-      head->transform.scale    = Vec3(0.6);
-    }
-  }*/
 
   {
     input.RegisterAxis(InputKey::KEY_D, "xAxis", -1.0);
@@ -195,28 +211,32 @@ int main() {
     input.RegisterAction(InputKey::KEY_SPACE, "add");
   }
 
-  Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
-  Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
+//  Quat yawRot   = Quat::FromAngleAxis(0, VEC3_UP);
+//  Quat pitchRot = Quat::FromAngleAxis(0, VEC3_RIGHT);
+  math::mat4f rot;
 
   double x = 0.0;
+  double y = 0.0;
+  double z = 0.0;
 
   {
     auto &registrar = input.GetRegistrar();
     registrar.BindAxis("xAxis", [&](double value, double delta) {
-//    cam->position += (yawRot * -VEC3_RIGHT) * float(value * delta);
       x += value * delta;
     });
     registrar.BindAxis("yAxis", [&](double value, double delta) {
-//    cam->position.y += value * delta;
+      z += value * delta;
     });
     registrar.BindAxis("zAxis", [&](double value, double delta) {
-//    cam->position += yawRot * ((pitchRot.Inverse() * VEC3_FORWARD) * float(value * delta));
+      y += value * delta;
     });
     registrar.BindAxis("yawAxis", [&](double value, double delta) {
-      yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
+//      yawRot = yawRot * Quat::FromAngleAxis(value * delta, VEC3_UP);
+      rot *= math::mat4f::rotation(value * delta, math::float3{0.0f, 1.0f, 0.0f});
     });
     registrar.BindAxis("pitchAxis", [&](double value, double delta) {
-      pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
+//      pitchRot = pitchRot * Quat::FromAngleAxis(value * delta, VEC3_RIGHT);
+      rot *= math::mat4f::rotation(value * delta, math::float3{1.0f, 0.0f, 0.0f});
     });
     registrar.BindAction("add", [&](bool pressed, double delta) {
       static bool last = false;
@@ -232,140 +252,29 @@ int main() {
     });
   }
 
-//  world->BeginPlay();
+  auto &tcm = engine->getTransformManager();
 
-  std::array<float, 60> fps{0};
-  std::array<float, 60> frameTime{0};
-  double                nextSec = 0;
-
-  constexpr auto last = [](auto &v) constexpr -> auto & { return v[v.size() - 1]; };
-
-  /*window->SetUpdateCallback([&](double delta, double total) {
-    input.UpdateInputs();
-    world->Tick(delta);
-    input.Tick(delta);
-
-    if (total >= nextSec) {
-      nextSec = total += 1;
-      for (int i    = 1; i < fps.size(); i++) {
-        fps[i - 1] = fps[i];
-      }
-      for (int i    = 1; i < frameTime.size(); i++) {
-        frameTime[i - 1] = frameTime[i];
-      }
-      double   time = window->GetFrameTime();
-      last(frameTime) = time * 1000;
-      last(fps)       = time < 0.0001 ? 0.0 : 1 / time;
-    }
-
-    cam->rotation = pitchRot * yawRot;
-
-    auto &transform = actor->GetTransform();
-    transform.rotation = Quat::FromEulerAngles(0, total * 20 * DEGtoRAD, 0);
-//    transform.position.x = sin(total) * 0.2;
-//    transform.position.y = cos(total) * 0.2;
-//    transform.rotation   = Quat::FromEulerAngles(total * 10 * DEGtoRAD, 0, total * 30 * DEGtoRAD);
-  });
-
-  window->SetSetupRenderCallback([&]() {
-    worldRenderer->SetupRender(cam);
-  });
-
-  auto screenFb = context->GetScreenFrameBuffer();
-
-  auto fb = context->CreateFrameBuffer(
-      static_cast<FrameBuffer::BufferType>(FrameBuffer::BufferType::COLOR | FrameBuffer::BufferType::DEPTH), 0.0f, 0.0f
-  );
-
-  window->SetRenderCallback([&]() {
-
-    fb->Bind();
-    renderer->Clear(0.2f, 0.2f, 0.2f, 1.0f);
-    worldRenderer->Render();
-
-    screenFb->Bind();
-    imGuiAdapter.Begin();
-    ImGuiID     dockSpace = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_AutoHideTabBar);
-    static bool first     = true;
-    if (first) {
-      first = false;
-      ImGui::DockBuilderRemoveNode(dockSpace);
-      ImGui::DockBuilderAddNode(dockSpace, ImGuiDockNodeFlags_DockSpace);
-      const auto[width, height] = window->GetSize();
-      ImGui::DockBuilderSetNodeSize(dockSpace, {static_cast<float>(width), static_cast<float>(height)});
-
-      ImGuiID dockRight, dockLeft, dockLeftDown, dockLeftUp;
-      dockLeft   = ImGui::DockBuilderSplitNode(dockSpace, ImGuiDir_Left, 0.30f, NULL, &dockRight);
-      dockLeftUp = ImGui::DockBuilderSplitNode(dockLeft, ImGuiDir_Up, 0.50f, NULL, &dockLeftDown);
-
-      ImGui::DockBuilderDockWindow("Scene", dockRight);
-      ImGui::DockBuilderDockWindow("Stats", dockLeftUp);
-      ImGui::DockBuilderDockWindow("Ball", dockLeftDown);
-
-      imGuiAdapter.SetMainDock(ImHashStr("Scene"));
-    }
-    {
-      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0.0f, 0.0f});
-      if (ImGui::Begin("Scene")) {
-        static float w = 0, h = 0;
-
-        auto s = ImGui::GetContentRegionAvail();
-        if (w != s.x || h != s.y) {
-          w = s.x;
-          h = s.y;
-          fb->Resize(static_cast<float>(w), static_cast<float>(h));
-          cam->aspect = s.x / s.y;
-        }
-
-        ImGui::Image(
-            reinterpret_cast<ImTextureID>(fb->GetColorTextureID()),
-            {
-                static_cast<float>(fb->GetWidth()),
-                static_cast<float>(fb->GetHeight())
-            },
-            {0, 1},
-            {1, 0}
-        );
-      }
-      ImGui::End();
-      ImGui::PopStyleVar();
-
-      if (ImGui::Begin("Stats")) {
-        auto labelPlot = [&last](auto text, auto arr, auto t2) {
-          ImGui::Text("%s: %02f", text, last(arr));
-          ImGui::PlotLines(t2, arr.data(), arr.size());
-        };
-        labelPlot("FPS", fps, "");
-        labelPlot("FrameTime", frameTime, "ms");
-      }
-      ImGui::End();
-
-      if (ImGui::Begin("Ball")) {
-//        ImGui::SliderInt("Lat", reinterpret_cast<int *>(&head->latCount), 1, 100);
-//        ImGui::SliderInt("Lng", reinterpret_cast<int *>(&head->longCount), 1, 100);
-      }
-      ImGui::End();
-    }
-    imGuiAdapter.End();
-    context->SwapBuffers();
-  });*/
-
-  window->renderCallback = [&](double delta, double time) {
+  auto callback = [&](double delta, double time) {
     input.UpdateInputs();
     input.Tick(delta);
     constexpr float ZOOM   = 1.5f;
     const uint32_t  w      = view->getViewport().width;
     const uint32_t  h      = view->getViewport().height;
     const float     aspect = (float) w / h;
-    cam->setProjection(Camera::Projection::ORTHO,
+    /*cam->setProjection(Camera::Projection::ORTHO,
                        -aspect * ZOOM, aspect * ZOOM,
-                       -ZOOM, ZOOM, 0, 1);
-    auto &tcm = engine->getTransformManager();
+                       -ZOOM, ZOOM, 0, 1);*/
+    cam->setProjection(90.0, aspect, 0.1, 10000.0f);
+    cam->lookAt({0.0f, 0.0f, 2.0f}, {0.0f, 0.0f, 0.0f});
+//    auto rotData = (yawRot * pitchRot).ToMatrix4().Transpose();
     tcm.setTransform(
         tcm.getInstance(quad),
-        math::mat4f::translation<float>({-x, 0.0f, 0.0f}) * filament::math::mat4f::rotation(time, filament::math::float3{0.0f, 0.0f, 0.1f})
+        math::mat4f::translation<float>({-x, y, z}) * rot
+            /** *((math::mat4f*)(&rotData.data_))*/ /*filament::math::mat4f::rotation(time, filament::math::float3{0.0f, 0.0f, 0.1f})*/
     );
   };
+
+  window->renderCallback = callback;
 
   window->StartLoop();
 //  imGuiAdapter.Shutdown();
