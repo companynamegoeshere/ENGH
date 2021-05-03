@@ -19,7 +19,7 @@ ECore::~ECore() {
 };
 
 void ECore::Setup(filament::backend::Backend backend) {
-  engine = filament::Engine::create(backend); // TODO Ignore backend right now
+  engine = filament::Engine::create(backend);
   renderer = engine->createRenderer();
 }
 

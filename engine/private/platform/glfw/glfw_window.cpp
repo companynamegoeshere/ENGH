@@ -28,7 +28,7 @@ Window::Window(ECore *engh, Config config) :
     initialized(false),
     inputProvider() {}
 
-void Window::Init() {
+void Window::CreateWindow() {
   if (initialized) {
     ENGH_CORE_THROW_FATAL("window already initialized");
   }
@@ -39,7 +39,7 @@ void Window::Init() {
     ENGH_CORE_THROW_FATAL("could not initialize GLFW: ", desc);
   }
 
-//  glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_RESIZABLE, config.resizable ? GL_TRUE : GL_FALSE);
 //  glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -113,7 +113,7 @@ void Window::StartLoop() {
     static long long nextNano = 0;
     if(nanoNow > nextNano) {
       nextNano = nanoNow + (int)1e9;
-      std::cout << "Skipped frames: " << skippingFrames << " FPS: " << frames << " NOW: " << nanoNow * 1e-9 << " NEXT: " << nextNano * 1e-9 << std::endl;
+      std::cout << "Skipped frames: " << skippingFrames << " FPS: " << frames << " Frametime: " << frameTime << std::endl;
       frames = 0;
       skippingFrames = 0;
     }

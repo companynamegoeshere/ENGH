@@ -37,7 +37,7 @@ public:
 
   ~Window() override;
 
-  void Init() override;
+  void CreateWindow() override;
 
   void StartLoop() override;
 

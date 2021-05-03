@@ -36,6 +36,8 @@ protected:
 
 public:
 
+  RenderCallback preRenderCallback = [](auto _, auto __){};
+  RenderCallback postRenderCallback = [](auto _, auto __){};
   RenderCallback renderCallback;
   ResizeCallback resizeCallback = [](double w, double h) {};
 
@@ -43,7 +45,7 @@ public:
 
   virtual ~Window() = 0;
 
-  virtual void Init() = 0;
+  virtual void CreateWindow() = 0;
 
   virtual void StartLoop() = 0;
 
