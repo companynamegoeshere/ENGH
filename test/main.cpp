@@ -83,7 +83,7 @@ int main() {
                                        800, 600
                                    });
   engh->Setup(filament::backend::Backend::DEFAULT);
-  window->Init();
+  window->CreateWindow();
 
   engh->GetRenderer().setClearOptions({
                                           {0.0f, 0.204f, 0.4f, 1.0f},
@@ -131,8 +131,8 @@ int main() {
       {{cos(M_PI * 2 / 3), sin(M_PI * 2 / 3)}, 0xff00ff00u},
       {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, 0xff0000ffu},*/
       {{1, 0}, up},
-      {{cos(M_PI * 2 / 3), sin(M_PI * 2 / 3)}, up},
-      {{cos(M_PI * 4 / 3), sin(M_PI * 4 / 3)}, up}
+      {{cos(PI * 2 / 3), sin(PI * 2 / 3)}, up},
+      {{cos(PI * 4 / 3), sin(PI * 4 / 3)}, up}
   };
 
   static constexpr uint16_t TRIANGLE_INDICES[3] = {0, 1, 2};

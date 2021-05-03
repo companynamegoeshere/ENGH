@@ -2,10 +2,10 @@ project(ENGH_TEST CXX)
 add_executable(
         engh_test
         main.cpp
-        imgui_adapter.cpp imgui_impl_glfw.cpp
+        imgui_adapter.cpp.disabled imgui_impl_glfw.cpp.disabled
 )
 
-target_link_libraries(engh_test PUBLIC dear_imgui)
+#target_link_libraries(engh_test PUBLIC dear_imgui)
 target_link_libraries(engh_test PUBLIC engh_engine)
 
 set_property(TARGET engh_test PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

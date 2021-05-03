@@ -1,4 +1,4 @@
-#include "imgui_adapter.hpp"
+#include "imgui_adapter.hpp.disbaled"
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
