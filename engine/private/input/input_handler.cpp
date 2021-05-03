@@ -17,13 +17,13 @@ void InputHandler::RegisterAxis(InputKey key, const std::string &name, AxisValue
 void InputHandler::UpdateInputs() {
   auto &provider = *this->provider;
   for (const auto &entry : actions) {
-    actionValues[entry.second] = provider.isPressed(entry.first);
+    actionValues[entry.second] = provider.IsPressed(entry.first);
   }
   for (auto &entry: axisValues) { // Reset axis value
     entry.second = 0;
   }
   for (const auto &entry: axis) {
-    if (provider.isPressed(std::get<0>(entry))) {
+    if (provider.IsPressed(std::get<0>(entry))) {
       axisValues[std::get<1>(entry)] += std::get<2>(entry);
     }
   }

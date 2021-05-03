@@ -8,6 +8,13 @@ using ActionCallback = std::function<void(bool pressed, double delta)>;
 using AxisCallback = std::function<void(double axis, double delta)>;
 
 enum InputKey {
+
+  MOUSE_LEFT,
+  MOUSE_RIGHT,
+  MOUSE_MIDDLE,
+  MOUSE_BTN_4,
+  MOUSE_BTN_5,
+
   KEY_1,
   KEY_2,
   KEY_3,
@@ -75,8 +82,25 @@ enum InputKey {
   KEY_Y,
   KEY_Z,
 
+  KEY_ESC,
+
+  KEY_INSERT,
+  KEY_DELETE,
+  KEY_HOME,
+  KEY_END,
+  KEY_PG_UP,
+  KEY_PG_DOWN,
+
   // TODO More keys
 
+};
+
+constexpr InputKey MOUSE_BUTTONS[5] = {
+    InputKey::MOUSE_LEFT,
+    InputKey::MOUSE_RIGHT,
+    InputKey::MOUSE_MIDDLE,
+    InputKey::MOUSE_BTN_4,
+    InputKey::MOUSE_BTN_5
 };
 
 }
