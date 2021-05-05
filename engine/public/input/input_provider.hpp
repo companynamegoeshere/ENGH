@@ -31,6 +31,10 @@ public:
   virtual void RegisterScrollCallback(CursorScrollCallback) = 0;
 
   virtual void SetCursorPos(double x, double y) = 0;
+
+  virtual const char* GetClipboardText() = 0;
+
+  virtual void SetClipboardText(const char* text) = 0;
 };
 
 }

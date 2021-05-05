@@ -14,6 +14,7 @@ class InputProvider : public Input::InputProvider {
   void (*lastCharCallback)(GLFWwindow *, unsigned int) = nullptr;
   void (*lastCursorPosCallback)(GLFWwindow *, double, double) = nullptr;
   void (*lastMouseButtonCallback)(GLFWwindow *, int, int, int) = nullptr;
+  void (*lastCursorScrollCallback)(GLFWwindow *, double, double) = nullptr;
 
   std::map<::ENGH::Input::InputKey, bool> keysPressed;
 
@@ -41,6 +42,10 @@ public:
   void RegisterScrollCallback(CursorScrollCallback func) override;
 
   void SetCursorPos(double x, double y) override;
+
+  const char *GetClipboardText() override;
+
+  void SetClipboardText(const char *text) override;
 
 private:
 

@@ -224,5 +224,12 @@ void InputProvider::scrollCallback(GLFWwindow *nativeWindow, double offsetX, dou
   }
 }
 
+const char *InputProvider::GetClipboardText() {
+  return glfwGetClipboardString(window);
+}
+
+void InputProvider::SetClipboardText(const char *text) {
+  glfwSetClipboardString(window, text);
+}
 
 }
