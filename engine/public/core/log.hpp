@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <ostream>
+#include <core/data_types.hpp>
 #include <core/debug.hpp>
-#include <core/engine.hpp>
 
 namespace ENGH {
 
