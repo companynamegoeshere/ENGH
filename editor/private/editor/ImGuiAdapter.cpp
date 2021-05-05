@@ -66,8 +66,16 @@ ImGuiAdapter::ImGuiAdapter(
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   setupImGuiKeys(io);
 
+  io.ClipboardUserData  = provider;
+  io.GetClipboardTextFn = [](void *p) { return reinterpret_cast<Input::InputProvider *>(p)->GetClipboardText(); };
+  io.SetClipboardTextFn = [](void *p, const char *text) { reinterpret_cast<Input::InputProvider *>(p)->SetClipboardText(text); };
+
   provider->RegisterKeyCallback([&io](InputKey key, bool pressed) {
     io.KeysDown[key] = pressed;
+    if (Input::GetKeyType(key) == Input::MOUSE) {
+      int i           = Input::GetMouseButton(key);
+      io.MouseDown[i] = pressed;
+    }
     if (key == InputKey::KEY_L_CTRL || key == Input::KEY_R_CTRL) {
       io.KeyCtrl = pressed;
     }
@@ -84,6 +92,10 @@ ImGuiAdapter::ImGuiAdapter(
   provider->RegisterCursorCallback([&io](double mouseX, double mouseY) {
     io.MousePos = {(float) mouseX, (float) mouseY};
   });
+  provider->RegisterScrollCallback([&io](double offsetX, double offsetY) {
+    io.MouseWheelH += (float) offsetX;
+    io.MouseWheel += (float) offsetY;
+  });
 }
 
 ImGuiAdapter::~ImGuiAdapter() {
@@ -97,9 +109,6 @@ void ImGuiAdapter::render(
 
   if (provider->IsFocused()) {
     auto &io = ImGui::GetIO();
-    for(int i = 0; i < 5; i++) {
-      io.MouseDown[i] = provider->IsPressed(Input::MOUSE_BUTTONS[i]);
-    }
     if (io.WantSetMousePos) {
       auto pos = io.MousePos;
       provider->SetCursorPos(pos.x, pos.y);
