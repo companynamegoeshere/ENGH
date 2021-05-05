@@ -124,6 +124,9 @@ InputProvider::InputProvider(GLFWwindow *window) : window(window) {
     lastMouseButtonCallback = glfwSetMouseButtonCallback(window, [](auto *w, int button, int action, int mods) {
       getProvider(w)->mouseButtonCallback(w, button, action, mods);
     });
+    lastCursorScrollCallback = glfwSetScrollCallback(window, [](auto *w, double offsetX, double offsetY) {
+      getProvider(w)->scrollCallback(w, offsetX, offsetY);
+    });
   }
 }
 
@@ -152,6 +155,10 @@ void InputProvider::RegisterCharCallback(InputProvider::CharCallback func) {
 
 void InputProvider::RegisterCursorCallback(InputProvider::CursorMoveCallback func) {
   mouseCallbackList.push_back(func);
+}
+
+void InputProvider::RegisterScrollCallback(CursorScrollCallback func) {
+  scrollCallbackList.push_back(func);
 }
 
 void InputProvider::SetCursorPos(double x, double y) {
@@ -207,5 +214,15 @@ void InputProvider::mouseButtonCallback(GLFWwindow *nativeWindow, int button, in
     lastMouseButtonCallback(nativeWindow, button, action, mods);
   }
 }
+
+void InputProvider::scrollCallback(GLFWwindow *nativeWindow, double offsetX, double offsetY) {
+  for (const auto &item : scrollCallbackList) {
+    item(offsetX, offsetY);
+  }
+  if(lastCursorScrollCallback != nullptr) {
+    lastCursorScrollCallback(nativeWindow, offsetX, offsetY);
+  }
+}
+
 
 }

@@ -17,9 +17,10 @@ class InputProvider : public Input::InputProvider {
 
   std::map<::ENGH::Input::InputKey, bool> keysPressed;
 
-  std::vector<KeyCallback>        keyCallbackList;
-  std::vector<CharCallback>       charCallbackList;
-  std::vector<CursorMoveCallback> mouseCallbackList;
+  std::vector<KeyCallback>          keyCallbackList;
+  std::vector<CharCallback>         charCallbackList;
+  std::vector<CursorMoveCallback>   mouseCallbackList;
+  std::vector<CursorScrollCallback> scrollCallbackList;
 
 public:
 
@@ -37,6 +38,8 @@ public:
 
   void RegisterCursorCallback(CursorMoveCallback func) override;
 
+  void RegisterScrollCallback(CursorScrollCallback func) override;
+
   void SetCursorPos(double x, double y) override;
 
 private:
@@ -48,6 +51,8 @@ private:
   void mouseCallback(GLFWwindow *nativeWindow, double x, double y);
 
   void mouseButtonCallback(GLFWwindow *nativeWindow, int button, int action, int mods);
+
+  void scrollCallback(GLFWwindow *nativeWindow, double offsetX, double offsetY);
 
 };
 
