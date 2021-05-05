@@ -1,5 +1,6 @@
 #pragma once
 
+#include <core/debug.hpp>
 #include <functional>
 
 namespace ENGH::Input {
@@ -95,6 +96,11 @@ enum InputKey {
 
 };
 
+enum KeyType {
+  MOUSE,
+  KEYBOARD
+};
+
 constexpr InputKey MOUSE_BUTTONS[5] = {
     InputKey::MOUSE_LEFT,
     InputKey::MOUSE_RIGHT,
@@ -102,5 +108,21 @@ constexpr InputKey MOUSE_BUTTONS[5] = {
     InputKey::MOUSE_BTN_4,
     InputKey::MOUSE_BTN_5
 };
+
+static inline KeyType GetKeyType(InputKey key) {
+  if (InputKey::MOUSE_LEFT <= key && key <= InputKey::MOUSE_BTN_5) {
+    return KeyType::MOUSE;
+  }
+  if(InputKey::KEY_1 <= key && key <= InputKey::KEY_PG_DOWN) {
+    return KeyType::KEYBOARD;
+  }
+  ASSERT("Invalid InputKey");
+  return (KeyType) -1;
+}
+
+static inline int GetMouseButton(InputKey key) {
+  ASSERT(InputKey::MOUSE_LEFT <= key && key <= InputKey::MOUSE_BTN_5, "InputKey is not a mouse button");
+  return key - Input::MOUSE_LEFT;
+}
 
 }
